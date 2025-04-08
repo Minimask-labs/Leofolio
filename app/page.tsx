@@ -28,7 +28,7 @@ export default function Home() {
 
   if (!connected) {
     return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <main className="min-h-screen  flex items-center justify-center p-4">
         <UserTypeSelection onConnect={() => setConnected(true)} onSelectUserType={(type) => setUserType(type)} />
       </main>
     )
@@ -39,7 +39,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen   ">
       {userType === "freelancer" ? (
         <FreelancerDashboard connected={connected} setConnected={setConnected} />
       ) : (

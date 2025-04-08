@@ -22,31 +22,39 @@ interface DevfolioPreviewProps {
 
 export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className=" border rounded-lg w-full shadow-sm overflow-hidden">
       {/* Header Section */}
-      <div className="border-b p-8">
+      <div className="border-b lg:p-8 p-4">
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="h-32 w-32 rounded-full">
             <AvatarFallback className="text-3xl bg-emerald-100 text-emerald-800">
               {profile.name
                 ? profile.name
-                    .split(" ")
+                    .split(' ')
                     .map((n) => n[0])
-                    .join("")
-                : "U"}
+                    .join('')
+                : 'U'}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <div>
-                <h1 className="text-3xl font-bold">{profile.name || "Your Name"}</h1>
-                <p className="text-slate-500">@{profile.username || "username"}</p>
+                <h1 className="text-3xl font-bold">
+                  {profile.name || 'Your Name'}
+                </h1>
+                <p className="text-slate-500">
+                  @{profile.username || 'username'}
+                </p>
               </div>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 self-start">Edit Profile</Button>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 self-start">
+                Edit Profile
+              </Button>
             </div>
 
-            <p className="text-lg mb-4">{profile.title || "Your Professional Title"}</p>
+            <p className="text-lg mb-4">
+              {profile.title || 'Your Professional Title'}
+            </p>
 
             <p className="text-slate-700 mb-4">
               {profile.bio ||
@@ -113,15 +121,23 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
           <div className="flex flex-wrap gap-2">
             {profile.skills.length > 0
               ? profile.skills.map((skill) => (
-                  <Badge key={skill} className="bg-slate-100 text-slate-800 hover:bg-slate-200">
+                  <Badge
+                    key={skill}
+                    className="bg-slate-100 text-slate-800 hover:bg-slate-200"
+                  >
                     {skill}
                   </Badge>
                 ))
-              : ["JavaScript", "React", "Node.js", "TypeScript"].map((skill) => (
-                  <Badge key={skill} className="bg-slate-100 text-slate-800 hover:bg-slate-200">
-                    {skill}
-                  </Badge>
-                ))}
+              : ['JavaScript', 'React', 'Node.js', 'TypeScript'].map(
+                  (skill) => (
+                    <Badge
+                      key={skill}
+                      className="bg-slate-100 text-slate-800 hover:bg-slate-200"
+                    >
+                      {skill}
+                    </Badge>
+                  )
+                )}
           </div>
         </div>
 
@@ -137,60 +153,70 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
       {/* Navigation */}
       <div className="border-b">
         <div className="flex overflow-x-auto">
-          <button className="px-6 py-3 font-medium text-emerald-600 border-b-2 border-emerald-600">Home</button>
-          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">Projects</button>
-          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">Credentials</button>
-          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">README.md</button>
+          <button className="px-6 py-3 font-medium text-emerald-600 border-b-2 border-emerald-600">
+            Home
+          </button>
+          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">
+            Projects
+          </button>
+          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">
+            Credentials
+          </button>
+          <button className="px-6 py-3 font-medium text-slate-600 hover:text-slate-900">
+            README.md
+          </button>
         </div>
       </div>
 
       {/* Stats Section */}
-      <div className="p-8">
-        <h2 className="text-xl font-semibold mb-4 text-slate-700">Devfolio Stats</h2>
+      <div className="lg:p-8 p-2">
+        <h2 className="text-xl font-semibold mb-4 text-slate-700">
+          Leofolio Stats
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="bg-amber-50">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="lg:p-4 p-2 flex items-center gap-3">
               <div className="bg-amber-100 p-2 rounded-md">
                 <FileText className="h-6 w-6 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">3</p>
+                <p className="text-2xl text-black font-bold">3</p>
                 <p className="text-sm text-slate-600">Projects</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-emerald-50">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="lg:p-4 p-2 flex items-center gap-3">
               <div className="bg-emerald-100 p-2 rounded-md">
                 <Trophy className="h-6 w-6 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">2</p>
+                <p className="text-2xl text-black font-bold">2</p>
                 <p className="text-sm text-slate-600">Prizes</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-blue-50">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="lg:p-4 p-2 flex items-center gap-3">
               <div className="bg-blue-100 p-2 rounded-md">
                 <Award className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">5</p>
+                <p className="text-2xl text-black font-bold">5</p>
                 <p className="text-sm text-slate-600">Hackathons</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-purple-50">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="lg:p-4 p-2 flex items-center gap-3">
               <div className="bg-purple-100 p-2 rounded-md">
                 <Award className="h-6 w-6 text-purple-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">2</p>
+                <p className="text-2xl text-black font-bold">2</p>
                 <p className="text-sm text-slate-600">Certifications</p>
               </div>
             </CardContent>
@@ -200,12 +226,16 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
 
       {/* GitHub Activity */}
       <div className="p-8 border-t">
-        <h2 className="text-xl font-semibold mb-4 text-slate-700">GitHub Activity</h2>
-        <div className="bg-slate-50 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4 text-slate-700">
+          GitHub Activity
+        </h2>
+        <div className="bg-black p-6 rounded-lg">
           <div className="flex flex-col md:flex-row justify-between mb-6">
             <div>
               <p className="text-3xl font-bold">1,240</p>
-              <p className="text-sm text-slate-600">contributions in the last year</p>
+              <p className="text-sm text-slate-600">
+                contributions in the last year
+              </p>
             </div>
             <Button variant="outline" className="mt-4 md:mt-0">
               View on GitHub
@@ -213,19 +243,24 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
           </div>
 
           {/* Contribution graph placeholder */}
-          <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: 7 }).map((_, rowIndex) => (
+          <div className="grid grid-cols-12 gap-1">
+            {Array.from({ length: 12 }).map((_, rowIndex) => (
               <div key={`row-${rowIndex}`} className="flex flex-col gap-1">
                 {Array.from({ length: 12 }).map((_, colIndex) => {
                   // Generate random intensity for the demo
-                  const intensity = Math.floor(Math.random() * 5)
-                  let bgColor = "bg-slate-100"
-                  if (intensity === 1) bgColor = "bg-emerald-100"
-                  if (intensity === 2) bgColor = "bg-emerald-200"
-                  if (intensity === 3) bgColor = "bg-emerald-300"
-                  if (intensity === 4) bgColor = "bg-emerald-400"
+                  const intensity = Math.floor(Math.random() * 5);
+                  let bgColor = 'bg-slate-100';
+                  if (intensity === 1) bgColor = 'bg-emerald-100';
+                  if (intensity === 2) bgColor = 'bg-emerald-200';
+                  if (intensity === 3) bgColor = 'bg-emerald-300';
+                  if (intensity === 4) bgColor = 'bg-emerald-400';
 
-                  return <div key={`cell-${rowIndex}-${colIndex}`} className={`w-3 h-3 rounded-sm ${bgColor}`}></div>
+                  return (
+                    <div
+                      key={`cell-${rowIndex}-${colIndex}`}
+                      className={`w-3 h-3 rounded-sm ${bgColor}`}
+                    ></div>
+                  );
                 })}
               </div>
             ))}
@@ -233,6 +268,6 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 

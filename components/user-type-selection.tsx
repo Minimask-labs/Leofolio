@@ -57,7 +57,9 @@ export function UserTypeSelection({
             <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
               <User className="h-10 w-10 text-emerald-600 p-2 bg-emerald-100 rounded-full" />
               <div>
-                <h3 className="font-medium">Freelancer Account</h3>
+                <h3 className="font-medium text-emerald-700">
+                  Freelancer Account
+                </h3>
                 <p className="text-sm text-slate-600">
                   Manage credentials and get hired privately
                 </p>
@@ -82,7 +84,7 @@ export function UserTypeSelection({
             <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
               <Briefcase className="h-10 w-10 text-blue-600 p-2 bg-blue-100 rounded-full" />
               <div>
-                <h3 className="font-medium">Employee Account</h3>
+                <h3 className="font-medium text-blue-700">Employee Account</h3>
                 <p className="text-sm text-slate-600">
                   Discover and hire verified freelancers
                 </p>

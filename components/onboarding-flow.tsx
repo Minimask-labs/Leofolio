@@ -96,10 +96,10 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
 
   if (previewMode) {
     return (
-      <div className="min-h-screen bg-slate-50 py-8">
+      <div className="min-h-screen max-h-screen  py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex lg:flex-row flex-col justify-between items-center lg:mb-8 mb-2">
               <h1 className="text-2xl font-bold">Preview Your Devfolio</h1>
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setPreviewMode(false)}>
@@ -113,8 +113,10 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </Button>
               </div>
             </div>
-
-            <DevfolioPreview profile={profile} />
+            <div className="w-full h-[85vh] overflow-y-auto pb-12 ">
+              {' '}
+              <DevfolioPreview profile={profile} />
+            </div>
           </div>
         </div>
       </div>
@@ -122,15 +124,15 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen max-h-screen  py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center justify-center ">
             <Shield className="h-8 w-8 text-emerald-600 mr-2" />
-            <h1 className="text-2xl font-bold">Leofolio Onboarding</h1>
+            <h1 className="lg:text-2xl text-lg font-bold">Leofolio Onboarding</h1>
           </div>
 
-          <div className="mb-8">
+          <div className="lg:my-8 my-2">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div
@@ -175,7 +177,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
             </div>
           </div>
 
-          <Card>
+          <Card className="w-full h-[80vh] overflow-y-auto pb-12">
             <CardHeader>
               <CardTitle>
                 {step === 1 && 'Basic Information'}
@@ -274,7 +276,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       {profile.skills.map((skill) => (
                         <Badge
                           key={skill}
-                          className="bg-slate-100 text-slate-800 hover:bg-slate-200 pl-2 pr-1 py-1"
+                          className="bg-slate-100 text-slate-800 h-fit hover:bg-slate-200 pl-2 pr-1 py-1"
                         >
                           {skill}
                           <button
@@ -333,7 +335,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         <Badge
                           key={skill}
                           variant="outline"
-                          className="cursor-pointer hover:bg-slate-100"
+                          className="cursor-pointer hover:bg-slate-100 hover:text-black"
                           onClick={() => {
                             if (!profile.skills.includes(skill)) {
                               setProfile((prev) => ({

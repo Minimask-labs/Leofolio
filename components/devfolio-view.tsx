@@ -149,7 +149,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
               <Label>Your Skills</Label>
               <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[100px]">
                 {editedProfile.skills.map((skill) => (
-                  <Badge key={skill} className="bg-slate-100 text-slate-800 hover:bg-slate-200 pl-2 pr-1 py-1">
+                  <Badge key={skill} className="bg-slate-100 text-slate-800  h-fit hover:bg-slate-200 pl-2 pr-1 py-1">
                     {skill}
                     <button onClick={() => removeSkill(skill)} className="ml-1 rounded-full hover:bg-slate-300 p-1">
                       <X className="h-3 w-3" />

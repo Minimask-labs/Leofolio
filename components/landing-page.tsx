@@ -67,42 +67,42 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <header className="border-b bg-white">
+      <header className="border-b sticky top-0 bg-emerald-600 z-30 ">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-emerald-600" />
+            <Shield className="h-8 w-8 text-black" />
             <h1 className="text-2xl font-bold">Leofolio</h1>
           </div>
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-6">
               <a
                 href="#features"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-slate-100 hover:text-emerald-600"
               >
                 Features
               </a>
               <a
                 href="#freelancers"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-slate-100 hover:text-emerald-600"
               >
                 Freelancers
               </a>
               <a
                 href="#projects"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-slate-100 hover:text-emerald-600"
               >
                 Projects
               </a>
               <a
                 href="#about"
-                className="text-slate-600 hover:text-emerald-600"
+                className="text-slate-100 hover:text-emerald-600"
               >
                 About
               </a>
             </nav>
             <Button
               onClick={onGetStarted}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
             >
               Get Started
             </Button>
@@ -111,13 +111,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-emerald-50 to-white py-20">
+      <section className="dark:bg-gradient-to-b dark:from-emerald-600 to-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Privacy-Preserving{' '}
-            <span className="text-emerald-600">Freelancer Platform</span>
+            <span className="text-black">Freelancer Platform</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-10">
+          <p className="text-xl text-slate-100 max-w-3xl mx-auto mb-10">
             Connect with verified freelancers and clients while maintaining
             privacy through zero-knowledge proofs on Aleo.
           </p>
@@ -133,7 +133,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               onClick={onGetStarted}
               size="lg"
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
             >
               Hire Talent
             </Button>
@@ -142,7 +142,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Why Choose Leofolio?
@@ -187,7 +187,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Featured Freelancers */}
-      <section id="freelancers" className="py-20 bg-slate-50">
+      <section id="freelancers" className="py-20 ">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Top Freelancers
@@ -230,7 +230,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-emerald-600 border-emerald-600 hover:bg-emerald-50"
+                      className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
                     >
                       View Profile
                     </Button>
@@ -244,7 +244,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             <Button
               onClick={onGetStarted}
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
             >
               Explore All Freelancers <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -253,7 +253,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Featured Projects */}
-      <section id="projects" className="py-20 bg-white">
+      <section id="projects" className="py-20 ">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Featured Projects
@@ -336,7 +336,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-slate-300 py-12">
+      <footer className="bg-black text-slate-300 py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">

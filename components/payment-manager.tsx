@@ -170,7 +170,7 @@ export function PaymentManager() {
           <h3 className="font-medium">Transaction History</h3>
           <div className="space-y-3">
             {transactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+              <div key={transaction.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg border">
                 <div className="flex items-center gap-3">
                   {transaction.type === "received" ? (
                     <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">

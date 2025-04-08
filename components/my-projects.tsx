@@ -294,7 +294,7 @@ export function MyProjects() {
                         {project.milestones.map((milestone) => (
                           <div
                             key={milestone.id}
-                            className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
+                            className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                           >
                             <div className="flex items-center gap-2">
                               {milestone.status === "completed" ? (
