@@ -33,12 +33,12 @@ export function FreelancerDashboard({ connected, setConnected }: FreelancerDashb
       <Header connected={connected} setConnected={setConnected} userType="freelancer" />
 
       <Tabs defaultValue="devfolio" className="mt-8">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="devfolio">Devfolio</TabsTrigger>
           <TabsTrigger value="my-projects">My Projects</TabsTrigger>
-          <TabsTrigger value="available-projects">Available Projects</TabsTrigger>
+          {/* <TabsTrigger value="available-projects">Available Projects</TabsTrigger> */}
           <TabsTrigger value="payments">Payments</TabsTrigger>
-          <TabsTrigger value="proofs">Generate Proofs</TabsTrigger>
+          {/* <TabsTrigger value="proofs">Generate Proofs</TabsTrigger> */}
         </TabsList>
         <TabsContent value="devfolio" className="mt-6">
           <DevfolioView profile={profile} setProfile={setProfile} />

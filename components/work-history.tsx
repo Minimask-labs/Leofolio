@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Briefcase, Calendar, Plus } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 
-export function WorkHistory() {
+export function WorkHistory({ className }: { className?: string }) {
   const [projects, setProjects] = useState([
     {
       id: 1,
@@ -19,7 +19,7 @@ export function WorkHistory() {
       startDate: "2023-01-10",
       endDate: "2023-04-15",
       skills: ["React", "Node.js", "GraphQL"],
-      private: true,
+      private: false,
     },
     {
       id: 2,
@@ -34,21 +34,24 @@ export function WorkHistory() {
 
   const [isAdding, setIsAdding] = useState(false)
 
-  const addProject = () => {
+  const addProject = ( ) => {
     // In a real implementation, this would create an Aleo transaction
     // to store the work history privately on-chain
     toast({
-      title: "Project Added",
-      description: "Your project has been encrypted and stored on Aleo",
-    })
-    setIsAdding(false)
-  }
+      title: 'Project Added',
+      description: 'Your project has been encrypted and stored on Aleo'
+    });
+    setIsAdding(false);
+  };
 
   return (
-    <div className="space-y-6">
+    <div className={`${className} space-y-6`}>
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Your Private Work History</h2>
-        <Button onClick={() => setIsAdding(true)} className="bg-emerald-600 hover:bg-emerald-700">
+        <h2 className="text-xl font-semibold">Your  Work History</h2>
+        <Button
+          onClick={() => setIsAdding(true)}
+          className="bg-emerald-600 hover:bg-emerald-700"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Project
         </Button>
@@ -58,12 +61,17 @@ export function WorkHistory() {
         <Card>
           <CardHeader>
             <CardTitle>Add New Project</CardTitle>
-            <CardDescription>This information will be stored privately on Aleo</CardDescription>
+            {/* <CardDescription>
+              This information will be visible to the public
+            </CardDescription> */}
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Project Title</Label>
-              <Input id="title" placeholder="e.g. E-commerce Platform Redesign" />
+              <Input
+                id="title"
+                placeholder="e.g. E-commerce Platform Redesign"
+              />
             </div>
 
             <div className="space-y-2">
@@ -89,14 +97,20 @@ export function WorkHistory() {
 
             <div className="space-y-2">
               <Label htmlFor="description">Project Description</Label>
-              <Textarea id="description" placeholder="Describe your role and achievements..." />
+              <Textarea
+                id="description"
+                placeholder="Describe your role and achievements..."
+              />
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="outline" onClick={() => setIsAdding(false)}>
               Cancel
             </Button>
-            <Button onClick={addProject} className="bg-emerald-600 hover:bg-emerald-700">
+            <Button
+              onClick={addProject}
+              className="bg-emerald-600 hover:bg-emerald-700"
+            >
               Store Privately on Aleo
             </Button>
           </CardFooter>
@@ -114,8 +128,11 @@ export function WorkHistory() {
                     </div>
                     <CardDescription>{project.client}</CardDescription>
                   </div>
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                    {project.private ? "Private" : "Public"}
+                  <Badge
+                    variant="outline"
+                    className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                  >
+                    {project.private ? 'Private' : 'Public'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -123,7 +140,7 @@ export function WorkHistory() {
                 <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
                   <Calendar className="h-4 w-4" />
                   <span>
-                    {new Date(project.startDate).toLocaleDateString()} -{" "}
+                    {new Date(project.startDate).toLocaleDateString()} -{' '}
                     {new Date(project.endDate).toLocaleDateString()}
                   </span>
                 </div>
@@ -135,16 +152,16 @@ export function WorkHistory() {
                   ))}
                 </div>
               </CardContent>
-              <CardFooter>
+              {/* <CardFooter>
                 <Button variant="outline" size="sm">
                   Generate Proof
                 </Button>
-              </CardFooter>
+              </CardFooter> */}
             </Card>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
 

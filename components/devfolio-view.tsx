@@ -263,31 +263,16 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Your Devfolio</h2>
-        <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={() => setIsEditing(true)}>
+        <Button
+          className="bg-emerald-600 hover:bg-emerald-700"
+          onClick={() => setIsEditing(true)}
+        >
           Edit Devfolio
         </Button>
       </div>
+      <DevfolioPreview profile={profile} />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="w-full grid grid-cols-3">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="credentials">Credentials</TabsTrigger>
-          <TabsTrigger value="work-history">Work History</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <DevfolioPreview profile={profile} />
-        </TabsContent>
-
-        <TabsContent value="credentials" className="space-y-4">
-          <CredentialManager />
-        </TabsContent>
-
-        <TabsContent value="work-history" className="space-y-4">
-          <WorkHistory />
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+     </div>
+  );
 }
 

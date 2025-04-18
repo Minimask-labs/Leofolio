@@ -19,7 +19,7 @@ export function PaymentManager() {
       amount: 2500,
       client: "Client A",
       date: "2023-06-15",
-      currency: "USDC",
+      currency: "ALEO",
       status: "completed",
     },
     {
@@ -28,7 +28,7 @@ export function PaymentManager() {
       amount: 1800,
       client: "Client B",
       date: "2023-05-22",
-      currency: "USDC",
+      currency: "ALEO",
       status: "completed",
     },
     {
@@ -37,7 +37,7 @@ export function PaymentManager() {
       amount: 500,
       recipient: "Contractor X",
       date: "2023-06-01",
-      currency: "USDC",
+      currency: "ALEO",
       status: "completed",
     },
   ])
@@ -56,10 +56,10 @@ export function PaymentManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Private Payments</h2>
-        <Button onClick={() => setIsCreatingInvoice(true)} className="bg-emerald-600 hover:bg-emerald-700">
+        {/* <Button onClick={() => setIsCreatingInvoice(true)} className="bg-emerald-600 hover:bg-emerald-700">
           <Plus className="mr-2 h-4 w-4" />
           Create Invoice
-        </Button>
+        </Button> */}
       </div>
 
       <Alert>
@@ -80,7 +80,7 @@ export function PaymentManager() {
             <div className="flex items-center">
               <DollarSign className="h-5 w-5 text-emerald-600 mr-1" />
               <span className="text-2xl font-bold">4,300</span>
-              <span className="ml-1 text-slate-500">USDC</span>
+              <span className="ml-1 text-slate-500">ALEO</span>
             </div>
           </CardContent>
         </Card>
@@ -94,7 +94,7 @@ export function PaymentManager() {
             <div className="flex items-center">
               <DollarSign className="h-5 w-5 text-amber-500 mr-1" />
               <span className="text-2xl font-bold">750</span>
-              <span className="ml-1 text-slate-500">USDC</span>
+              <span className="ml-1 text-slate-500">ALEO</span>
             </div>
           </CardContent>
         </Card>
@@ -108,13 +108,13 @@ export function PaymentManager() {
             <div className="flex items-center">
               <DollarSign className="h-5 w-5 text-red-500 mr-1" />
               <span className="text-2xl font-bold">500</span>
-              <span className="ml-1 text-slate-500">USDC</span>
+              <span className="ml-1 text-slate-500">ALEO</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {isCreatingInvoice ? (
+      {/* {isCreatingInvoice ? (
         <Card>
           <CardHeader>
             <CardTitle>Create Private Invoice</CardTitle>
@@ -133,12 +133,12 @@ export function PaymentManager() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="currency">Currency</Label>
-                <Select defaultValue="USDC">
+                <Select defaultValue="ALEO">
                   <SelectTrigger>
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="USDC">USDC</SelectItem>
+                    <SelectItem value="ALEO">ALEO</SelectItem>
                     <SelectItem value="USDT">USDT</SelectItem>
                     <SelectItem value="DAI">DAI</SelectItem>
                   </SelectContent>
@@ -165,7 +165,7 @@ export function PaymentManager() {
             </Button>
           </CardFooter>
         </Card>
-      ) : (
+      ) : ( */}
         <div className="space-y-4">
           <h3 className="font-medium">Transaction History</h3>
           <div className="space-y-3">
@@ -201,7 +201,7 @@ export function PaymentManager() {
             ))}
           </div>
         </div>
-      )}
+       {/* )} */}
     </div>
   )
 }

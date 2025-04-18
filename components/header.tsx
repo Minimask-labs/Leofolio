@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export function Header({ connected, setConnected, userType }: HeaderProps) {
   return (
-    <header className="flex justify-between items-center">
+    <header className="flex justify-between items-center sticky top-0 z-30">
       <div className="flex items-center gap-2">
         <Shield
           className={`h-8 w-8 ${

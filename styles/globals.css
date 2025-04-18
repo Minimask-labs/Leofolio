@@ -89,6 +89,13 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#121212] text-foreground;
   }
 }
+/* Palette:
+
+Background: #121212 (charcoal black)
+Primary Text: #E0E0E0 (light gray)
+Secondary Text: #B0B0B0 (medium gray)
+Borders/Dividers: #444444 (dark gray)
+Accent: #888888 (soft gray) */

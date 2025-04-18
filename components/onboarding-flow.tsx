@@ -129,7 +129,9 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-center ">
             <Shield className="h-8 w-8 text-emerald-600 mr-2" />
-            <h1 className="lg:text-2xl text-lg font-bold">Leofolio Onboarding</h1>
+            <h1 className="lg:text-2xl text-lg font-bold">
+              Leofolio Onboarding
+            </h1>
           </div>
 
           <div className="lg:my-8 my-2">
@@ -335,7 +337,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         <Badge
                           key={skill}
                           variant="outline"
-                          className="cursor-pointer hover:bg-slate-100 hover:text-black"
+                          className="cursor-pointer hover:bg-slate-100 hover:text-[#121212]"
                           onClick={() => {
                             if (!profile.skills.includes(skill)) {
                               setProfile((prev) => ({

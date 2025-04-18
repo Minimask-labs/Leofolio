@@ -70,39 +70,30 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       <header className="border-b sticky top-0 bg-emerald-600 z-30 ">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-black" />
+            <Shield className="h-8 w-8 text-[#121212]" />
             <h1 className="text-2xl font-bold">Leofolio</h1>
           </div>
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-6">
-              <a
-                href="#features"
-                className="text-slate-100 hover:text-emerald-600"
-              >
+              <a href="#features" className="text-slate-100 hover:text-black">
                 Features
               </a>
               <a
                 href="#freelancers"
-                className="text-slate-100 hover:text-emerald-600"
+                className="text-slate-100 hover:text-black"
               >
                 Freelancers
               </a>
-              <a
-                href="#projects"
-                className="text-slate-100 hover:text-emerald-600"
-              >
+              <a href="#projects" className="text-slate-100 hover:text-black">
                 Projects
               </a>
-              <a
-                href="#about"
-                className="text-slate-100 hover:text-emerald-600"
-              >
+              <a href="#about" className="text-slate-100 hover:text-black">
                 About
               </a>
             </nav>
             <Button
               onClick={onGetStarted}
-              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
+              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
             >
               Get Started
             </Button>
@@ -115,7 +106,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Privacy-Preserving{' '}
-            <span className="text-black">Freelancer Platform</span>
+            <span className="text-[#121212]">Freelancer Platform</span>
           </h1>
           <p className="text-xl text-slate-100 max-w-3xl mx-auto mb-10">
             Connect with verified freelancers and clients while maintaining
@@ -133,7 +124,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               onClick={onGetStarted}
               size="lg"
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
+              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
             >
               Hire Talent
             </Button>
@@ -230,7 +221,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
+                      className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
                     >
                       View Profile
                     </Button>
@@ -244,7 +235,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             <Button
               onClick={onGetStarted}
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:text-black bg-black hover:bg-emerald-100"
+              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
             >
               Explore All Freelancers <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -336,7 +327,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-slate-300 py-12">
+      <footer className="bg-[#121212] text-slate-300 py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">
