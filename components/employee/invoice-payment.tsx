@@ -242,7 +242,7 @@ export function InvoicePayment() {
                         )}
                       </DialogContent>
                     </Dialog>
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={() => handlePayInvoice(invoice)}>
+                    <Button className="flex-1 bg-blue-600 text-white hover:bg-blue-700" onClick={() => handlePayInvoice(invoice)}>
                       Pay Now
                     </Button>
                   </CardFooter>
@@ -372,7 +372,7 @@ export function InvoicePayment() {
                     View Details
                   </Button>
                   {invoice.status === "pending" && (
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={() => handlePayInvoice(invoice)}>
+                    <Button className="flex-1 bg-blue-600 text-white hover:bg-blue-700" onClick={() => handlePayInvoice(invoice)}>
                       Pay Now
                     </Button>
                   )}

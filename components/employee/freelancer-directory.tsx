@@ -192,9 +192,9 @@ export function FreelancerDirectory() {
                         <div className="md:col-span-1">
                           <Avatar className="h-24 w-24 mx-auto">
                             <AvatarFallback className="text-xl">
-                              {selectedFreelancer.name
+                                {selectedFreelancer.name
                                 .split(" ")
-                                .map((n) => n[0])
+                                .map((n: string) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
@@ -272,7 +272,7 @@ export function FreelancerDirectory() {
                   )}
                 </DialogContent>
               </Dialog>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={() => handleHireFreelancer(freelancer)}>
+              <Button className="flex-1 bg-blue-600 text-white hover:bg-blue-700" onClick={() => handleHireFreelancer(freelancer)}>
                 Hire
               </Button>
             </CardFooter>

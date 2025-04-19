@@ -131,7 +131,6 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           </div>
         </div>
       </section>
-
       {/* Features Section */}
       <section id="features" className="py-20 bg-background">
         <div className="container mx-auto px-4">

@@ -112,8 +112,8 @@ export function UserTypeSelection({
           onClick={handleConnect}
           className={`w-full ${
             selectedType === 'freelancer'
-              ? 'bg-emerald-600 hover:bg-emerald-700'
-              : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
         >
           Connect Wallet

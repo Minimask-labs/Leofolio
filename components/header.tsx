@@ -29,8 +29,8 @@ export function Header({ connected, setConnected, userType }: HeaderProps) {
         variant="outline"
         className={
           userType === 'freelancer'
-            ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200'
-            : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200'
+            ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-700 hover:text-white border-emerald-200'
+            : 'bg-blue-50 text-blue-700 hover:bg-blue-700 hover:text-blue-50 border-blue-200'
         }
       >
         <LogOut className="mr-2 h-4 w-4" />

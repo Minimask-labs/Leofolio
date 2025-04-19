@@ -93,7 +93,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
             <Button variant="outline" onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={saveChanges}>
+            <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={saveChanges}>
               Save Changes
             </Button>
           </div>
@@ -151,7 +151,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
                 {editedProfile.skills.map((skill) => (
                   <Badge key={skill} className="bg-slate-100 text-slate-800  h-fit hover:bg-slate-200 pl-2 pr-1 py-1">
                     {skill}
-                    <button onClick={() => removeSkill(skill)} className="ml-1 rounded-full hover:bg-slate-300 p-1">
+                    <button title="remove skills" type="button" onClick={() => removeSkill(skill)} className="ml-1 rounded-full hover:bg-slate-300 p-1">
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
@@ -175,7 +175,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
                   }}
                 />
               </div>
-              <Button type="button" onClick={addSkill} className="bg-emerald-600 hover:bg-emerald-700">
+              <Button type="button" onClick={addSkill} className="bg-emerald-600 text-white hover:bg-emerald-700">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -250,7 +250,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={saveChanges}>
+            <Button className="w-full bg-emerald-600 text-white hover:bg-emerald-700" onClick={saveChanges}>
               Save All Changes
             </Button>
           </CardFooter>
@@ -264,7 +264,7 @@ export function DevfolioView({ profile, setProfile }: DevfolioViewProps) {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Your Devfolio</h2>
         <Button
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
           onClick={() => setIsEditing(true)}
         >
           Edit Devfolio

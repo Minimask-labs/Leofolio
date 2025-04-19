@@ -336,7 +336,7 @@ export function MyProjects() {
                 </Button>
 
                 <Button
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                   onClick={() => {
                     setSelectedProject(project)
                     setShowDashboard(true)
@@ -414,7 +414,7 @@ export function MyProjects() {
                 </Button>
 
                 <Button
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={() => {
                     setSelectedProject(project)
                     setShowReport(true)
