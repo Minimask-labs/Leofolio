@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -12,6 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Briefcase, User } from 'lucide-react';
+import { WalletMultiButton } from '@demox-labs/aleo-wallet-adapter-reactui';
+import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
+import { WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base';
+import { LeoWalletAdapter } from '@demox-labs/aleo-wallet-adapter-leo';
 
 interface UserTypeSelectionProps {
   onConnect: () => void;
@@ -25,12 +30,53 @@ export function UserTypeSelection({
   const [selectedType, setSelectedType] = useState<'freelancer' | 'employee'>(
     'freelancer'
   );
+    const { publicKey,wallet } = useWallet();
+const [signature, setSignature] = useState<string | null>(null);
+ 
+  // const onClick = useCallback(async () => {
+  //   if (!publicKey) throw new WalletNotConnectedError();
 
-  const handleConnect = () => {
-    onSelectUserType(selectedType);
-    onConnect();
+  //   const message = 'a message to sign';
+
+  //   const bytes = new TextEncoder().encode(message);
+  //   const signatureBytes = await (
+  //     wallet?.adapter as LeoWalletAdapter
+  //   ).signMessage(bytes);
+  //   setSignature( new TextDecoder().decode(signatureBytes));
+  //   alert('Signed message: ' + signature);
+  // }, [wallet, publicKey]);
+
+  const handleConnect = async () => {
+    if (publicKey) {
+      // console.log('Public Key:', publicKey.toString());
+      // console.log('Wallet:', wallet);
+      // console.log('Wallet Adapter:', wallet?.adapter);
+      if (!publicKey) throw new WalletNotConnectedError();
+
+      const message = 'a message to sign';
+
+      const bytes = new TextEncoder().encode(message);
+      if (!wallet?.adapter) throw new Error('Wallet adapter is undefined');
+        const signatureBytes = await (
+          wallet?.adapter as LeoWalletAdapter
+        ).signMessage(bytes);
+        const signature = new TextDecoder().decode(signatureBytes);
+        // console.log('Signature:', signature);
+      // setSignature(signature);
+      // setSignature(new TextDecoder().decode(signatureBytes));
+      alert('Signed message: ' + signature);
+      if (signature) {
+        onSelectUserType(selectedType);
+        onConnect();
+        alert('Signature: ' + signature);
+      }
+    }
   };
-
+  useEffect(() => {
+    if (publicKey) {
+      handleConnect();
+    }
+  }, [publicKey]);
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
@@ -108,7 +154,18 @@ export function UserTypeSelection({
         </Tabs>
       </CardContent>
       <CardFooter>
-        <Button
+        <WalletMultiButton
+          className={`w-full !text-center !flex !items-center !justify-center ${
+            selectedType === 'freelancer'
+              ? '!bg-emerald-600 hover:!bg-emerald-700'
+              : '!bg-blue-600 hover:!bg-blue-700'
+          }`}
+        ><span>          Connect Wallet
+</span>
+          {' '}
+        </WalletMultiButton>
+
+        {/* <Button
           onClick={handleConnect}
           className={`w-full ${
             selectedType === 'freelancer'
@@ -116,8 +173,9 @@ export function UserTypeSelection({
               : 'bg-blue-600 hover:bg-blue-700'
           }`}
         >
+          {' '}
           Connect Wallet
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
   );
