@@ -74,8 +74,10 @@ export function UserTypeSelection({
           if (response) {
             // Save the token and user data in cookies or local storage
                     saveUserData(response);
-                    saveUserToken(response.data.accessToken);
-                     saveUserType(response.data.role);
+                    saveUserToken(response?.data?.token);
+                     saveUserType(response?.data?.user?.role);
+        onSelectUserType(selectedType);
+        onConnect();
 
             // Cookies.set('token', response.token);
             // Cookies.set('userData', JSON.stringify(response.user));
@@ -88,8 +90,6 @@ export function UserTypeSelection({
           // Handle error (e.g., show an error message)
           alert('Error during authentication: ' + error);
         }
-        // onSelectUserType(selectedType);
-        // onConnect();
         alert('Signature: ' + signature);
       }
     }
