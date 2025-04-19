@@ -106,7 +106,7 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
         <Button
           onClick={handleSubmitUpdate}
           disabled={!newUpdate.trim()}
-          className="bg-emerald-600 hover:bg-emerald-700 gap-1"
+          className="bg-emerald-600 text-white hover:bg-emerald-700 gap-1"
         >
           <Send className="h-4 w-4" />
           Post Update

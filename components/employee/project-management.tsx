@@ -248,7 +248,7 @@ export function ProjectManagement() {
           <h2 className="text-xl font-semibold mb-2">Manage Projects</h2>
           <p className="text-slate-600">Organize and track projects with your hired freelancers.</p>
         </div>
-        <Button onClick={() => setIsCreatingProject(true)} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={() => setIsCreatingProject(true)} className="bg-blue-600 text-white hover:bg-blue-700">
           <Plus className="mr-2 h-4 w-4" />
           New Project
         </Button>
@@ -361,7 +361,7 @@ export function ProjectManagement() {
             <Button variant="outline" onClick={() => setIsCreatingProject(false)}>
               Cancel
             </Button>
-            <Button onClick={createProject} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={createProject} className="bg-blue-600 text-white hover:bg-blue-700">
               Create Project
             </Button>
           </CardFooter>
@@ -483,7 +483,7 @@ export function ProjectManagement() {
                       </Button>
 
                       <Button
-                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
                         onClick={() => {
                           setSelectedProject(project)
                           setShowDashboard(true)
@@ -515,7 +515,12 @@ export function ProjectManagement() {
                     <CardContent className="pb-2">
                       <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
                         <Calendar className="h-4 w-4" />
-                        <span>Completed on: {new Date(project.completionDate).toLocaleDateString()}</span>
+                        <span>
+                          Completed on:{" "}
+                          {project.completionDate
+                            ? new Date(project.completionDate).toLocaleDateString()
+                            : "N/A"}
+                        </span>
                       </div>
 
                       <div>
@@ -562,7 +567,7 @@ export function ProjectManagement() {
                         )}
                       </Button>
                       <Button
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                        className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
                         onClick={() => {
                           setSelectedProject(project)
                           setShowReport(true)

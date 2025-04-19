@@ -93,6 +93,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               )}
               {profile.linkedin && (
                 <a
+                  title="blank_tag"
                   href={profile.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"

@@ -106,7 +106,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   Edit Profile
                 </Button>
                 <Button
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={onComplete}
                 >
                   Complete Setup
@@ -282,6 +282,8 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         >
                           {skill}
                           <button
+                            type='button'
+                          title='button'
                             onClick={() => removeSkill(skill)}
                             className="ml-1 rounded-full hover:bg-slate-300 p-1"
                           >
@@ -441,7 +443,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 Back
               </Button>
               <Button
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-emerald-600 text-white hover:bg-emerald-700"
                 onClick={nextStep}
               >
                 {step < 3 ? 'Next' : 'Preview Profile'}
