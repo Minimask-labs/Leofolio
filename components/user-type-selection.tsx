@@ -17,22 +17,29 @@ import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base';
 import { LeoWalletAdapter } from '@demox-labs/aleo-wallet-adapter-leo';
+import { walletAuth } from '@/service/auth';
+import { useStore } from '@/Store/user';
 
 interface UserTypeSelectionProps {
   onConnect: () => void;
-  onSelectUserType: (type: 'freelancer' | 'employee') => void;
+  onSelectUserType: (type: 'freelancer' | 'employer') => void;
 }
 
 export function UserTypeSelection({
   onConnect,
   onSelectUserType
 }: UserTypeSelectionProps) {
-  const [selectedType, setSelectedType] = useState<'freelancer' | 'employee'>(
+  const [selectedType, setSelectedType] = useState<'freelancer' | 'employer'>(
     'freelancer'
   );
     const { publicKey,wallet } = useWallet();
-const [signature, setSignature] = useState<string | null>(null);
- 
+    const [signature, setSignature] = useState<string | null>(null);
+   const {
+     saveUserToken,
+     saveUserData,
+     saveUserType
+   } = useStore();
+
  
   const handleConnect = async () => {
     if (publicKey) {
@@ -41,9 +48,9 @@ const [signature, setSignature] = useState<string | null>(null);
       // console.log('Wallet Adapter:', wallet?.adapter);
       if (!publicKey) throw new WalletNotConnectedError();
 
-      const message = 'a message to sign';
+      // const message = 'a message to sign';
 
-      const bytes = new TextEncoder().encode(message);
+      const bytes = new TextEncoder().encode(publicKey);
       if (!wallet?.adapter) throw new Error('Wallet adapter is undefined');
         const signatureBytes = await (
           wallet?.adapter as LeoWalletAdapter
@@ -52,10 +59,37 @@ const [signature, setSignature] = useState<string | null>(null);
         // console.log('Signature:', signature);
       // setSignature(signature);
       // setSignature(new TextDecoder().decode(signatureBytes));
-      alert('Signed message: ' + signature);
+      // alert('Signed message: ' + signature);
       if (signature) {
-        onSelectUserType(selectedType);
-        onConnect();
+        try {
+          const body = {
+            walletAddress: publicKey.toString(),
+            signature: signature,
+            role: selectedType,
+            nonce: "nonce",
+
+          };
+          const response = await walletAuth(body);
+          console.log('Response:', response);
+          if (response) {
+            // Save the token and user data in cookies or local storage
+                    saveUserData(response);
+                    saveUserToken(response.data.accessToken);
+                     saveUserType(response.data.role);
+
+            // Cookies.set('token', response.token);
+            // Cookies.set('userData', JSON.stringify(response.user));
+            // Cookies.set('userType', selectedType);
+            // console.log('User Type:', selectedType);
+            // console.log('User Data:', response.user);
+          }
+        } catch (error) {
+          console.error('Error during authentication:', error);
+          // Handle error (e.g., show an error message)
+          alert('Error during authentication: ' + error);
+        }
+        // onSelectUserType(selectedType);
+        // onConnect();
         alert('Signature: ' + signature);
       }
     }
@@ -80,12 +114,12 @@ const [signature, setSignature] = useState<string | null>(null);
         <Tabs
           defaultValue="freelancer"
           onValueChange={(value) =>
-            setSelectedType(value as 'freelancer' | 'employee')
+            setSelectedType(value as 'freelancer' | 'employer')
           }
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="freelancer">Freelancer</TabsTrigger>
-            <TabsTrigger value="employee">Employee</TabsTrigger>
+            <TabsTrigger value="employer">employer</TabsTrigger>
           </TabsList>
           <TabsContent value="freelancer" className="mt-4 space-y-4">
             <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
@@ -114,11 +148,11 @@ const [signature, setSignature] = useState<string | null>(null);
               </li>
             </ul>
           </TabsContent>
-          <TabsContent value="employee" className="mt-4 space-y-4">
+          <TabsContent value="employer" className="mt-4 space-y-4">
             <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
               <Briefcase className="h-10 w-10 text-blue-600 p-2 bg-blue-100 rounded-full" />
               <div>
-                <h3 className="font-medium text-blue-700">Employee Account</h3>
+                <h3 className="font-medium text-blue-700">employer Account</h3>
                 <p className="text-sm text-slate-600">
                   Discover and hire verified freelancers
                 </p>
