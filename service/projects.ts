@@ -1,7 +1,7 @@
  import AxiosService from './axios';
 
 
-//  ****************** Employee *******************
+//  ****************** projects *******************
 export const myProjects = async (params:any) => {
   try {
     const response = await AxiosService.get('project/employer', {

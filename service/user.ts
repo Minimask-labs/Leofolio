@@ -1,7 +1,4 @@
 import AxiosService from './axios';
-
-
-
 export const getUser = async () => {
   try {
     const response = await AxiosService.get(
