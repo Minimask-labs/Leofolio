@@ -33,19 +33,7 @@ export function UserTypeSelection({
     const { publicKey,wallet } = useWallet();
 const [signature, setSignature] = useState<string | null>(null);
  
-  // const onClick = useCallback(async () => {
-  //   if (!publicKey) throw new WalletNotConnectedError();
-
-  //   const message = 'a message to sign';
-
-  //   const bytes = new TextEncoder().encode(message);
-  //   const signatureBytes = await (
-  //     wallet?.adapter as LeoWalletAdapter
-  //   ).signMessage(bytes);
-  //   setSignature( new TextDecoder().decode(signatureBytes));
-  //   alert('Signed message: ' + signature);
-  // }, [wallet, publicKey]);
-
+ 
   const handleConnect = async () => {
     if (publicKey) {
       // console.log('Public Key:', publicKey.toString());
