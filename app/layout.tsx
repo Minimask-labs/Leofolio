@@ -1,43 +1,58 @@
-// import type { Metadata } from 'next'
-// import './globals.css'
-// import { ThemeProvider } from '@/components/theme-provider';
+'use client';
 
-// export const metadata: Metadata = {
-//   title: 'Leofolio',
-//   description: 'Created with leofolio',
-//   generator: 'leofolio.dev',
-// }
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode
-// }>) {
-//   return (
-//     <html lang="en">
-//       <body>{children}</body>
-//     </html>
-//   )
-// }
-import type React from 'react';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
+import React, { useMemo } from 'react';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { WalletModalProvider } from '@demox-labs/aleo-wallet-adapter-reactui';
+import { WalletProvider } from '@demox-labs/aleo-wallet-adapter-react';
+import {
+  DecryptPermission,
+  WalletAdapterNetwork
+} from '@demox-labs/aleo-wallet-adapter-base';
+import { Toaster } from 'react-hot-toast';
+import {
+  PuzzleWalletAdapter,
+  LeoWalletAdapter,
+  FoxWalletAdapter,
+  SoterWalletAdapter
+} from 'aleo-adapters';
+ const inter = Inter({ subsets: ['latin'] });
 
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'Leofolio - Privacy-preserving Freelancer Platform',
-  description:
-    'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.'
-};
+// export const metadata: Metadata = {
+//   title: 'Leofolio - Privacy-preserving Freelancer Platform',
+//   description:
+//     'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.'
+// };
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const wallets = useMemo(
+    () => [
+      new LeoWalletAdapter({
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+      }),
+      new PuzzleWalletAdapter({
+        programIdPermissions: {
+          [WalletAdapterNetwork.TestnetBeta]: ['token_registry.aleo']
+        },
+        appName: 'Aleo app',
+        appDescription: 'A privacy-focused DeFi app',
+        appIconUrl: ''
+      }),
+      new FoxWalletAdapter({
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+      }),
+      new SoterWalletAdapter({
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+      })
+    ],
+    []
+  );
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -53,7 +68,20 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <WalletProvider
+            wallets={wallets}
+            decryptPermission={DecryptPermission.UponRequest}
+            network={WalletAdapterNetwork.MainnetBeta}
+            autoConnect
+          >
+            <WalletModalProvider>
+              <Toaster position="top-center" reverseOrder={true} />
+
+              {children}
+            </WalletModalProvider>
+          </WalletProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
