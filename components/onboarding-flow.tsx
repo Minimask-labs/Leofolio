@@ -40,7 +40,7 @@ interface OnboardingFlowProps {
 
 export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
 const [step, setStep] = useState(1);
-const { handleUpdateUser, handleUploadMedia, media } = useUserProfileStore();
+const { handleUpdateUser, handleUploadMedia,fetchUser, media } = useUserProfileStore();
 const [previewImage, setPreviewImage] = useState('');
   const { toast } = useToast();
 const [profile, setProfile] = useState({
@@ -190,12 +190,16 @@ const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
   // }
 };
 const UpdateUserProfile = async () => {
+            setIsUploading(true);
    const { newSkill, ...dataWithoutnewSkill } = profile;
 console.log('Profile data:', dataWithoutnewSkill);
   try {
   let response = await handleUpdateUser(dataWithoutnewSkill);
-  if (response !== undefined && typeof response === 'object' && 'role' in response) {
-    const { role } = response as { role: 'freelancer' | 'employer' };
+  if (response !== undefined && typeof response === 'object' && 'data' in response) {
+           fetchUser();
+
+    const { data } = response as { data: {} };
+    const { role } = data as { role: 'freelancer' | 'employer'};
     if (role === 'freelancer') {
       router.replace('/freelancer');
     } else if (role === 'employer') {
@@ -282,11 +286,16 @@ const prevStep = () => {
                   Edit Profile
                 </Button>
                 <Button
+                disabled={isUploading}
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={UpdateUserProfile}
                 >
-                  Complete Setup
-                </Button>
+                  {isUploading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <span>Save Setup</span>
+                  )}
+                 </Button>
               </div>
             </div>
             <div className="w-full h-[85vh] overflow-y-auto pb-12 ">

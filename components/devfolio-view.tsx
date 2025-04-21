@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import { DevfolioPreview } from "./devfolio-preview"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Github, Globe, Linkedin, Twitter, Instagram, Plus, X } from "lucide-react"
+import { Github, Globe, Linkedin, Twitter, Instagram, Plus, X,  Loader2
+ } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CredentialManager } from "./credential-manager"
@@ -56,9 +57,10 @@ export function DevfolioView( ) {
   const [isEditing, setIsEditing] = useState(false)
   const [newSkill, setNewSkill] = useState("")
   const [activeTab, setActiveTab] = useState("overview")
-  const { fetchUser, user } = useUserProfileStore();
-  // const [profile, setProfile] = useState(null);
+  const { handleUpdateUser, handleUploadMedia, media, fetchUser, user } = useUserProfileStore();
   const [editedProfile, setEditedProfile] = useState(user);
+const [isUploading, setIsUploading] = useState(false);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -82,14 +84,46 @@ export function DevfolioView( ) {
     }))
   }
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     // setProfile(editedProfile)
-    setIsEditing(false)
+          setIsUploading(true);
+
     toast({
-      title: "Profile Updated",
-      description: "Your devfolio has been updated successfully.",
-    })
-  }
+      title: 'Profile Updated',
+      description: 'Your devfolio has been updated successfully.'
+    });
+    try {
+      let response = await handleUpdateUser(editedProfile);
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+    const { data, success } = response as { data: {}; success: boolean };
+    const { role } = data as { role: 'freelancer' | 'employer' };
+    if (success) {
+    setIsEditing(false);
+           fetchUser();
+
+    }
+      }
+      toast({
+        title: 'Profile Image  Updated',
+        description: 'Your profile was updated successfully.',
+        variant: 'default'
+      });
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
   useEffect(() => {
        fetchUser();
       //  if(user){
@@ -108,10 +142,15 @@ export function DevfolioView( ) {
               Cancel
             </Button>
             <Button
+              disabled={isUploading}
               className="bg-emerald-600 text-white hover:bg-emerald-700"
               onClick={saveChanges}
             >
-              Save Changes
+              {isUploading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <span>Save changes</span>
+              )}
             </Button>
           </div>
         </div>
@@ -125,10 +164,10 @@ export function DevfolioView( ) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
-                id="name"
-                name="name"
+                id="fullName"
+                name="fullName"
                 value={editedProfile?.fullName}
                 onChange={handleChange}
               />
@@ -149,10 +188,10 @@ export function DevfolioView( ) {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="title">Professional Title</Label>
+              <Label htmlFor="professionalTitle">Professional Title</Label>
               <Input
-                id="title"
-                name="title"
+                id="professionalTitle"
+                name="professionalTitle"
                 value={editedProfile?.professionalTitle}
                 onChange={handleChange}
               />

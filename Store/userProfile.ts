@@ -46,7 +46,7 @@ export const useUserProfileStore = create<UserStore>((set) => ({
     try {
       const response = await updateUser(payload);
       set({ status: 'succeeded' });
-      return response.data; // Assuming you want to return the updated user data
+      return response; // Assuming you want to return the updated user data
     } catch (error: any) {
       set({ status: 'failed', error: error.message });
       throw error;
