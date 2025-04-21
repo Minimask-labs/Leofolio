@@ -193,14 +193,22 @@ const UpdateUserProfile = async () => {
    const { newSkill, ...dataWithoutnewSkill } = profile;
 console.log('Profile data:', dataWithoutnewSkill);
   try {
-  const response = await handleUpdateUser(dataWithoutnewSkill); // Ensure `handleUpdateUser` can handle FormData
-    if (response?.role === 'freelancer') {
-      // Use router.replace for faster navigation (no history entry)
-        router.replace('/freelancer');
-      // Show toast after navigation
-    } else if (response?.role === 'employer') {
-        router.replace('/employer');
+  let response = await handleUpdateUser(dataWithoutnewSkill);
+  if (response !== undefined && typeof response === 'object' && 'role' in response) {
+    const { role } = response as { role: 'freelancer' | 'employer' };
+    if (role === 'freelancer') {
+      router.replace('/freelancer');
+    } else if (role === 'employer') {
+      router.replace('/employer');
     }
+  }
+    // if (response?.role === 'freelancer') {
+    //   // Use router.replace for faster navigation (no history entry)
+    //     router.replace('/freelancer');
+    //   // Show toast after navigation
+    // } else if (response?.role === 'employer') {
+    //     router.replace('/employer');
+    // }
     toast({
       title: 'Profile Image  Updated',
       description: 'Your profile was updated successfully.',
