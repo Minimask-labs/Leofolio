@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,94 +15,88 @@ import { toast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CredentialManager } from "./credential-manager"
 import { WorkHistory } from "./work-history"
+import { useUserProfileStore } from '@/Store/userProfile';
 
-interface DevfolioViewProps {
-  profile: {
-    fullName: string;
-    username: string;
-    professionalTitle: string;
-    bio: string;
-    location: string;
-    skills: string[];
-    socials: {
-      twitter: string;
-      linkedin: string;
-      github: string;
-      instagram: string;
-      website: string;
-    };
-  };
-  setProfile: React.Dispatch<
-    React.SetStateAction<{
-      fullName: string;
-      username: string;
-      professionalTitle: string;
-      bio: string;
-      location: string;
-      skills: string[];
-      socials: {
-        twitter: string;
-        linkedin: string;
-        github: string;
-        instagram: string;
-        website: string;
-      };
-    }>
-  >;
-}
+// interface DevfolioViewProps {
+//   profile: {
+//     fullName: string;
+//     username: string;
+//     professionalTitle: string;
+//     bio: string;
+//     location: string;
+//     skills: string[];
+//     socials: {
+//       twitter: string;
+//       linkedin: string;
+//       github: string;
+//       instagram: string;
+//       website: string;
+//     };
+//   };
+//   setProfile: React.Dispatch<
+//     React.SetStateAction<{
+//       fullName: string;
+//       username: string;
+//       professionalTitle: string;
+//       bio: string;
+//       location: string;
+//       skills: string[];
+//       socials: {
+//         twitter: string;
+//         linkedin: string;
+//         github: string;
+//         instagram: string;
+//         website: string;
+//       };
+//     }>
+//   >;
+// }
 
 export function DevfolioView( ) {
   const [isEditing, setIsEditing] = useState(false)
   const [newSkill, setNewSkill] = useState("")
   const [activeTab, setActiveTab] = useState("overview")
-  const [profile, setProfile] = useState({
-    fullName: '',
-    username: '',
-    profileImage: ' ',
-    professionalTitle: 'Senior Blockchain Developer',
-    bio: 'Experienced blockchain developer specializing in smart contracts and DeFi applications. Passionate about open source and decentralized tech.',
-    location: 'San Francisco, CA',
-    skills: ['Solidity', 'React', 'Node.js', 'Web3.js'],
-    socials: {
-      twitter: 'janedoe',
-      linkedin: 'janedoe-linkedin',
-      github: 'janedoe',
-      instagram: 'janedoe_insta',
-      website: 'https://janedoe.dev'
-    }
-  });
-  const [editedProfile, setEditedProfile] = useState(profile);
+  const { fetchUser, user } = useUserProfileStore();
+  // const [profile, setProfile] = useState(null);
+  const [editedProfile, setEditedProfile] = useState(user);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setEditedProfile((prev) => ({ ...prev, [name]: value }))
+    setEditedProfile((prev: any) => ({ ...prev, [name]: value }))
   }
 
   const addSkill = () => {
-    if (newSkill && !editedProfile.skills.includes(newSkill)) {
-      setEditedProfile((prev) => ({
+    if (newSkill && !editedProfile?.skills?.includes(newSkill)) {
+      setEditedProfile((prev: { skills: any; }) => ({
         ...prev,
-        skills: [...prev.skills, newSkill],
+        skills: [...prev?.skills, newSkill],
       }))
       setNewSkill("")
     }
   }
 
   const removeSkill = (skill: string) => {
-    setEditedProfile((prev) => ({
+    setEditedProfile((prev: { skills: any[]; }) => ({
       ...prev,
-      skills: prev.skills.filter((s) => s !== skill),
+      skills: prev?.skills.filter((s: string) => s !== skill),
     }))
   }
 
   const saveChanges = () => {
-    setProfile(editedProfile)
+    // setProfile(editedProfile)
     setIsEditing(false)
     toast({
       title: "Profile Updated",
       description: "Your devfolio has been updated successfully.",
     })
   }
+  useEffect(() => {
+       fetchUser();
+      //  if(user){
+      //  console.log('user', user);
+      // //  setProfile(user);
+      // }
+  }, [fetchUser]);
 
   if (isEditing) {
     return (
@@ -135,7 +129,7 @@ export function DevfolioView( ) {
               <Input
                 id="name"
                 name="name"
-                value={editedProfile.fullName}
+                value={editedProfile?.fullName}
                 onChange={handleChange}
               />
             </div>
@@ -149,7 +143,7 @@ export function DevfolioView( ) {
                   id="username"
                   name="username"
                   className="rounded-l-none"
-                  value={editedProfile.username}
+                  value={editedProfile?.username}
                   onChange={handleChange}
                 />
               </div>
@@ -159,7 +153,7 @@ export function DevfolioView( ) {
               <Input
                 id="title"
                 name="title"
-                value={editedProfile.professionalTitle}
+                value={editedProfile?.professionalTitle}
                 onChange={handleChange}
               />
             </div>
@@ -169,7 +163,7 @@ export function DevfolioView( ) {
                 id="bio"
                 name="bio"
                 rows={4}
-                value={editedProfile.bio}
+                value={editedProfile?.bio}
                 onChange={handleChange}
               />
             </div>
@@ -178,7 +172,7 @@ export function DevfolioView( ) {
               <Input
                 id="location"
                 name="location"
-                value={editedProfile.location}
+                value={editedProfile?.location}
                 onChange={handleChange}
               />
             </div>
@@ -194,7 +188,7 @@ export function DevfolioView( ) {
             <div className="space-y-2">
               <Label>Your Skills</Label>
               <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[100px]">
-                {editedProfile.skills.map((skill) => (
+                {editedProfile?.skills?.map((skill: string) => (
                   <Badge
                     key={skill}
                     className="bg-slate-100 text-slate-800  h-fit hover:bg-slate-200 pl-2 pr-1 py-1"
@@ -210,7 +204,7 @@ export function DevfolioView( ) {
                     </button>
                   </Badge>
                 ))}
-                {editedProfile.skills.length === 0 && (
+                {editedProfile?.skills?.length === 0 && (
                   <p className="text-slate-400 text-sm">
                     Add your technical skills below
                   </p>
@@ -256,7 +250,7 @@ export function DevfolioView( ) {
                 id="github"
                 name="github"
                 placeholder="https://github.com/username"
-                value={editedProfile.socials.github}
+                value={editedProfile?.socials?.github}
                 onChange={handleChange}
               />
             </div>
@@ -268,7 +262,7 @@ export function DevfolioView( ) {
                 id="linkedin"
                 name="linkedin"
                 placeholder="https://linkedin.com/in/username"
-                value={editedProfile.socials.linkedin}
+                value={editedProfile?.socials?.linkedin}
                 onChange={handleChange}
               />
             </div>
@@ -280,7 +274,7 @@ export function DevfolioView( ) {
                 id="twitter"
                 name="twitter"
                 placeholder="https://twitter.com/username"
-                value={editedProfile.socials.twitter}
+                value={editedProfile?.socials?.twitter}
                 onChange={handleChange}
               />
             </div>
@@ -292,7 +286,7 @@ export function DevfolioView( ) {
                 id="instagram"
                 name="instagram"
                 placeholder="https://instagram.com/username"
-                value={editedProfile.socials.instagram}
+                value={editedProfile?.socials?.instagram}
                 onChange={handleChange}
               />
             </div>
@@ -304,7 +298,7 @@ export function DevfolioView( ) {
                 id="website"
                 name="website"
                 placeholder="https://yourwebsite.com"
-                value={editedProfile.socials.website}
+                value={editedProfile?.socials?.website}
                 onChange={handleChange}
               />
             </div>
@@ -333,9 +327,8 @@ export function DevfolioView( ) {
           Edit Devfolio
         </Button>
       </div>
-      <DevfolioPreview profile={profile} />
-
-     </div>
+      <DevfolioPreview profile={user} />
+    </div>
   );
 }
 

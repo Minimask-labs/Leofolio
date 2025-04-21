@@ -8,6 +8,7 @@ export type UserState = {
   users: any | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  loading: boolean;
 };
 
 export type UserActions = {
@@ -26,15 +27,18 @@ export const useUserProfileStore = create<UserStore>((set) => ({
   user: null,
   users: null,
   status: 'idle',
+  loading: false,
   error: null,
   media: null,
   fetchUser: async () => {
-    set({ status: 'loading', error: null });
+    set({loading: true, status: 'loading', error: null });
     try {
       const response = await getUser();
-      set({ user: response.data, status: 'succeeded' });
+      set({loading: false, user: response.data, status: 'succeeded' });
+             console.log('user', response.data);
+
     } catch (error: any) {
-      set({ status: 'failed', error: error.message });
+      set({ loading: false, status: 'failed', error: error.message });
       throw error;
     }
   },

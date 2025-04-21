@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CredentialManager } from "./credential-manager"
 import { WorkHistory } from "./work-history"
-import { useState } from "react"
+import { useState, useEffect } from 'react';
 import GitHubCalendar from 'react-github-calendar';
 
 import {
@@ -41,14 +41,36 @@ interface DevfolioPreviewProps {
 
 export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [username, setUsername] = useState('');
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
-  const url = new URL(profile.socials.github);
-  const pathname = url.pathname; // "/kufre-abasi"
-  const username = pathname.replace(/^\/+|\/+$/g, ''); // remove slashes
+  // if (profile?.socials?.github !== '') {
+  //   const url = new URL(profile?.socials?.github);
+  //   const pathname = url.pathname; // ""
+  //   setUsername(pathname.replace(/^\/+|\/+$/g, '')); // remove slashes
+  // }
+  // const url = profile?.socials?.github || '';
+  // const segments = url.split('/');
+  // setUsername(segments.pop() || segments.pop() || ''); // handles trailing slash
+  // console.log(username); // "kufre-abasi"
+  const extractUsername = (githubUrlOrUsername: string) => {
+    try {
+      const url = new URL(githubUrlOrUsername);
+      return setUsername(url.pathname.replace(/^\/+|\/+$/g, '')) 
+      
+    } catch {
+      // If it's not a valid URL, assume it's a raw username
+      return githubUrlOrUsername?.trim();
+    }
+  };
 
- 
+  useEffect(() => {
+    if (profile?.socials?.github !== '') {
+    extractUsername(profile?.socials?.github); // extractUsername(profile?.socials?.github);
+    }
+  }, []);
+
   return (
     <div className=" border rounded-lg w-full shadow-sm overflow-hidden">
       {/* Header Section */}
@@ -56,7 +78,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="h-32 w-32 rounded-full">
             <AvatarFallback className="text-3xl bg-emerald-100 text-emerald-800">
-              {profile.fullName
+              {profile?.fullName
                 ? profile.fullName
                     .split(' ')
                     .map((n) => n[0])
@@ -64,7 +86,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                 : 'U'}
             </AvatarFallback>
             <AvatarImage
-              src={profile.profileImage}
+              src={profile?.profileImage}
               className="w-full h-full object-cover"
             />{' '}
           </Avatar>
@@ -73,10 +95,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <div>
                 <h1 className="text-3xl font-bold">
-                  {profile.fullName || 'Your Name'}
+                  {profile?.fullName || 'Your Name'}
                 </h1>
                 <p className="text-slate-500">
-                  @{profile.username || 'username'}
+                  @{profile?.username || 'username'}
                 </p>
               </div>
               {/* <Button className="bg-emerald-600 hover:bg-emerald-700 self-start">
@@ -85,18 +107,15 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             </div>
 
             <p className="text-lg mb-4">
-              {profile.professionalTitle || 'Your Professional Title'}
+              {profile?.professionalTitle || 'Your Professional Title'}
             </p>
 
-            <p className="text-[#E0E0E0] mb-4">
-              {profile?.bio ||
-                "Your professional bio will appear here. Describe your expertise, experience, and what you're passionate about in the tech world."}
-            </p>
+            <p className="text-[#E0E0E0] mb-4">{profile?.bio || ''}</p>
 
             <div className="flex flex-wrap gap-4">
               {profile?.socials?.github && (
                 <a
-                  href={profile.socials.github}
+                  href={profile?.socials?.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -107,7 +126,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               {profile?.socials?.linkedin && (
                 <a
                   title="blank_tag"
-                  href={profile.socials.linkedin}
+                  href={profile?.socials?.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -117,7 +136,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               )}
               {profile?.socials?.twitter && (
                 <a
-                  href={profile.socials.twitter}
+                  href={profile?.socials?.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -127,7 +146,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               )}
               {profile?.socials?.instagram && (
                 <a
-                  href={profile.socials.instagram}
+                  href={profile?.socials?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -137,7 +156,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               )}
               {profile?.socials?.website && (
                 <a
-                  href={profile.socials.website}
+                  href={profile?.socials?.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -152,8 +171,8 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         {/* Skills Section */}
         <div className="mt-6">
           <div className="flex flex-wrap gap-2">
-            {profile.skills.length > 0 ? (
-              profile.skills.map((skill) => (
+            {profile?.skills?.length > 0 ? (
+              profile?.skills?.map((skill) => (
                 <Badge
                   key={skill}
                   className="bg-slate-100 text-slate-800 hover:bg-slate-200"
@@ -168,10 +187,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         </div>
 
         {/* Location */}
-        {profile.location && (
+        {profile?.location && (
           <div className="mt-4 flex items-center capitalize text-[#E0E0E0]">
             <MapPin className="h-4 w-4 mr-1" />
-            <span>{profile.location}</span>
+            <span>{profile?.location}</span>
           </div>
         )}
       </div>
@@ -250,10 +269,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               Aleo chain Activity
             </h2>
             <div className="bg-[#121212] p-6 rounded-lg">
-              <div className="flex flex-col md:flex-row justify-between mb-6">
-              </div>
-              <div>
-                <GitHubCalendar username={username} />
+              <div className="flex flex-col md:flex-row justify-between mb-6"></div>
+              <div className="w-full flex justify-center">
+                {username && <GitHubCalendar username={username} />}
               </div>
               {/* Contribution graph placeholder */}
             </div>
@@ -264,10 +282,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
               GitHub Activity
             </h2>
             <div className="bg-[#121212] p-6 rounded-lg">
-              <div className="flex flex-col md:flex-row justify-between mb-6">
-               </div>
-              <div>
-                <GitHubCalendar username={username} />
+              <div className="flex flex-col md:flex-row justify-between mb-6"></div>
+              <div className="w-full flex justify-center">
+                {username && <GitHubCalendar username={username} />}
               </div>
             </div>
           </div>
