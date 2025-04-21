@@ -5,12 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Shield, Star, Code, Lock, Globe, ArrowRight } from 'lucide-react';
+import { useRouter, redirect } from 'next/navigation';
 
-interface LandingPageProps {
-  onGetStarted: () => void;
-}
 
-export function LandingPage({ onGetStarted }: LandingPageProps) {
+export function LandingPage( ) {
+    const router = useRouter();
+  const handleGetStarted = () => {
+    router.push('/auth');
+  };  
   // Mock data for featured freelancers
   const featuredFreelancers = [
     {
@@ -92,7 +94,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </a>
             </nav>
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
             >
               Get Started
@@ -114,14 +116,14 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               size="lg"
               className="bg-emerald-600 hover:bg-emerald-700"
             >
               Join as Freelancer
             </Button>
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               size="lg"
               variant="outline"
               className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
@@ -232,7 +234,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
           <div className="text-center mt-10">
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               variant="outline"
               className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
             >
@@ -289,7 +291,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
           <div className="text-center mt-10">
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               variant="outline"
               className="border-blue-600 text-blue-700 hover:bg-blue-50"
             >
@@ -316,7 +318,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               verifiable credentials and reputation building.
             </p>
             <Button
-              onClick={onGetStarted}
+              onClick={handleGetStarted}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
               Join the Community

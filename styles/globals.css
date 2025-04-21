@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url('@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css');
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

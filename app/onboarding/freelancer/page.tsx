@@ -8,7 +8,9 @@ import { LandingPage } from "@/components/landing-page"
 import { OnboardingFlow } from "@/components/onboarding-flow"
 
 export default function Home() {
-  const [userType, setUserType] = useState<"freelancer" | "employer" | null>(null)
+  const [userType, setUserType] = useState<'freelancer' | 'employer' >(
+    'freelancer'
+  );
   const [connected, setConnected] = useState(false)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true)
   const [showLanding, setShowLanding] = useState(true)
@@ -22,25 +24,13 @@ export default function Home() {
     }
   }, [userType])
 
-  // if (showLanding && !connected) {
-  //   return <LandingPage onGetStarted={() => setShowLanding(false)} />
-  // }
-
-  // if (!connected) {
-  //   return (
-  //     <main className="min-h-screen  flex items-center justify-center p-4">
-  //       <UserTypeSelection onConnect={() => setConnected(true)} onSelectUserType={(type) => setUserType(type)} />
-  //     </main>
-  //   )
-  // }
-
-  // if (userType === "freelancer" && !hasCompletedOnboarding) {
-  //   return <OnboardingFlow onComplete={() => setHasCompletedOnboarding(true)} userType={userType} />
-  // }
-
+  
   return (
     <main className="min-h-screen   ">
-       <LandingPage />
+      <OnboardingFlow
+        onComplete={() => setHasCompletedOnboarding(true)}
+        userType={userType}
+      />{' '}
     </main>
   );
 }

@@ -1,8 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-const FIELD_MODULUS =
-  8444461749428370424248824938781546531375899335154063827935233455917409239040n;
+const FIELD_MODULUS = BigInt('8444461749428370424248824938781546531375899335154063827935233455917409239040');
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

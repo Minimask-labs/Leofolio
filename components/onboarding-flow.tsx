@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Shield,
   Github,
@@ -25,74 +24,233 @@ import {
   Twitter,
   Instagram,
   Plus,
-  X
+  X,
+  ImagePlus,
+  Loader2
 } from 'lucide-react';
 import { DevfolioPreview } from './devfolio-preview';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useToast } from '@/components/ui/use-toast';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
-  userType: 'freelancer' | 'employee';
+  userType: 'freelancer' | 'employer';
 }
 
 export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
-  const [step, setStep] = useState(1);
-  const [profile, setProfile] = useState({
-    name: '',
-    username: '',
-    title: '',
-    bio: '',
-    location: '',
-    skills: [] as string[],
-    github: '',
-    linkedin: '',
+const [step, setStep] = useState(1);
+const { handleUpdateUser, handleUploadMedia, media } = useUserProfileStore();
+const [previewImage, setPreviewImage] = useState('');
+  const { toast } = useToast();
+const [profile, setProfile] = useState({
+  fullName: '',
+  username: '',
+  profileImage: media?.length > 0 ? media[0] : '',
+  professionalTitle: '',
+  bio: '',
+  location: '',
+  skills: [] as string[],
+  socials: {
     twitter: '',
+    linkedin: '',
+    github: '',
     instagram: '',
-    website: '',
-    newSkill: ''
-  });
-  const [previewMode, setPreviewMode] = useState(false);
+    website: ''
+  },
+   newSkill: ''
+});
+// const data = {
+//   fullName: '',
+//   username: '',
+//   profileImage: ' ',
+//   professionalTitle: 'Senior Blockchain Developer',
+//   bio: 'Experienced blockchain developer specializing in smart contracts and DeFi applications. Passionate about open source and decentralized tech.',
+//   location: 'San Francisco, CA',
+//   skills: ['Solidity', 'React', 'Node.js', 'Web3.js'],
+//   socials: {
+//     twitter: 'janedoe',
+//     linkedin: 'janedoe-linkedin',
+//     github: 'janedoe',
+//     instagram: 'janedoe_insta',
+//     website: 'https://janedoe.dev'
+//   }
+// };
+const [previewMode, setPreviewMode] = useState(false);
+const [errors, setErrors] = useState<Record<string, string>>({});
+const [isUploading, setIsUploading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  };
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
 
-  const handleSelectChange = (name: string, value: string) => {
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const addSkill = () => {
-    if (profile.newSkill && !profile.skills.includes(profile.newSkill)) {
-      setProfile((prev) => ({
-        ...prev,
-        skills: [...prev.skills, prev.newSkill],
-        newSkill: ''
-      }));
-    }
-  };
-
-  const removeSkill = (skill: string) => {
+  // Handle nested social properties
+  if (
+    name === 'github' ||
+    name === 'linkedin' ||
+    name === 'twitter' ||
+    name === 'instagram' ||
+    name === 'website'
+  ) {
     setProfile((prev) => ({
       ...prev,
-      skills: prev.skills.filter((s) => s !== skill)
+      socials: {
+        ...prev.socials,
+        [name]: value
+      }
     }));
-  };
+  } else {
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  }
 
-  const nextStep = () => {
-    if (step < 3) {
-      setStep(step + 1);
-    } else {
-      setPreviewMode(true);
-    }
-  };
+  // Clear error for this field if it exists
+  if (errors[name]) {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[name];
+      return newErrors;
+    });
+  }
+};
 
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
+const handleSelectChange = (name: string, value: string) => {
+  setProfile((prev) => ({ ...prev, [name]: value }));
+};
+
+const addSkill = () => {
+  if (profile.newSkill && !profile.skills.includes(profile.newSkill)) {
+    setProfile((prev) => ({
+      ...prev,
+      skills: [...prev.skills, prev.newSkill],
+      newSkill: ''
+    }));
+  }
+};
+
+const removeSkill = (skill: string) => {
+  setProfile((prev) => ({
+    ...prev,
+    skills: prev.skills.filter((s) => s !== skill)
+  }));
+};
+
+const uploadedImage = async (image: any) => {
+  setIsUploading(true);
+  const formData = new FormData();
+  if (image) {
+    formData.append('media', image);
+  }
+
+  try {
+    const response = await handleUploadMedia(formData); // Explicitly define the response type
+     if (media.length > 0) {
+      setProfile((prev) => ({
+        ...prev,
+        profileImage: media[0]
+      }));
+      toast({
+        title: 'Image uploaded successfully',
+        description: 'Your profile image has been updated.',
+        variant: 'default'
+      });
+      console.log('Image uploaded successfully:', media);
+          setPreviewImage(media[0]);
+          console.log('Image uploaded successfully:', response);
     }
-  };
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    toast({
+      title: 'Upload failed',
+      description:
+        'There was a problem uploading your image. Please try again.',
+      variant: 'destructive'
+    });
+  } finally {
+    setIsUploading(false);
+  }
+};
+
+const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  // if (file) {
+    // const reader = new FileReader();
+    // reader.onloadend = () => {
+    //   setProfile((prev) => ({
+    //     ...prev,
+    //     profileImage: reader.result as string
+    //   }));
+    // };
+    // reader.readAsDataURL(file);
+    if (file) {
+      uploadedImage(file);
+    }
+  // }
+};
+const UpdateUserProfile = async () => {
+   const { newSkill, ...dataWithoutnewSkill } = profile;
+console.log('Profile data:', dataWithoutnewSkill);
+  try {
+    await handleUpdateUser(dataWithoutnewSkill); // Ensure `handleUpdateUser` can handle FormData
+    toast({
+      title: 'Profile Image  Updated',
+      description: 'Your profile was updated successfully.',
+      variant: 'default'
+    });
+  } catch (error: any) {
+    const errorMessage =
+      (error as any)?.response?.data?.message || 'An unknown error occurred';
+    toast({
+      title: 'Error',
+      description: errorMessage,
+      variant: 'destructive'
+    });
+  }finally {
+    setIsUploading(false);
+   }
+};
+
+const validateStep = (currentStep: number): boolean => {
+  const newErrors: Record<string, string> = {};
+
+  if (currentStep === 1) {
+    if (!profile.fullName.trim()) newErrors.fullName = 'Full name is required';
+    if (!profile.username.trim()) newErrors.username = 'Username is required';
+    if (!profile.professionalTitle.trim())
+      newErrors.professionalTitle = 'Professional title is required';
+    if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
+    if (!profile.location.trim()) newErrors.location = 'Location is required';
+  } else if (currentStep === 2) {
+    if (profile.skills.length === 0)
+      newErrors.skills = 'At least one skill is required';
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+const nextStep = () => {
+  if (!validateStep(step)) {
+    toast({
+      title: 'Validation Error',
+      description: 'Please fill in all required fields before proceeding.',
+      variant: 'destructive'
+    });
+    return;
+  }
+
+  if (step < 3) {
+    setStep(step + 1);
+  } else {
+    UpdateUserProfile();
+    setPreviewMode(true);
+  }
+};
+
+const prevStep = () => {
+  if (step > 1) {
+    setStep(step - 1);
+  }
+};
 
   if (previewMode) {
     return (
@@ -134,11 +292,11 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
             </h1>
           </div>
 
-          <div className="lg:my-8 my-2">
+          <div className="lg:my-4 my-2">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 1
                       ? 'bg-emerald-600 text-white'
                       : 'bg-slate-200 text-slate-600'
@@ -152,7 +310,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   }`}
                 ></div>
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 2
                       ? 'bg-emerald-600 text-white'
                       : 'bg-slate-200 text-slate-600'
@@ -166,7 +324,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   }`}
                 ></div>
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 3
                       ? 'bg-emerald-600 text-white'
                       : 'bg-slate-200 text-slate-600'
@@ -199,26 +357,63 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
               {step === 1 && (
                 <>
                   <div className="flex justify-center mb-6">
-                    <Avatar className="h-24 w-24">
-                      <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
-                        {profile.name
-                          ? profile.name
-                              .split(' ')
-                              .map((n) => n[0])
-                              .join('')
-                          : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="flex flex-col relative items-center">
+                      <Avatar className="h-24 w-24">
+                        <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
+                          {profile.fullName
+                            ? profile.fullName
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')
+                            : 'U'}
+                        </AvatarFallback>
+                        <AvatarImage
+                          src={profile.profileImage}
+                          className="w-full h-full object-cover"
+                        />{' '}
+                        {isUploading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full">
+                            <Loader2 className="h-8 w-8 text-white animate-spin" />
+                          </div>
+                        )}
+                      </Avatar>
+                      <Button
+                        variant="outline"
+                        className="mt-2 rounded-full absolute bottom-0 right-0"
+                        onClick={() =>
+                          document.getElementById('fileInput')?.click()
+                        }
+                      >
+                        {isUploading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <ImagePlus />
+                        )}
+                      </Button>
+                      <input
+                        type="file"
+                        id="fileInput"
+                        accept="image/*"
+                        onChange={handleUploadImage}
+                        className="hidden"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="fullName">Full Name</Label>
                     <Input
-                      id="name"
-                      name="name"
+                      id="fullName"
+                      name="fullName"
                       placeholder="e.g. John Doe"
-                      value={profile.name}
+                      value={profile.fullName}
                       onChange={handleChange}
+                      className={errors.fullName ? 'border-red-500' : ''}
                     />
+                    {errors.fullName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.fullName}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="username">Username</Label>
@@ -229,22 +424,39 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       <Input
                         id="username"
                         name="username"
-                        className="rounded-l-none"
+                        className={`rounded-l-none ${
+                          errors.username ? 'border-red-500' : ''
+                        }`}
                         placeholder="username"
                         value={profile.username}
                         onChange={handleChange}
                       />
-                    </div>
+                    </div>{' '}
+                    {errors.username && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.username}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="title">Professional Title</Label>
+                    <Label htmlFor="professionalTitle">
+                      Professional Title
+                    </Label>
                     <Input
-                      id="title"
-                      name="title"
+                      id="professionalTitle"
+                      name="professionalTitle"
                       placeholder="e.g. Full Stack Developer"
-                      value={profile.title}
+                      value={profile.professionalTitle}
                       onChange={handleChange}
+                      className={
+                        errors.professionalTitle ? 'border-red-500' : ''
+                      }
                     />
+                    {errors.professionalTitle && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.professionalTitle}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="bio">Bio</Label>
@@ -255,7 +467,11 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       rows={4}
                       value={profile.bio}
                       onChange={handleChange}
+                      className={errors.bio ? 'border-red-500' : ''}
                     />
+                    {errors.bio && (
+                      <p className="text-red-500 text-sm mt-1">{errors.bio}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="location">Location</Label>
@@ -265,7 +481,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       placeholder="e.g. San Francisco, CA"
                       value={profile.location}
                       onChange={handleChange}
-                    />
+                      className={errors.location ? 'border-red-500' : ''}
+                    />{' '}
+                    {errors.location && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.location}
+                      </p>
+                    )}
                   </div>
                 </>
               )}
@@ -274,7 +496,11 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 <>
                   <div className="space-y-2">
                     <Label>Your Skills</Label>
-                    <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[100px]">
+                    <div
+                      className={`flex flex-wrap gap-2 p-3 border rounded-md min-h-[100px] ${
+                        errors.skills ? 'border-red-500' : ''
+                      }`}
+                    >
                       {profile.skills.map((skill) => (
                         <Badge
                           key={skill}
@@ -282,8 +508,8 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         >
                           {skill}
                           <button
-                            type='button'
-                          title='button'
+                            type="button"
+                            title="button"
                             onClick={() => removeSkill(skill)}
                             className="ml-1 rounded-full hover:bg-slate-300 p-1"
                           >
@@ -296,7 +522,12 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           Add your technical skills below
                         </p>
                       )}
-                    </div>
+                    </div>{' '}
+                    {errors.skills && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.skills}
+                      </p>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-grow">
@@ -367,7 +598,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       id="github"
                       name="github"
                       placeholder="https://github.com/username"
-                      value={profile.github}
+                      value={profile.socials.github}
                       onChange={handleChange}
                     />
                   </div>
@@ -382,7 +613,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       id="linkedin"
                       name="linkedin"
                       placeholder="https://linkedin.com/in/username"
-                      value={profile.linkedin}
+                      value={profile.socials.linkedin}
                       onChange={handleChange}
                     />
                   </div>
@@ -397,7 +628,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       id="twitter"
                       name="twitter"
                       placeholder="https://twitter.com/username"
-                      value={profile.twitter}
+                      value={profile.socials.twitter}
                       onChange={handleChange}
                     />
                   </div>
@@ -412,7 +643,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       id="instagram"
                       name="instagram"
                       placeholder="https://instagram.com/username"
-                      value={profile.instagram}
+                      value={profile.socials.instagram}
                       onChange={handleChange}
                     />
                   </div>
@@ -427,18 +658,23 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       id="website"
                       name="website"
                       placeholder="https://yourwebsite.com"
-                      value={profile.website}
+                      value={profile.socials.website}
                       onChange={handleChange}
                     />
                   </div>
                 </>
               )}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter
+              className={
+                step === 1 ? `flex justify-end` : `flex justify-between`
+              }
+            >
               <Button
                 variant="outline"
                 onClick={prevStep}
                 disabled={step === 1}
+                className={step === 1 ? `hidden` : ``}
               >
                 Back
               </Button>

@@ -11,13 +11,16 @@ import {
   DecryptPermission,
   WalletAdapterNetwork
 } from '@demox-labs/aleo-wallet-adapter-base';
-import { Toaster } from 'react-hot-toast';
+// import { Toaster } from 'react-hot-toast';
 import {
   PuzzleWalletAdapter,
   LeoWalletAdapter,
   FoxWalletAdapter,
   SoterWalletAdapter
 } from 'aleo-adapters';
+import { Toaster } from '@/components/ui/toaster';
+import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
+
  const inter = Inter({ subsets: ['latin'] });
 
 // export const metadata: Metadata = {
@@ -73,10 +76,11 @@ export default function RootLayout({
             wallets={wallets}
             decryptPermission={DecryptPermission.UponRequest}
             network={WalletAdapterNetwork.MainnetBeta}
-            autoConnect
           >
+            {/*            autoConnect
+             */}
             <WalletModalProvider>
-              <Toaster position="top-center" reverseOrder={true} />
+              <Toaster   />
 
               {children}
             </WalletModalProvider>

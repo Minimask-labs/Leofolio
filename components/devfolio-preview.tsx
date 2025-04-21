@@ -21,17 +21,19 @@ import {
 
 interface DevfolioPreviewProps {
   profile: {
-    name: string;
+    fullName: string;
     username: string;
-    title: string;
+    professionalTitle: string;
     bio: string;
     location: string;
     skills: string[];
-    github: string;
-    linkedin: string;
-    twitter: string;
-    instagram: string;
-    website: string;
+    socials: {
+      twitter: string;
+      linkedin: string;
+      github: string;
+      instagram: string;
+      website: string;
+    };
   };
 }
 
@@ -47,8 +49,8 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="h-32 w-32 rounded-full">
             <AvatarFallback className="text-3xl bg-emerald-100 text-emerald-800">
-              {profile.name
-                ? profile.name
+              {profile.fullName
+                ? profile.fullName
                     .split(' ')
                     .map((n) => n[0])
                     .join('')
@@ -60,7 +62,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <div>
                 <h1 className="text-3xl font-bold">
-                  {profile.name || 'Your Name'}
+                  {profile.fullName || 'Your Name'}
                 </h1>
                 <p className="text-slate-500">
                   @{profile.username || 'username'}
@@ -72,18 +74,18 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             </div>
 
             <p className="text-lg mb-4">
-              {profile.title || 'Your Professional Title'}
+              {profile.professionalTitle || 'Your Professional Title'}
             </p>
 
             <p className="text-[#E0E0E0] mb-4">
-              {profile.bio ||
+              {profile?.bio ||
                 "Your professional bio will appear here. Describe your expertise, experience, and what you're passionate about in the tech world."}
             </p>
 
             <div className="flex flex-wrap gap-4">
-              {profile.github && (
+              {profile?.socials?.github && (
                 <a
-                  href={profile.github}
+                  href={profile.socials.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -91,10 +93,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   <Github className="h-6 w-6" />
                 </a>
               )}
-              {profile.linkedin && (
+              {profile?.socials?.linkedin && (
                 <a
                   title="blank_tag"
-                  href={profile.linkedin}
+                  href={profile.socials.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -102,9 +104,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   <Linkedin className="h-6 w-6" />
                 </a>
               )}
-              {profile.twitter && (
+              {profile?.socials?.twitter && (
                 <a
-                  href={profile.twitter}
+                  href={profile.socials.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -112,9 +114,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   <Twitter className="h-6 w-6" />
                 </a>
               )}
-              {profile.instagram && (
+              {profile?.socials?.instagram && (
                 <a
-                  href={profile.instagram}
+                  href={profile.socials.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"
@@ -122,9 +124,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   <Instagram className="h-6 w-6" />
                 </a>
               )}
-              {profile.website && (
+              {profile?.socials?.website && (
                 <a
-                  href={profile.website}
+                  href={profile.socials.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#E0E0E0] hover:text-emerald-600"

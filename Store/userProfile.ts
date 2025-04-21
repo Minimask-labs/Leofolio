@@ -1,7 +1,9 @@
 import { create } from "zustand";
-import { getUser, updateUser, findUsers } from '@/service/user';
+import { getUser, updateUser, findUsers, uploadMedia } from '@/service/user';
+import { Payload } from "recharts/types/component/DefaultLegendContent";
 
 export type UserState = {
+  media: any | null;
   user: any | null;
   users: any | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -11,6 +13,7 @@ export type UserState = {
 export type UserActions = {
   fetchUser: () => Promise<void>;
   handleUpdateUser: (payload: any) => Promise<void>;
+  handleUploadMedia: (Payload: any) => Promise<void>;
   handleFindUsers: (params: {
     searchText: string;
     role: string;
@@ -19,11 +22,12 @@ export type UserActions = {
 
 export type UserStore = UserState & UserActions;
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserProfileStore = create<UserStore>((set) => ({
   user: null,
   users: null,
   status: 'idle',
   error: null,
+  media: null,
   fetchUser: async () => {
     set({ status: 'loading', error: null });
     try {
@@ -45,6 +49,18 @@ export const useUserStore = create<UserStore>((set) => ({
       throw error;
     }
   },
+  handleUploadMedia: async (payload: any) => {
+    set({ status: 'loading', error: null });
+    try {
+      const response = await uploadMedia(payload);
+      console.log(response?.data);
+      set({ status: response.data.success ? 'succeeded' : 'failed', media: response?.data });
+     } catch (error: any) {
+      set({ status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+
   handleFindUsers: async (params: { searchText: string; role: string }) => {
     set({ status: 'loading', error: null });
     try {

@@ -36,16 +36,16 @@ axiosInstance.interceptors.response.use(
 
          if ( status === 500) {
            // Unauthenticated user or server error, redirect to the product page
-            // Cookies.remove('token');
-            // Cookies.remove('userData');
-                  // Router.push('/product');
-          //  redirect('/product');
-         }else if (status === 401 ) {
+            Cookies.remove('token');
+            Cookies.remove('userData');
+            Cookies.remove('userType');
+            Router.push('/auth');
+          }else if (status === 401 ) {
            // Unauthenticated user or server error, redirect to the product page
            Cookies.remove('token');
            Cookies.remove('userData');
            Cookies.remove('userType');
-          //  Router.push('/auth/sign-in');
+           Router.push('/auth');
          } else {
            // Handle other errors if needed
            console.error('An error occurred:', error?.message);

@@ -8,7 +8,9 @@ import { LandingPage } from "@/components/landing-page"
 import { OnboardingFlow } from "@/components/onboarding-flow"
 
 export default function Home() {
-  const [userType, setUserType] = useState<"freelancer" | "employer" | null>(null)
+  const [userType, setUserType] = useState<'freelancer' | 'employer' >(
+    'freelancer'
+  );
   const [connected, setConnected] = useState(false)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true)
   const [showLanding, setShowLanding] = useState(true)
@@ -40,7 +42,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen   ">
-       <LandingPage />
+      <OnboardingFlow
+        onComplete={() => setHasCompletedOnboarding(true)}
+        userType={userType}
+      />{' '}
     </main>
   );
 }
