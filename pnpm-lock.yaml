@@ -167,6 +167,9 @@ importers:
       react-dom:
         specifier: ^19
         version: 19.1.0(react@19.1.0)
+      react-github-calendar:
+        specifier: ^4.5.6
+        version: 4.5.6(react@19.1.0)
       react-hook-form:
         specifier: ^7.54.1
         version: 7.55.0(react@19.1.0)
@@ -1809,6 +1812,11 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  react-activity-calendar@2.7.10:
+    resolution: {integrity: sha512-O6ev2JxbsbmF7hPpRCkiXxQ+vGwXS5iUVwOCqtvlJnGhpyJ3ZJap7/qfIZA0WZcDj4gpQh2Dcvkmwh3yBXRrPQ==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+
   react-day-picker@8.10.1:
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
     peerDependencies:
@@ -1819,6 +1827,16 @@ packages:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
     peerDependencies:
       react: ^19.1.0
+
+  react-error-boundary@5.0.0:
+    resolution: {integrity: sha512-tnjAxG+IkpLephNcePNA7v6F/QpWLH8He65+DmedchDwg162JZqx4NmbXj0mlAYVVEd81OW7aFhmbsScYfiAFQ==}
+    peerDependencies:
+      react: '>=16.13.1'
+
+  react-github-calendar@4.5.6:
+    resolution: {integrity: sha512-wuLJ+4MDBnli+YWUCprmK+e4ltRaMaB1P4VnYCrbATzFUq46ZDvrXbjQ8uf5aXPbWW8X+ZzSBgGOXGDWgkl0Sw==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
 
   react-hook-form@7.55.0:
     resolution: {integrity: sha512-XRnjsH3GVMQz1moZTW53MxfoWN7aDpUg/GpVNc4A3eXRVNdGXfbzJ4vM4aLQ8g6XCUh1nIbx70aaNCl7kxnjog==}
@@ -3724,6 +3742,11 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
+  react-activity-calendar@2.7.10(react@19.1.0):
+    dependencies:
+      date-fns: 4.1.0
+      react: 19.1.0
+
   react-day-picker@8.10.1(date-fns@4.1.0)(react@19.1.0):
     dependencies:
       date-fns: 4.1.0
@@ -3733,6 +3756,17 @@ snapshots:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  react-error-boundary@5.0.0(react@19.1.0):
+    dependencies:
+      '@babel/runtime': 7.27.0
+      react: 19.1.0
+
+  react-github-calendar@4.5.6(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-activity-calendar: 2.7.10(react@19.1.0)
+      react-error-boundary: 5.0.0(react@19.1.0)
 
   react-hook-form@7.55.0(react@19.1.0):
     dependencies:

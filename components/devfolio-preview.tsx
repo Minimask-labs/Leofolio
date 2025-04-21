@@ -1,11 +1,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CredentialManager } from "./credential-manager"
 import { WorkHistory } from "./work-history"
 import { useState } from "react"
+import GitHubCalendar from 'react-github-calendar';
 
 import {
   Github,
@@ -24,6 +25,7 @@ interface DevfolioPreviewProps {
     fullName: string;
     username: string;
     professionalTitle: string;
+    profileImage: string;
     bio: string;
     location: string;
     skills: string[];
@@ -38,10 +40,15 @@ interface DevfolioPreviewProps {
 }
 
 export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
-    const [activeTab, setActiveTab] = useState("overview")
-    const handleTabChange = (tab: string) => {
-        setActiveTab(tab)
-    }
+  const [activeTab, setActiveTab] = useState('overview');
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+  const url = new URL(profile.socials.github);
+  const pathname = url.pathname; // "/kufre-abasi"
+  const username = pathname.replace(/^\/+|\/+$/g, ''); // remove slashes
+
+ 
   return (
     <div className=" border rounded-lg w-full shadow-sm overflow-hidden">
       {/* Header Section */}
@@ -56,6 +63,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     .join('')
                 : 'U'}
             </AvatarFallback>
+            <AvatarImage
+              src={profile.profileImage}
+              className="w-full h-full object-cover"
+            />{' '}
           </Avatar>
 
           <div className="flex-1">
@@ -141,31 +152,24 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         {/* Skills Section */}
         <div className="mt-6">
           <div className="flex flex-wrap gap-2">
-            {profile.skills.length > 0
-              ? profile.skills.map((skill) => (
-                  <Badge
-                    key={skill}
-                    className="bg-slate-100 text-slate-800 hover:bg-slate-200"
-                  >
-                    {skill}
-                  </Badge>
-                ))
-              : ['JavaScript', 'React', 'Node.js', 'TypeScript'].map(
-                  (skill) => (
-                    <Badge
-                      key={skill}
-                      className="bg-slate-100 text-slate-800 hover:bg-slate-200"
-                    >
-                      {skill}
-                    </Badge>
-                  )
-                )}
+            {profile.skills.length > 0 ? (
+              profile.skills.map((skill) => (
+                <Badge
+                  key={skill}
+                  className="bg-slate-100 text-slate-800 hover:bg-slate-200"
+                >
+                  {skill}
+                </Badge>
+              ))
+            ) : (
+              <></>
+            )}
           </div>
         </div>
 
         {/* Location */}
         {profile.location && (
-          <div className="mt-4 flex items-center text-[#E0E0E0]">
+          <div className="mt-4 flex items-center capitalize text-[#E0E0E0]">
             <MapPin className="h-4 w-4 mr-1" />
             <span>{profile.location}</span>
           </div>
@@ -196,7 +200,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     <FileText className="h-6 w-6 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-2xl text-[#121212] font-bold">3</p>
+                    <p className="text-2xl text-[#121212] font-bold">0</p>
                     <p className="text-sm text-slate-600">Projects</p>
                   </div>
                 </CardContent>
@@ -208,7 +212,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     <Trophy className="h-6 w-6 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-2xl text-black font-bold">5</p>
+                    <p className="text-2xl text-black font-bold">0</p>
                     <p className="text-sm text-slate-600">Prizes</p>
                   </div>
                 </CardContent>
@@ -220,7 +224,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     <Award className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl text-black font-bold">5</p>
+                    <p className="text-2xl text-black font-bold">0</p>
                     <p className="text-sm text-slate-600">Hackathons</p>
                   </div>
                 </CardContent>
@@ -232,14 +236,28 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     <Award className="h-6 w-6 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-2xl text-black font-bold">2</p>
+                    <p className="text-2xl text-black font-bold">0</p>
                     <p className="text-sm text-slate-600">Certifications</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </div>
+          {/* Aleo chain Activity */}
 
+          <div className="p-8 border-t">
+            <h2 className="text-xl font-semibold mb-4 text-[#E0E0E0]">
+              Aleo chain Activity
+            </h2>
+            <div className="bg-[#121212] p-6 rounded-lg">
+              <div className="flex flex-col md:flex-row justify-between mb-6">
+              </div>
+              <div>
+                <GitHubCalendar username={username} />
+              </div>
+              {/* Contribution graph placeholder */}
+            </div>
+          </div>
           {/* GitHub Activity */}
           <div className="p-8 border-t">
             <h2 className="text-xl font-semibold mb-4 text-[#E0E0E0]">
@@ -247,39 +265,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             </h2>
             <div className="bg-[#121212] p-6 rounded-lg">
               <div className="flex flex-col md:flex-row justify-between mb-6">
-                <div>
-                  <p className="text-3xl font-bold">1,240</p>
-                  <p className="text-sm text-[#E0E0E0]">
-                    contributions in the last year
-                  </p>
-                </div>
-                <Button variant="outline" className="mt-4 md:mt-0">
-                  View on GitHub
-                </Button>
-              </div>
-
-              {/* Contribution graph placeholder */}
-              <div className="grid grid-cols-12 gap-1">
-                {Array.from({ length: 12 }).map((_, rowIndex) => (
-                  <div key={`row-${rowIndex}`} className="flex flex-col gap-1">
-                    {Array.from({ length: 12 }).map((_, colIndex) => {
-                      // Generate random intensity for the demo
-                      const intensity = Math.floor(Math.random() * 5);
-                      let bgColor = 'bg-slate-100';
-                      if (intensity === 1) bgColor = 'bg-emerald-100';
-                      if (intensity === 2) bgColor = 'bg-emerald-200';
-                      if (intensity === 3) bgColor = 'bg-emerald-300';
-                      if (intensity === 4) bgColor = 'bg-emerald-400';
-
-                      return (
-                        <div
-                          key={`cell-${rowIndex}-${colIndex}`}
-                          className={`w-3 h-3 rounded-sm ${bgColor}`}
-                        ></div>
-                      );
-                    })}
-                  </div>
-                ))}
+               </div>
+              <div>
+                <GitHubCalendar username={username} />
               </div>
             </div>
           </div>

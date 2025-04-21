@@ -143,7 +143,7 @@ const uploadedImage = async (image: any) => {
 
   try {
     const response = await handleUploadMedia(formData); // Explicitly define the response type
-     if (media.length > 0) {
+     if (media) {
       setProfile((prev) => ({
         ...prev,
         profileImage: media[0]
@@ -241,7 +241,7 @@ const nextStep = () => {
   if (step < 3) {
     setStep(step + 1);
   } else {
-    UpdateUserProfile();
+    // UpdateUserProfile();
     setPreviewMode(true);
   }
 };
@@ -265,7 +265,7 @@ const prevStep = () => {
                 </Button>
                 <Button
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
-                  onClick={onComplete}
+                  onClick={UpdateUserProfile}
                 >
                   Complete Setup
                 </Button>

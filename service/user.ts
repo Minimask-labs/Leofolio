@@ -11,7 +11,7 @@ export const getUser = async () => {
 };
 export const updateUser = async (payload:any) => {
   try {
-    const response = await AxiosService.patch('users/me',payload);
+    const response = await AxiosService.patch('user/me',payload);
     return response.data; // Assuming you want to return the updated user data
   } catch (error) {
     throw error;

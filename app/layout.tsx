@@ -1,5 +1,4 @@
 'use client';
-
 // import type { Metadata } from 'next';
 import React, { useMemo } from 'react';
 import { Inter } from 'next/font/google';
@@ -26,6 +25,71 @@ import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
 // export const metadata: Metadata = {
 //   title: 'Leofolio - Privacy-preserving Freelancer Platform',
 //   description:
+//     'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.'
+// };
+// export const metadata: Metadata = {
+//   title: 'Leofolio - Privacy-preserving Freelancer Platform',
+//   description:
+//     'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.',
+//   metadataBase: new URL('https://leofolio.minimasklabs.xyz/'),
+//   keywords: [
+//     'zk',
+//     'aleo',
+//     'blockchain',
+//     'freelancer',
+//     'privacy',
+//     'zero-knowledge',
+//     'proofs'
+//   ],
+//   icons: {
+//     // icon: '/fav.png',
+//     // shortcut: '/fav.png',
+//     // apple: '/fav.png'
+//   },
+//   applicationName: 'leofolio',
+//   authors: [
+//     {
+//       name: 'Minimask Labs',
+//       url: 'https://minimasklabs.xyz'
+//     },
+//     {
+//       name: 'Kufre-abasi Bassey',
+//       url: ''
+//     }
+//   ],
+//   referrer: 'origin',
+//   creator: 'Kufre-abasi Bassey',
+//   publisher: 'leofolio',
+//   robots: { index: true, follow: true },
+//   alternates: { canonical: 'https://leofolio.minimasklabs.xyz/' },
+//   // manifest: "/manifest.json",
+
+//   openGraph: {
+//     type: 'website',
+//     url: 'https://leofolio.minimasklabs.xyz/',
+//     title: 'leofolio',
+//     description:
+//       'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.',
+//     siteName: 'leofolio',
+//     images: [
+//       {
+//         url: 'https://res.cloudinary.com/domua8ie0/image/upload/v1731307677/OG_image_pzxwg7.png'
+//       }
+//     ]
+//   },
+//   twitter: {
+//     card: 'summary_large_image',
+//     site: '@',
+//     creator: '@kufreabasiBass1',
+//     // images: '/logo.svg',
+//     description:
+//       'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.',
+//     title: 'leofolio'
+//   },
+//   verification: {
+//     google: ''
+//   },
+//   abstract:
 //     'Connect with verified freelancers and clients while maintaining privacy through zero-knowledge proofs on Aleo.'
 // };
 
@@ -79,13 +143,10 @@ export default function RootLayout({
           >
             {/*            autoConnect
              */}
-            <WalletModalProvider>
-              <Toaster   />
-
-              {children}
-            </WalletModalProvider>
+            <WalletModalProvider>{children}</WalletModalProvider>
           </WalletProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
