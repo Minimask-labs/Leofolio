@@ -14,9 +14,6 @@ export function EmployeeDashboard({ connected, setConnected }: EmployeeDashboard
   return (
     <div className="">
       <Header
-        connected={connected}
-        setConnected={setConnected}
-        userType="employee"
       />
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="directory" className="mt-8">

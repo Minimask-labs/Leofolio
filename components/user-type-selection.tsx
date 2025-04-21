@@ -31,7 +31,7 @@ export function UserTypeSelection() {
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { publicKey, wallet, connecting } = useWallet();
+  const { publicKey, wallet,connected, connecting } = useWallet();
   const {
     saveUserToken,
     saveUserData,
@@ -88,7 +88,8 @@ export function UserTypeSelection() {
                 } else {
                 router.replace('/employer');
               }   
-               toast({
+ 
+              toast({
                 title: response?.message || 'Login successful',
                 variant: 'default'
               });
@@ -114,15 +115,15 @@ export function UserTypeSelection() {
     }
   };
   useEffect(() => {
-    if (publicKey) {
+    if (publicKey || connected) {
       handleConnect();
     }
     loadUserData();
-    console.log('loadUserData:',  userData);
-    if (token) {
-      router.replace('/freelancer');
-    }
-  }, [publicKey]);
+    // console.log('loadUserData:',  userData);
+    // if (token) {
+    //   router.replace('/freelancer');
+    // }
+  }, [publicKey, connected]);
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
@@ -201,7 +202,7 @@ export function UserTypeSelection() {
       </CardContent>
 
       <CardFooter>
-        {token ? (
+        { connected ? (
           <Button
             disabled
             className={`w-full ${
@@ -210,13 +211,13 @@ export function UserTypeSelection() {
                 : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
           >
-           Connected
+            Connected
           </Button>
         ) : (
           <>
             {loading || connecting ? (
               <>
-                <button
+                <Button
                   disabled
                   className={`w-full ${
                     selectedType === 'freelancer'
@@ -225,7 +226,7 @@ export function UserTypeSelection() {
                   }`}
                 >
                   loading...
-                </button>
+                </Button>
               </>
             ) : (
               <WalletMultiButton

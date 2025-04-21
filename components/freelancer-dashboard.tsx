@@ -34,9 +34,6 @@ export function FreelancerDashboard({ connected, setConnected }: FreelancerDashb
   return (
     <div className=" ">
       <Header
-        connected={connected}
-        setConnected={setConnected}
-        userType="freelancer"
       />
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="devfolio" className="mt-8">
