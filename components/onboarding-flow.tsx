@@ -31,6 +31,7 @@ import {
 import { DevfolioPreview } from './devfolio-preview';
 import { useUserProfileStore } from '@/Store/userProfile';
 import { useToast } from '@/components/ui/use-toast';
+import { useRouter, redirect } from 'next/navigation';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
@@ -59,6 +60,8 @@ const [profile, setProfile] = useState({
   },
    newSkill: ''
 });
+  const router = useRouter();
+
 // const data = {
 //   fullName: '',
 //   username: '',
@@ -190,7 +193,14 @@ const UpdateUserProfile = async () => {
    const { newSkill, ...dataWithoutnewSkill } = profile;
 console.log('Profile data:', dataWithoutnewSkill);
   try {
-    await handleUpdateUser(dataWithoutnewSkill); // Ensure `handleUpdateUser` can handle FormData
+  const response = await handleUpdateUser(dataWithoutnewSkill); // Ensure `handleUpdateUser` can handle FormData
+    if (response?.role === 'freelancer') {
+      // Use router.replace for faster navigation (no history entry)
+        router.replace('/freelancer');
+      // Show toast after navigation
+    } else if (response?.role === 'employer') {
+        router.replace('/employer');
+    }
     toast({
       title: 'Profile Image  Updated',
       description: 'Your profile was updated successfully.',

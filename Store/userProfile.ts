@@ -35,8 +35,7 @@ export const useUserProfileStore = create<UserStore>((set) => ({
     try {
       const response = await getUser();
       set({loading: false, user: response.data, status: 'succeeded' });
-             console.log('user', response.data);
-
+ 
     } catch (error: any) {
       set({ loading: false, status: 'failed', error: error.message });
       throw error;
