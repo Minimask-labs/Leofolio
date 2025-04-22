@@ -15,9 +15,9 @@ export type UserActions = {
   fetchUser: () => Promise<void>;
   handleUpdateUser: (payload: any) => Promise<void>;
   handleUploadMedia: (Payload: any) => Promise<void>;
-  handleFindUsers: (params: {
-    searchText: string;
-    role: string;
+  handleFindUsers: (params?: {
+    searchText?: string;
+    role?: string;
   }) => Promise<void>;
 };
 
