@@ -90,7 +90,7 @@ export function FreelancerDirectory() {
     })
   }
   useEffect(() => {
-    handleFindUsers();
+    handleFindUsers({ role: 'freelancer' });
     console.log(users);
   }, [handleFindUsers]);
 

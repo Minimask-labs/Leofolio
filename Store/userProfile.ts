@@ -64,7 +64,7 @@ export const useUserProfileStore = create<UserStore>((set) => ({
     }
   },
 
-  handleFindUsers: async (params: { searchText: string; role: string }) => {
+  handleFindUsers: async (params?: { searchText?: string; role?: string }) => {
     set({ status: 'loading', error: null });
     try {
       const response = await findUsers(params);

@@ -25,7 +25,7 @@ export const uploadMedia = async ( payload: any ) => {
     throw error;
   }
 };
- export const findUsers = async (params: { searchText: string; role: string }) => {
+ export const findUsers = async (params?: { searchText?: string; role?: string }) => {
    try {
      const response = await AxiosService.get(`user/search`, {
        params: params
