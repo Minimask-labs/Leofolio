@@ -41,7 +41,7 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
       <h4 className="text-sm font-medium">Project Communication</h4>
 
       <div className="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-slate-50/20 rounded-md">
-        {project.updates.map((update) => (
+        {project?.updates?.map((update) => (
           <div
             key={update.id}
             className={`flex gap-3 ${
