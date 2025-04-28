@@ -407,7 +407,7 @@ export function MyProjects() {
                       <div className="space-y-2">
                         {project.milestones.map((milestone) => (
                           <div
-                            key={milestone?._id}
+                            key={milestone?.id}
                             className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
                           >
                             <div className="flex items-center gap-2">
@@ -417,7 +417,7 @@ export function MyProjects() {
                             <span className="text-xs text-slate-500">
                               Completed on{' '}
                               {new Date(
-                                milestone?.deadline
+                                milestone?.dueDate
                               ).toLocaleDateString()}
                             </span>
                           </div>
