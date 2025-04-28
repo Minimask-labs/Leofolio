@@ -1068,272 +1068,286 @@ try {
 
           <TabsContent value="active" className="mt-4">
             <div className="grid grid-cols-1 gap-4">
-              {Array.isArray(projects?.data) && projects.data.filter((p: any) => p.status !== 'completed')
-                .map((project:any) => (
-                  <Card
-                    key={project._id}
-                    className={
-                      expandedProject === project._id ? 'border-blue-300' : ''
-                    }
-                  >
-                    <CardHeader className="pb-2">
-                      <div className="flex justify-between items-start">
-                        <CardTitle>{project.name}</CardTitle>
-                        {getStatusBadge(project.status)}
-                      </div>
-                      <CardDescription>{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium">Progress</span>
-                          <span className="text-sm">{project.progress}%</span>
+              {Array.isArray(projects?.data) &&
+                projects.data
+                  .filter((p: any) => p.status !== 'completed')
+                  .map((project: any) => (
+                    <Card
+                      key={project._id}
+                      className={
+                        expandedProject === project._id ? 'border-blue-300' : ''
+                      }
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <CardTitle>{project.name}</CardTitle>
+                          {getStatusBadge(project.status)}
                         </div>
-                        <Progress value={project.progress} className="h-2" />
-                      </div>
+                        <CardDescription>{project.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="pb-2">
+                        <div className="mb-4">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-sm font-medium">
+                              Progress
+                            </span>
+                            <span className="text-sm">{project.progress}%</span>
+                          </div>
+                          <Progress value={project.progress} className="h-2" />
+                        </div>
 
-                      <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
-                        <Calendar className="h-4 w-4" />
-                        <span>
-                          Deadline:{' '}
-                          {new Date(project.deadline).toLocaleDateString()}
-                        </span>
-                      </div>
-
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Users className="h-4 w-4 text-slate-500" />
-                          <span className="text-sm font-medium">
-                            Assigned Freelancers
+                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            Deadline:{' '}
+                            {new Date(project.deadline).toLocaleDateString()}
                           </span>
                         </div>
-                        <div className="space-y-2">
-                          {project?.freelancers?.map((freelancer:any, index:number) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2"
-                            >
-                              <Avatar className="h-6 w-6">
-                                <AvatarFallback className="text-xs">
-                                  {freelancer.name
-                                    .split(' ')
-                                    .map((n:any) => n[0])
-                                    .join('')}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="text-sm font-medium">
-                                  {freelancer.name}
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                  {freelancer.role}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
 
-                      {expandedProject === project.id && (
-                        <div className="mt-6 space-y-4">
-                          <div>
-                            <h4 className="text-sm font-medium mb-2">
-                              Milestones
-                            </h4>
-                            <div className="space-y-2">
-                              {project.milestones.map((milestone:any) => (
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="h-4 w-4 text-slate-500" />
+                            <span className="text-sm font-medium">
+                              Assigned Freelancers
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {project?.freelancers?.map(
+                              (freelancer: any, index: number) => (
                                 <div
-                                  key={milestone.id}
-                                  className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
+                                  key={index}
+                                  className="flex items-center gap-2"
                                 >
-                                  <div className="flex items-center gap-2">
-                                    {milestone.status === 'completed' ? (
-                                      <CheckCircle className="h-4 w-4 text-emerald-500" />
-                                    ) : milestone.status === 'in-progress' ? (
-                                      <Clock className="h-4 w-4 text-blue-500" />
-                                    ) : (
-                                      <AlertCircle className="h-4 w-4 text-slate-400" />
-                                    )}
-                                    <span className="text-sm">
-                                      {milestone.title}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs text-slate-500">
-                                      Due:{' '}
-                                      {new Date(
-                                        milestone.dueDate
-                                      ).toLocaleDateString()}
-                                    </span>
-                                    <Select defaultValue={milestone.status}>
-                                      <SelectTrigger className="h-7 w-[130px]">
-                                        <SelectValue placeholder="Status" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="planning">
-                                          Planning
-                                        </SelectItem>
-                                        <SelectItem value="in_progress">
-                                          In Progress
-                                        </SelectItem>
-                                        <SelectItem value="on_hold">
-                                          on hold
-                                        </SelectItem>
-                                        <SelectItem value="completed">
-                                          Completed
-                                        </SelectItem>
-                                        <SelectItem value="cancelled">
-                                          cancelled
-                                        </SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarFallback className="text-xs">
+                                      {freelancer.name
+                                        .split(' ')
+                                        .map((n: any) => n[0])
+                                        .join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {freelancer.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                      {freelancer.role}
+                                    </p>
                                   </div>
                                 </div>
-                              ))}
-                            </div>
+                              )
+                            )}
                           </div>
-
-                          <ProjectUpdates project={project} />
                         </div>
-                      )}
-                    </CardContent>
-                    <CardFooter className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => toggleProjectExpansion(project.id)}
-                      >
-                        {expandedProject === project.id ? (
-                          <>
-                            <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="h-4 w-4 mr-1" /> Show
-                            Details
-                          </>
-                        )}
-                      </Button>
 
-                      <Button
-                        className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
-                        onClick={() => {
-                          setSelectedProject(project);
-                          setShowDashboard(true);
-                        }}
-                      >
-                        Project Dashboard
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
+                        {expandedProject === project.id && (
+                          <div className="mt-6 space-y-4">
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">
+                                Milestones
+                              </h4>
+                              <div className="space-y-2">
+                                {project.milestones.map((milestone: any) => (
+                                  <div
+                                    key={milestone._id}
+                                    className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {milestone.status === 'completed' ? (
+                                        <CheckCircle className="h-4 w-4 text-emerald-500" />
+                                      ) : milestone.status === 'in_progress' ? (
+                                        <Clock className="h-4 w-4 text-blue-500" />
+                                      ) : (
+                                        <AlertCircle className="h-4 w-4 text-slate-400" />
+                                      )}
+                                      <span className="text-sm">
+                                        {milestone.title}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs text-blue-300">
+                                        Due:{' '}
+                                        {new Date(
+                                          milestone.deadline
+                                        ).toLocaleDateString()}
+                                      </span>
+                                      <Select defaultValue={milestone.status}>
+                                        <SelectTrigger className="h-7 w-[130px]">
+                                          <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="planning">
+                                            Planning
+                                          </SelectItem>
+                                          <SelectItem value="in_progress">
+                                            In Progress
+                                          </SelectItem>
+                                          <SelectItem value="on_hold">
+                                            on hold
+                                          </SelectItem>
+                                          <SelectItem value="completed">
+                                            Completed
+                                          </SelectItem>
+                                          <SelectItem value="cancelled">
+                                            cancelled
+                                          </SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <ProjectUpdates project={project} />
+                          </div>
+                        )}
+                      </CardContent>
+                      <CardFooter className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => toggleProjectExpansion(project.id)}
+                        >
+                          {expandedProject === project.id ? (
+                            <>
+                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
+                              Details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="h-4 w-4 mr-1" /> Show
+                              Details
+                            </>
+                          )}
+                        </Button>
+
+                        <Button
+                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setShowDashboard(true);
+                          }}
+                        >
+                          Project Dashboard
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
             </div>
           </TabsContent>
 
           <TabsContent value="completed" className="mt-4">
             <div className="grid grid-cols-1 gap-4">
-              {Array.isArray(projects) && projects.filter((p: any) => p.status === 'completed')
-                .map((project:any) => (
-                  <Card
-                    key={project.id}
-                    className={
-                      expandedProject === project.id ? 'border-emerald-300' : ''
-                    }
-                  >
-                    <CardHeader className="pb-2">
-                      <div className="flex justify-between items-start">
-                        <CardTitle>{project.name}</CardTitle>
-                        <Badge
-                          variant="outline"
-                          className="bg-emerald-50 text-emerald-700 border-emerald-200"
-                        >
-                          Completed
-                        </Badge>
-                      </div>
-                      <CardDescription>{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
-                        <Calendar className="h-4 w-4" />
-                        <span>
-                          Completed on:{' '}
-                          {project.completionDate
-                            ? new Date(
-                                project.completionDate
-                              ).toLocaleDateString()
-                            : 'N/A'}
-                        </span>
-                      </div>
-
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Users className="h-4 w-4 text-slate-500" />
-                          <span className="text-sm font-medium">
-                            Freelancers
+              {Array.isArray(projects) &&
+                projects
+                  .filter((p: any) => p.status === 'completed')
+                  .map((project: any) => (
+                    <Card
+                      key={project.id}
+                      className={
+                        expandedProject === project.id
+                          ? 'border-emerald-300'
+                          : ''
+                      }
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <CardTitle>{project.name}</CardTitle>
+                          <Badge
+                            variant="outline"
+                            className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                          >
+                            Completed
+                          </Badge>
+                        </div>
+                        <CardDescription>{project.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="pb-2">
+                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            Completed on:{' '}
+                            {project.completionDate
+                              ? new Date(
+                                  project.completionDate
+                                ).toLocaleDateString()
+                              : 'N/A'}
                           </span>
                         </div>
-                        <div className="space-y-2">
-                          {project?.freelancers?.map((freelancer:any, index:number) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2"
-                            >
-                              <Avatar className="h-6 w-6">
-                                <AvatarFallback className="text-xs">
-                                  {freelancer.name
-                                    .split(' ')
-                                    .map((n:any) => n[0])
-                                    .join('')}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="text-sm font-medium">
-                                  {freelancer.name}
-                                </p>
-                                <p className="text-xs text-slate-500">
-                                  {freelancer.role}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
 
-                      {expandedProject === project.id && (
-                        <div className="mt-6 space-y-4">
-                          <ProjectUpdates project={project} />
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="h-4 w-4 text-slate-500" />
+                            <span className="text-sm font-medium">
+                              Freelancers
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {project?.freelancers?.map(
+                              (freelancer: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarFallback className="text-xs">
+                                      {freelancer.name
+                                        .split(' ')
+                                        .map((n: any) => n[0])
+                                        .join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {freelancer.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                      {freelancer.role}
+                                    </p>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
                         </div>
-                      )}
-                    </CardContent>
-                    <CardFooter className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => toggleProjectExpansion(project.id)}
-                      >
-                        {expandedProject === project.id ? (
-                          <>
-                            <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="h-4 w-4 mr-1" /> Show
-                            Details
-                          </>
+
+                        {expandedProject === project.id && (
+                          <div className="mt-6 space-y-4">
+                            <ProjectUpdates project={project} />
+                          </div>
                         )}
-                      </Button>
-                      <Button
-                        className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
-                        onClick={() => {
-                          setSelectedProject(project);
-                          setShowReport(true);
-                        }}
-                      >
-                        View Report
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
+                      </CardContent>
+                      <CardFooter className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => toggleProjectExpansion(project.id)}
+                        >
+                          {expandedProject === project.id ? (
+                            <>
+                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
+                              Details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="h-4 w-4 mr-1" /> Show
+                              Details
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setShowReport(true);
+                          }}
+                        >
+                          View Report
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
             </div>
           </TabsContent>
         </Tabs>

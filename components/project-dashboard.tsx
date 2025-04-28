@@ -144,12 +144,12 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project.milestones.length
-    const completedMilestones = project.milestones.filter((m: any) => m.status === "completed").length
-    const inProgressMilestones = project.milestones.filter((m: any) => m.status === "in-progress").length
+    const totalMilestones = project?.milestones.length
+    const completedMilestones = project?.milestones.filter((m: any) => m.status === "completed").length
+    const inProgressMilestones = project?.milestones.filter((m: any) => m.status === "in-progress").length
 
-    const startDate = new Date(project.startDate)
-    const endDate = project.completionDate ? new Date(project.completionDate) : new Date(project.deadline)
+    const startDate = new Date(project?.startDate)
+    const endDate = project?.completionDate ? new Date(project?.completionDate) : new Date(project?.deadline)
     const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
 
     return {
@@ -184,12 +184,12 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">
-            {project.name || project.title}
+            {project?.name || project?.title}
           </h1>
-          <p className="text-slate-600">{project.client || project.company}</p>
+          <p className="text-slate-600">{project?.client || project?.company}</p>
         </div>
         <div className="flex items-center gap-3">
-          {project.status !== 'completed' && userType === 'employee' && (
+          {project?.status !== 'completed' && userType === 'employee' && (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -216,7 +216,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
               </DialogContent>
             </Dialog>
           )}
-          {getStatusBadge(project.status)}
+          {getStatusBadge(project?.status)}
         </div>
       </div>
 
@@ -244,29 +244,29 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <span className="text-sm font-medium">
                       Overall Progress
                     </span>
-                    <span className="text-sm">{project.progress}%</span>
+                    <span className="text-sm">{project?.progress}%</span>
                   </div>
-                  <Progress value={project.progress} className="h-2" />
+                  <Progress value={project?.progress} className="h-2" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-slate-500">Start Date</p>
                     <p className="font-medium">
-                      {new Date(project.startDate).toLocaleDateString()}
+                      {new Date(project?.startDate).toLocaleDateString()}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Deadline</p>
                     <p className="font-medium">
-                      {new Date(project.deadline).toLocaleDateString()}
+                      {new Date(project?.deadline).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <p className="text-sm text-slate-500 mb-1">Description</p>
-                  <p className="text-sm">{project.description}</p>
+                  <p className="text-sm">{project?.description}</p>
                 </div>
               </CardContent>
             </Card>
@@ -301,7 +301,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                 </div>
 
                 <div className="space-y-2">
-                  {project.milestones.slice(0, 3).map((milestone: any) => (
+                  {project?.milestones.slice(0, 3).map((milestone: any) => (
                     <div
                       key={milestone.id}
                       className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
@@ -339,8 +339,8 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {project.freelancers
-                    .slice(0, 3)
+                  {project?.freelancers
+                    ?.slice(0, 3)
                     .map((freelancer: any, idx: number) => (
                       <div key={idx} className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
@@ -362,9 +362,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       </div>
                     ))}
 
-                  {project.freelancers.length > 3 && (
+                  {project?.freelancers?.length > 3 && (
                     <p className="text-xs text-slate-500 mt-2">
-                      + {project.freelancers.length - 3} more
+                      + {project?.freelancers?.length - 3} more
                     </p>
                   )}
 
@@ -388,7 +388,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-[150px] overflow-y-auto">
-                  {project.updates.slice(0, 3).map((update: any) => (
+                  {project?.updates?.slice(0, 3).map((update: any) => (
                     <div key={update.id} className="text-sm">
                       <div className="flex justify-between items-center">
                         <p className="font-medium">{update.author}</p>
@@ -426,7 +426,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <div>
                       <p className="text-xs font-medium">Project Started</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(project.startDate).toLocaleDateString()}
+                        {new Date(project?.startDate).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -438,7 +438,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <div>
                       <p className="text-xs font-medium">Current Phase</p>
                       <p className="text-xs text-slate-500">
-                        {project.milestones.find(
+                        {project?.milestones.find(
                           (m: any) => m.status === 'in-progress'
                         )?.title || 'Planning'}
                       </p>
@@ -452,12 +452,12 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <div>
                       <p className="text-xs font-medium">Deadline</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(project.deadline).toLocaleDateString()}
+                        {new Date(project?.deadline).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
 
-                  {project.status === 'completed' && (
+                  {project?.status === 'completed' && (
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
                         <CheckCircle className="h-3 w-3 text-emerald-600" />
@@ -466,7 +466,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         <p className="text-xs font-medium">Completed</p>
                         <p className="text-xs text-slate-500">
                           {new Date(
-                            project.completionDate
+                            project?.completionDate
                           ).toLocaleDateString()}
                         </p>
                       </div>
@@ -477,7 +477,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
             </Card>
           </div>
 
-          {project.status === 'completed' && (
+          {project?.status === 'completed' && (
             <Card>
               <CardHeader>
                 <CardTitle>Project Completion Report</CardTitle>
@@ -489,7 +489,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-emerald-600">
-                      {project.progress}%
+                      {project?.progress}%
                     </p>
                     <p className="text-sm text-slate-500">Completion Rate</p>
                   </div>
@@ -501,13 +501,13 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-purple-600">
-                      {project.freelancers.length}
+                      {project?.freelancers.length}
                     </p>
                     <p className="text-sm text-slate-500">Team Members</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-amber-600">
-                      {project.milestones.length}
+                      {project?.milestones?.length}
                     </p>
                     <p className="text-sm text-slate-500">Milestones</p>
                   </div>
@@ -532,7 +532,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       <div className="flex items-center gap-2 mb-2">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
-                            {project.clientContact
+                            {project?.clientContact
                               ?.split(' ')
                               .map((n: string) => n[0])
                               .join('') || 'CL'}
@@ -540,11 +540,11 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium">
-                            {project.clientContact || 'Client'}
+                            {project?.clientContact || 'Client'}
                           </p>
                           <p className="text-xs text-slate-500">
                             {new Date(
-                              project.completionDate
+                              project?.completionDate
                             ).toLocaleDateString()}
                           </p>
                         </div>
@@ -603,7 +603,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === 'employee' && project.status !== 'completed' && (
+            {userType === 'employee' && project?.status !== 'completed' && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -691,7 +691,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
           </div>
 
           <div className="space-y-4">
-            {project.milestones.map((milestone: any) => (
+            {project?.milestones.map((milestone: any) => (
               <Card key={milestone.id}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
@@ -718,7 +718,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </span>
                   </div>
                 </CardContent>
-                {userType === 'employee' && project.status !== 'completed' && (
+                {userType === 'employee' && project?.status !== 'completed' && (
                   <CardFooter>
                     <Select
                       defaultValue={milestone.status}
@@ -746,7 +746,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         <TabsContent value="team" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
-            {userType === 'employee' && project.status !== 'completed' && (
+            {userType === 'employee' && project?.status !== 'completed' && (
               <Button
                 size="sm"
                 className="gap-2"
@@ -759,7 +759,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {project.freelancers.map((freelancer: any, idx: number) => (
+            {project?.freelancers.map((freelancer: any, idx: number) => (
               <Card key={idx}>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -821,7 +821,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                   {availableFreelancers
                     .filter(
                       (f) =>
-                        !project.freelancers.some(
+                        !project?.freelancers.some(
                           (pf: any) => pf.name === f.name
                         )
                     )
@@ -982,7 +982,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
       </Tabs>
 
       {/* If the project is completed, show the certificate/reward section */}
-      {project.status === 'completed' && (
+      {project?.status === 'completed' && (
         <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-4">

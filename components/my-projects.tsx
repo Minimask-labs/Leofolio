@@ -230,7 +230,9 @@ export function MyProjects() {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold mb-2">My Projects</h2>
-        <p className="text-slate-600">Manage your active projects and view completed work.</p>
+        <p className="text-slate-600">
+          Manage your active projects and view completed work.
+        </p>
       </div>
 
       <Tabs defaultValue="active">
@@ -241,7 +243,12 @@ export function MyProjects() {
 
         <TabsContent value="active" className="mt-4 space-y-4">
           {activeProjects.map((project) => (
-            <Card key={project.id} className={expandedProject === project.id ? "border-blue-300" : ""}>
+            <Card
+              key={project.id}
+              className={
+                expandedProject === project.id ? 'border-blue-300' : ''
+              }
+            >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <div>
@@ -266,16 +273,18 @@ export function MyProjects() {
 
                 <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
                   <Calendar className="h-4 w-4" />
-                  <span>Deadline: {new Date(project.deadline).toLocaleDateString()}</span>
+                  <span>
+                    Deadline: {new Date(project.deadline).toLocaleDateString()}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2 mb-3">
                   <Avatar className="h-6 w-6">
                     <AvatarFallback className="text-xs">
                       {project.clientContact
-                        .split(" ")
+                        .split(' ')
                         .map((n: string) => n[0])
-                        .join("")}
+                        .join('')}
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm">{project.clientContact}</span>
@@ -284,8 +293,12 @@ export function MyProjects() {
                 {expandedProject === project.id && (
                   <div className="mt-4 space-y-4">
                     <div>
-                      <h4 className="text-sm font-medium mb-2">Project Description</h4>
-                      <p className="text-sm text-slate-700">{project.description}</p>
+                      <h4 className="text-sm font-medium mb-2">
+                        Project Description
+                      </h4>
+                      <p className="text-sm text-slate-700">
+                        {project.description}
+                      </p>
                     </div>
 
                     <div>
@@ -297,9 +310,9 @@ export function MyProjects() {
                             className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                           >
                             <div className="flex items-center gap-2">
-                              {milestone.status === "completed" ? (
+                              {milestone.status === 'completed' ? (
                                 <CheckCircle className="h-4 w-4 text-emerald-500" />
-                              ) : milestone.status === "in-progress" ? (
+                              ) : milestone.status === 'in-progress' ? (
                                 <Clock className="h-4 w-4 text-blue-500" />
                               ) : (
                                 <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -308,7 +321,10 @@ export function MyProjects() {
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-slate-500">
-                                Due: {new Date(milestone.dueDate).toLocaleDateString()}
+                                Due:{' '}
+                                {new Date(
+                                  milestone.dueDate
+                                ).toLocaleDateString()}
                               </span>
                               {getStatusBadge(milestone.status)}
                             </div>
@@ -323,7 +339,11 @@ export function MyProjects() {
               </CardContent>
 
               <CardFooter className="flex justify-between">
-                <Button variant="outline" className="text-sm" onClick={() => toggleProjectExpansion(project.id)}>
+                <Button
+                  variant="outline"
+                  className="text-sm"
+                  onClick={() => toggleProjectExpansion(project.id)}
+                >
                   {expandedProject === project.id ? (
                     <>
                       <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
@@ -338,8 +358,8 @@ export function MyProjects() {
                 <Button
                   className="bg-blue-600 text-white hover:bg-blue-700"
                   onClick={() => {
-                    setSelectedProject(project)
-                    setShowDashboard(true)
+                    setSelectedProject(project);
+                    setShowDashboard(true);
                   }}
                 >
                   Project Dashboard
@@ -361,17 +381,24 @@ export function MyProjects() {
                     </div>
                     <CardDescription>{project.client}</CardDescription>
                   </div>
-                  <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Completed</Badge>
+                  <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+                    Completed
+                  </Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="pb-2">
                 <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
                   <Calendar className="h-4 w-4" />
-                  <span>Completed: {new Date(project.completionDate).toLocaleDateString()}</span>
+                  <span>
+                    Completed:{' '}
+                    {new Date(project.completionDate).toLocaleDateString()}
+                  </span>
                 </div>
 
-                <p className="text-sm text-slate-700 mb-3">{project.description}</p>
+                <p className="text-sm text-slate-700 mb-3">
+                  {project.description}
+                </p>
 
                 {expandedProject === project.id && (
                   <div className="mt-4 space-y-4">
@@ -380,15 +407,18 @@ export function MyProjects() {
                       <div className="space-y-2">
                         {project.milestones.map((milestone) => (
                           <div
-                            key={milestone.id}
+                            key={milestone?._id}
                             className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
                           >
                             <div className="flex items-center gap-2">
                               <CheckCircle className="h-4 w-4 text-emerald-500" />
-                              <span className="text-sm">{milestone.title}</span>
+                              <span className="text-sm">{milestone?.title}</span>
                             </div>
                             <span className="text-xs text-slate-500">
-                              Completed on {new Date(milestone.dueDate).toLocaleDateString()}
+                              Completed on{' '}
+                              {new Date(
+                                milestone?.deadline
+                              ).toLocaleDateString()}
                             </span>
                           </div>
                         ))}
@@ -401,7 +431,11 @@ export function MyProjects() {
               </CardContent>
 
               <CardFooter className="flex justify-between">
-                <Button variant="outline" className="text-sm" onClick={() => toggleProjectExpansion(project.id)}>
+                <Button
+                  variant="outline"
+                  className="text-sm"
+                  onClick={() => toggleProjectExpansion(project.id)}
+                >
                   {expandedProject === project.id ? (
                     <>
                       <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
@@ -416,8 +450,8 @@ export function MyProjects() {
                 <Button
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={() => {
-                    setSelectedProject(project)
-                    setShowReport(true)
+                    setSelectedProject(project);
+                    setShowReport(true);
                   }}
                 >
                   View Report
@@ -428,6 +462,6 @@ export function MyProjects() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
