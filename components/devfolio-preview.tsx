@@ -24,6 +24,7 @@ interface DevfolioPreviewProps {
   profile: {
     fullName: string;
     username: string;
+    email: string;
     professionalTitle: string;
     profileImage: string;
     bio: string;

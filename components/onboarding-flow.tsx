@@ -46,6 +46,7 @@ const [previewImage, setPreviewImage] = useState('');
 const [profile, setProfile] = useState({
   fullName: '',
   username: '',
+  email: '',
   profileImage: media?.length > 0 ? media[0] : '',
   professionalTitle: '',
   bio: '',
@@ -237,6 +238,9 @@ const validateStep = (currentStep: number): boolean => {
   if (currentStep === 1) {
     if (!profile.fullName.trim()) newErrors.fullName = 'Full name is required';
     if (!profile.username.trim()) newErrors.username = 'Username is required';
+    if (!profile.profileImage.trim())
+      newErrors.profileImage = 'Profile image is required';
+    if (!profile.email.trim()) newErrors.email = 'Email is required';
     if (!profile.professionalTitle.trim())
       newErrors.professionalTitle = 'Professional title is required';
     if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
@@ -383,8 +387,8 @@ const prevStep = () => {
             <CardContent className="space-y-4">
               {step === 1 && (
                 <>
-                  <div className="flex justify-center mb-6">
-                    <div className="flex flex-col relative items-center">
+                  <div className="flex flex-col justify-center items-center mb-6">
+                    <div className="flex flex-col relative w-fit items-center">
                       <Avatar className="h-24 w-24">
                         <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
                           {profile.fullName
@@ -424,7 +428,31 @@ const prevStep = () => {
                         onChange={handleUploadImage}
                         className="hidden"
                       />
-                    </div>
+                    </div>{' '}
+                    {profile.profileImage}
+                    {errors.profileImage && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.profileImage}
+                      </p>
+                    )}
+                  </div>{' '}
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      placeholder=""
+                      type="email"
+                      autoComplete="email"
+                      value={profile.email}
+                      onChange={handleChange}
+                      className={errors.email ? 'border-red-500' : ''}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
