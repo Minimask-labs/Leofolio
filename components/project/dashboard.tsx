@@ -756,7 +756,7 @@ export function Dashboard({ userType }: DashboardProps) {
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6 mt-6">
           <ProjectTeam projectDetails={project} />
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
             {userType === 'employer' && project?.status !== 'completed' && (
               <Button
@@ -878,7 +878,7 @@ export function Dashboard({ userType }: DashboardProps) {
                 </Button>
               </CardFooter>
             </Card>
-          )}
+          )} */}
         </TabsContent>
 
         {/* Communication Tab */}
