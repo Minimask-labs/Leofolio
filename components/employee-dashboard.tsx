@@ -22,7 +22,7 @@ export function EmployeeDashboard({
         <div className="mb-8 flex justify-center md:justify-start">
           <EscrowWallet />
         </div>
-        <Tabs defaultValue="directory" className="mt-8">
+        {/* <Tabs defaultValue="directory" className="mt-8"> */}
         <ProjectManagement />
 
         {/* <Tabs defaultValue="directory" className="mt-8">

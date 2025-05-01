@@ -101,22 +101,25 @@ export default function RootLayout({
   const wallets = useMemo(
     () => [
       new LeoWalletAdapter({
-        appName: "Leofolio - Privacy-preserving Freelancer Platform",
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
       }),
       new PuzzleWalletAdapter({
         programIdPermissions: {
-          [WalletAdapterNetwork.TestnetBeta]: ["escrow_contract.aleo"],
+          [WalletAdapterNetwork.TestnetBeta]: [
+            'escrow_contract.aleo',
+            'escrow_contract_v1.aleo'
+          ]
         },
-        appName: "Aleo app",
-        appDescription: "A privacy-focused DeFi app",
-        appIconUrl: "",
+        appName: 'Aleo app',
+        appDescription: 'A privacy-focused DeFi app',
+        appIconUrl: ''
       }),
       new FoxWalletAdapter({
-        appName: "Leofolio - Privacy-preserving Freelancer Platform",
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
       }),
       new SoterWalletAdapter({
-        appName: "Leofolio - Privacy-preserving Freelancer Platform",
-      }),
+        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+      })
     ],
     []
   );
