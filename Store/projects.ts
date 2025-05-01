@@ -7,7 +7,8 @@ import {
   viewProjectInvitationsList,
   projectInviteResponse,
   completeMilestone,
-  approveMilestone
+  approveMilestone,
+  projectDetail
 } from '@/service/projects';
 
 export interface Medias {
@@ -61,6 +62,7 @@ export type UserState = {
   loading: boolean;
   projects: DataResponse | null;
   projects_invites: any | null;
+  project_details: any | null;
 };
 
 export type UserActions = {
@@ -79,6 +81,7 @@ export type UserActions = {
   handleViewProjectInvitationsList: (params?: any) => Promise<void>;
   handleCompleteMilestone: (projectId: string, milestoneId: string) => Promise<void>;
   handleApproveMilestone: (projectId: string, milestoneId: string) => Promise<void>;
+  handleViewProjectDetail: (projectId: string) => Promise<void>;
   // Add more actions as needed
 };
 
@@ -86,6 +89,7 @@ export type UserStore = UserState & UserActions;
 
 export const useProjectStore = create<UserStore>((set) => ({
   projects: null,
+  project_details: null,
   projects_invites: null,
   status: 'idle',
   error: null,
@@ -172,8 +176,12 @@ export const useProjectStore = create<UserStore>((set) => ({
     set({ loading: true, status: 'loading', error: null });
     try {
       const response = await viewProjectInvitationsList(params);
-      set({ loading: false, projects_invites: response.data, status: 'succeeded' });
-     } catch (error: any) {
+      set({
+        loading: false,
+        projects_invites: response.data,
+        status: 'succeeded'
+      });
+    } catch (error: any) {
       set({ loading: false, status: 'failed', error: error.message });
       throw error;
     }
@@ -202,6 +210,16 @@ export const useProjectStore = create<UserStore>((set) => ({
       set({ loading: false, status: 'succeeded' });
       return response;
     } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+  handleViewProjectDetail: async (projectId: string) => {
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await projectDetail({ projectId });
+      set({ loading: false, project_details: response.data, status: 'succeeded' });
+     } catch (error: any) {
       set({ loading: false, status: 'failed', error: error.message });
       throw error;
     }
