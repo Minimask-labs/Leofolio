@@ -18,7 +18,7 @@ import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base';
 import { LeoWalletAdapter } from '@demox-labs/aleo-wallet-adapter-leo';
 import { walletAuth } from '@/service/auth';
-import { useStore } from '@/Store/user';
+import { useStore } from '@/store/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, redirect } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export function UserTypeSelection() {
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { publicKey, wallet,connected, connecting } = useWallet();
+  const { publicKey, wallet, connected, connecting } = useWallet();
   const {
     saveUserToken,
     saveUserData,
@@ -41,7 +41,6 @@ export function UserTypeSelection() {
     userData
   } = useStore();
 
- 
   const handleConnect = async () => {
     setLoading(true);
     if (publicKey) {
@@ -51,11 +50,11 @@ export function UserTypeSelection() {
       if (!publicKey) throw new WalletNotConnectedError();
       const bytes = new TextEncoder().encode(publicKey);
       if (!wallet?.adapter) throw new Error('Wallet adapter is undefined');
-        const signatureBytes = await (
-          wallet?.adapter as LeoWalletAdapter
-        ).signMessage(bytes);
-        const signature = new TextDecoder().decode(signatureBytes);
-       if (signature) {
+      const signatureBytes = await (
+        wallet?.adapter as LeoWalletAdapter
+      ).signMessage(bytes);
+      const signature = new TextDecoder().decode(signatureBytes);
+      if (signature) {
         try {
           const body = {
             walletAddress: publicKey.toString(),
@@ -72,10 +71,10 @@ export function UserTypeSelection() {
             saveUserType(response?.data?.user?.role);
             if (response?.data?.user?.role === 'freelancer') {
               // Use router.replace for faster navigation (no history entry)
-              if(response?.data?.isNewUser) {
+              if (response?.data?.isNewUser) {
                 router.replace('/onboarding/freelancer');
-              }else{
-              router.replace('/freelancer');
+              } else {
+                router.replace('/freelancer');
               }
               // Show toast after navigation
               toast({
@@ -83,12 +82,12 @@ export function UserTypeSelection() {
                 variant: 'default'
               });
             } else if (response?.data?.user?.role === 'employer') {
-                if (response?.data?.isNewUser) {
-                  router.replace('/onboarding/freelancer');
-                } else {
+              if (response?.data?.isNewUser) {
+                router.replace('/onboarding/freelancer');
+              } else {
                 router.replace('/employer');
-              }   
- 
+              }
+
               toast({
                 title: response?.message || 'Login successful',
                 variant: 'default'
@@ -98,9 +97,9 @@ export function UserTypeSelection() {
         } catch (error) {
           console.error('Error during authentication:', error);
           // Handle error (e.g., show an error message)
-            const errorMessage =
-              (error as any)?.response?.data?.message ||
-              'An unexpected error occurred.';
+          const errorMessage =
+            (error as any)?.response?.data?.message ||
+            'An unexpected error occurred.';
           toast({
             title: errorMessage,
             description: `There was a problem with your request. ${errorMessage}`,
@@ -202,7 +201,7 @@ export function UserTypeSelection() {
       </CardContent>
 
       <CardFooter>
-        { connected ? (
+        {connected ? (
           <Button
             disabled
             className={`w-full ${
