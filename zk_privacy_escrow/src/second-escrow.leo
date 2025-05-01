@@ -1,6 +1,5 @@
 program escrow_contract.aleo {
     // On-chain storage mappings
-    mapping escrow_accounts: address => u64;
     mapping job_escrow: u64 => u64;
     
     // Simple Job struct with minimal necessary info
@@ -15,8 +14,7 @@ program escrow_contract.aleo {
     // Storage mapping for jobs
     mapping jobs: u64 => Job;
 
-    
-    /* Job Creation with Escrow */
+    /* Job Creation with Direct Escrow */
     async transition create_job(
         private job_id: u64,
         private payment_amount: u64
@@ -33,7 +31,7 @@ program escrow_contract.aleo {
             status: 0u8
         };
         
-        // Lock funds in escrow
+        // Store job and escrow amount directly
         return (job, finalize_create_job(job_id, employer, payment_amount));
     }
     
@@ -51,11 +49,7 @@ program escrow_contract.aleo {
             status: 0u8
         });
         
-        // Transfer funds from employer's account to job escrow
-        let current_balance: u64 = Mapping::get_or_use(escrow_accounts, employer, 0u64);
-        assert(current_balance >= payment_amount);
-        
-        Mapping::set(escrow_accounts, employer, current_balance - payment_amount);
+        // Store escrow amount directly with job
         Mapping::set(job_escrow, job_id, payment_amount);
     }
     
@@ -147,9 +141,8 @@ program escrow_contract.aleo {
         
         // Transfer funds from escrow to freelancer
         let escrow_amount: u64 = Mapping::get(job_escrow, job_id);
-        let freelancer_balance: u64 = Mapping::get_or_use(escrow_accounts, job.freelancer, 0u64);
         
-        Mapping::set(escrow_accounts, job.freelancer, freelancer_balance + escrow_amount);
+        // Clear escrow and complete payment
         Mapping::set(job_escrow, job_id, 0u64);
     }
     
@@ -215,42 +208,8 @@ program escrow_contract.aleo {
         // Get escrow amount
         let escrow_amount: u64 = Mapping::get(job_escrow, job_id);
         
-        if to_employer {
-            // Refund to employer
-            let employer_balance: u64 = Mapping::get_or_use(escrow_accounts, job.employer, 0u64);
-            Mapping::set(escrow_accounts, job.employer, employer_balance + escrow_amount);
-        } else {
-            // Pay freelancer
-            let freelancer_balance: u64 = Mapping::get_or_use(escrow_accounts, job.freelancer, 0u64);
-            Mapping::set(escrow_accounts, job.freelancer, freelancer_balance + escrow_amount);
-        }
-        
         // Clear escrow
         Mapping::set(job_escrow, job_id, 0u64);
-    }
-    
-    /* Fund Escrow Account */
-    async transition fund_account(private amount: u64) -> Future {
-        let user: address = self.caller;
-        
-        return finalize_fund_account(user, amount);
-    }
-    
-    async function finalize_fund_account(
-        public user: address, 
-        public amount: u64
-    ) {
-        let current_balance: u64 = Mapping::get_or_use(escrow_accounts, user, 0u64);
-        Mapping::set(escrow_accounts, user, current_balance + amount);
-    }
-    
-    /* Get Account Balance */
-    async transition get_balance(private user: address) -> Future {
-        return finalize_get_balance(user);
-    }
-    
-    async function finalize_get_balance(public user: address) {
-        let balance: u64 = Mapping::get_or_use(escrow_accounts, user, 0u64);
     }
     
     /* Get Job Details */
