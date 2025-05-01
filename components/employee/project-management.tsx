@@ -41,6 +41,7 @@ import { ProjectReport } from '@/components/project-report';
 import { useUserProfileStore } from '@/store/userProfile';
 import { useProjectStore } from '@/store/projects';
 import { AnyAaaaRecord } from 'dns';
+import { useRouter, redirect } from 'next/navigation';
 
 export function ProjectManagement() {
   const [isCreatingProject, setIsCreatingProject] = useState(false);
@@ -86,6 +87,8 @@ export function ProjectManagement() {
     ],
     price: 5000 // aleo token
   });
+    const router = useRouter();
+
   const uploadedImage = async (image: any) => {
     setIsUploading(true);
     const formData = new FormData();
@@ -118,196 +121,6 @@ export function ProjectManagement() {
     }
   };
 
-  // Mock project data
-  // const projects = [
-  //   {
-  //     id: 1,
-  //     name: 'Website Redesign',
-  //     description: 'Complete overhaul of company website with new branding',
-  //     status: 'in_progress',
-  //     deadline: '2023-09-30',
-  //     startDate: '2023-07-01',
-  //     freelancers: [
-  //       { name: 'Alex Morgan', role: 'Full Stack Developer' },
-  //       { name: 'Jamie Chen', role: 'UI/UX Designer' }
-  //     ],
-  //     progress: 65,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Requirements Gathering',
-  //         status: 'completed',
-  //         dueDate: '2023-07-10'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'UI/UX Design',
-  //         status: 'completed',
-  //         dueDate: '2023-07-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Frontend Development',
-  //         status: 'in-progress',
-  //         dueDate: '2023-08-31'
-  //       },
-  //       {
-  //         id: 4,
-  //         title: 'Backend Integration',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-15'
-  //       },
-  //       {
-  //         id: 5,
-  //         title: 'Testing & Launch',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-30'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-08-15',
-  //         content:
-  //           "The designs look great! I've shared some feedback on the checkout flow in the attached document.",
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Alex Morgan',
-  //         role: 'Freelancer',
-  //         date: '2023-08-16',
-  //         content:
-  //           "Thanks for the feedback! I've updated the checkout flow based on your suggestions. Please take a look at the latest designs.",
-  //         isClient: false
-  //       },
-  //       {
-  //         id: 3,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-08-18',
-  //         content:
-  //           'The updated checkout flow looks perfect. Please proceed with the implementation.',
-  //         isClient: true
-  //       }
-  //     ],
-  //     client: 'Retail Innovations Inc.',
-  //     clientContact: 'Sarah Johnson'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Mobile App Development',
-  //     description: 'Cross-platform mobile application for customer engagement',
-  //     status: 'planning',
-  //     deadline: '2023-11-15',
-  //     startDate: '2023-06-15',
-  //     freelancers: [{ name: 'Taylor Reed', role: 'Mobile Developer' }],
-  //     progress: 20,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Requirements Analysis',
-  //         status: 'completed',
-  //         dueDate: '2023-07-30'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'UI/UX Design',
-  //         status: 'in-progress',
-  //         dueDate: '2023-08-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Core Functionality',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-30'
-  //       },
-  //       {
-  //         id: 4,
-  //         title: 'Testing & Deployment',
-  //         status: 'not-started',
-  //         dueDate: '2023-11-15'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-07-25',
-  //         content:
-  //           "I've shared the requirements document. Let me know if you have any questions.",
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Taylor Reed',
-  //         role: 'Freelancer',
-  //         date: '2023-07-26',
-  //         content:
-  //           "Thanks for the document. I'll review it and get back to you with any questions.",
-  //         isClient: false
-  //       }
-  //     ],
-  //     client: 'HealthTrack',
-  //     clientContact: 'Jessica Williams'
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'DevOps Infrastructure',
-  //     description: 'Modernize deployment pipeline and cloud infrastructure',
-  //     status: 'completed',
-  //     deadline: '2023-06-15',
-  //     startDate: '2023-05-01',
-  //     completionDate: '2023-06-10',
-  //     freelancers: [{ name: 'Sam Wilson', role: 'DevOps Engineer' }],
-  //     progress: 100,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Infrastructure Assessment',
-  //         status: 'completed',
-  //         dueDate: '2023-05-15'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'CI/CD Pipeline Setup',
-  //         status: 'completed',
-  //         dueDate: '2023-05-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Cloud Migration',
-  //         status: 'completed',
-  //         dueDate: '2023-06-15'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-06-16',
-  //         content:
-  //           'Great work on the infrastructure upgrade! Everything is running smoothly.',
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Sam Wilson',
-  //         role: 'Freelancer',
-  //         date: '2023-06-16',
-  //         content:
-  //           "Thank you! I've documented everything in the handover document. Let me know if you need any clarification.",
-  //         isClient: false
-  //       }
-  //     ],
-  //     client: 'Tech Solutions Inc.',
-  //     clientContact: 'Michael Chen'
-  //   }
-  // ];
 
   const createProject = async () => {
     // Reset previous errors
@@ -1178,13 +991,13 @@ export function ProjectManagement() {
                                 Milestones
                               </h4>
                               <div className="space-y-2">
-                                {project.milestones.map((milestone: any) => (
+                                {project?.milestones?.map((milestone: any) => (
                                   <div
-                                    key={milestone._id}
+                                    key={milestone?._id}
                                     className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                                   >
                                     <div className="flex items-center gap-2">
-                                      {milestone.status === 'completed' ? (
+                                      {milestone?.status === 'completed' ? (
                                         <CheckCircle className="h-4 w-4 text-emerald-500" />
                                       ) : milestone.status === 'in_progress' ? (
                                         <Clock className="h-4 w-4 text-blue-500" />
@@ -1255,14 +1068,16 @@ export function ProjectManagement() {
 
                         <Button
                           className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
-                          onClick={() => {
-                            setSelectedProject(project);
-                            setShowDashboard(true);
-                          }}
+                          onClick={() => router.replace(`employer/project-dashboard/${project._id}`)}
                         >
                           Project Dashboard
                         </Button>
                       </CardFooter>
+                      {/*                           onClick={() => {
+                            setSelectedProject(project);
+                            setShowDashboard(true);
+                          }}
+ */}
                     </Card>
                   ))}
             </div>

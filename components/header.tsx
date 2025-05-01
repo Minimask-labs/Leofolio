@@ -54,7 +54,7 @@ export function Header({}: HeaderProps) {
           />
           <h1 className="text-2xl font-bold">Leofolio</h1>
           <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 ml-2">
-            {userType === 'freelancer' ? 'Freelancer' : 'Employee'}
+            {userType === 'freelancer' ? 'Freelancer' : 'Employer'}
           </span>
         </div>{' '}
         <div>

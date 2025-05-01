@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
-import { ProjectUpdates } from "./project-updates"
+import { ProjectUpdates } from "@/components/project-updates"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -33,14 +33,15 @@ import {
   Gift,
 } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
-
-interface ProjectDashboardProps {
-  project: any
-  userType: "freelancer" | "employee"
+import { ProjectTeam } from './projectTeam';
+interface DashboardProps {
+   userType: "freelancer" | "employer"
 }
+import { useProjectStore } from '@/store/projects';
 
-export function ProjectDashboard({ project: initialProject, userType }: ProjectDashboardProps) {
-  const [project, setProject] = useState(initialProject)
+export function Dashboard({ userType }: DashboardProps) {
+ const { handleCreateProject, fetchProjects, projects } = useProjectStore();
+  const [project, setProject] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview")
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false)
   const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(null)
@@ -144,9 +145,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project?.milestones.length
-    const completedMilestones = project?.milestones.filter((m: any) => m.status === "completed").length
-    const inProgressMilestones = project?.milestones.filter((m: any) => m.status === "in-progress").length
+    const totalMilestones = project?.milestones?.length
+    const completedMilestones = project?.milestones?.filter((m: any) => m.status === "completed")?.length
+    const inProgressMilestones = project?.milestones?.filter((m: any) => m.status === "in-progress")?.length
 
     const startDate = new Date(project?.startDate)
     const endDate = project?.completionDate ? new Date(project?.completionDate) : new Date(project?.deadline)
@@ -177,11 +178,21 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         return <Badge>{status}</Badge>
     }
   }
+  useEffect(() => {
+    fetchProjects();
+    console.log('Projects:', projects);
+    if (projects?.data && projects?.data.length > 0) {
+      setProject(projects.data[0]);
+          console.log('Project:', project);
+
+    }
+
+  }, [fetchProjects]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">
             {project?.name || project?.title}
@@ -189,7 +200,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
           <p className="text-slate-600">{project?.client || project?.company}</p>
         </div>
         <div className="flex items-center gap-3">
-          {project?.status !== 'completed' && userType === 'employee' && (
+          {project?.status !== 'completed' && userType === 'employer' && (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -368,7 +379,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </p>
                   )}
 
-                  {userType === 'employee' && (
+                  {userType === 'employer' && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -438,7 +449,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <div>
                       <p className="text-xs font-medium">Current Phase</p>
                       <p className="text-xs text-slate-500">
-                        {project?.milestones.find(
+                        {project?.milestones?.find(
                           (m: any) => m.status === 'in-progress'
                         )?.title || 'Planning'}
                       </p>
@@ -603,7 +614,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === 'employee' && project?.status !== 'completed' && (
+            {userType === 'employer' && project?.status !== 'completed' && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -691,7 +702,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
           </div>
 
           <div className="space-y-4">
-            {project?.milestones.map((milestone: any) => (
+            {project?.milestones?.map((milestone: any) => (
               <Card key={milestone.id}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
@@ -718,7 +729,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </span>
                   </div>
                 </CardContent>
-                {userType === 'employee' && project?.status !== 'completed' && (
+                {userType === 'employer' && project?.status !== 'completed' && (
                   <CardFooter>
                     <Select
                       defaultValue={milestone.status}
@@ -744,9 +755,10 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
 
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6 mt-6">
+          <ProjectTeam projectDetails={project} />
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
-            {userType === 'employee' && project?.status !== 'completed' && (
+            {userType === 'employer' && project?.status !== 'completed' && (
               <Button
                 size="sm"
                 className="gap-2"

@@ -20,4 +20,84 @@ export const createProject = async (payload: any ) => {
     throw error;
   }
 };
+// employer project invite
+ export const viewProjectInvitations = async (params: { projectId: string }) => {
+  try {
+    const response = await AxiosService.get('invitation/employer/project', {
+      params: params
+    });
+    return response?.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
 
+export const sendProjectInvite = async (payload: {
+  projectId: string;
+  freelancerId: string;
+  message:string;
+}) => {
+  try {
+    const response = await AxiosService.post(`invitation/project`, payload);
+    return response.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+// freelancer project invite
+ export const viewProjectInvitationsList = async (params?: any) => {
+  try {
+    const response = await AxiosService.get('invitation/freelancer/project', {
+      params: params
+    });
+    return response?.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
+   export const projectInviteResponse = async (payload: {
+    invitationId: string;
+    response: string; // accept | reject
+  }) => {
+    try {
+      const response = await AxiosService.post(
+        `invitation/project/respond`,
+        payload
+      );
+      return response.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // milestone
+   export const completeMilestone = async (payload: {
+    projectId: string;
+    milestoneId: string;
+  }) => {
+    try {
+      const response = await AxiosService.post(
+        `project/milestones/complete`,
+        payload
+      );
+      return response.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    } 
+  };
+   export const approveMilestone = async (payload: {
+    projectId: string;
+    milestoneId: string;
+  }) => {
+    try {
+      const response = await AxiosService.post(
+        `project/milestones/approve`,
+        payload
+      );
+      return response.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    } 
+  };
