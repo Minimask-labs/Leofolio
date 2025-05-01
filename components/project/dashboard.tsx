@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { ProjectUpdates } from '@/components/project-updates';
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { ProjectUpdates } from "@/components/project-updates";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -31,8 +31,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Calendar,
   CheckCircle,
@@ -43,37 +43,41 @@ import {
   ArrowRight,
   FileBarChart,
   Download,
-  Gift
-} from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
-import { ProjectTeam } from './projectTeam';
+  Gift,
+  ArrowLeft,
+} from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import { ProjectTeam } from "./projectTeam";
 interface DashboardProps {
-  userType: 'freelancer' | 'employer';
+  userType: "freelancer" | "employer";
 }
-import { useProjectStore } from '@/store/projects';
+import { useProjectStore } from "@/store/projects";
+import { useRouter } from "next/navigation";
+import { BackButton } from "../back-button";
 
 export function Dashboard({ userType }: DashboardProps) {
+  const router = useRouter();
   const { handleCreateProject, fetchProjects, projects } = useProjectStore();
   const [project, setProject] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
   const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
     null
   );
   const [newMilestone, setNewMilestone] = useState({
-    title: '',
-    dueDate: '',
-    status: 'not-started'
+    title: "",
+    dueDate: "",
+    status: "not-started",
   });
 
   // Mock available freelancers for assignment
   const availableFreelancers = [
-    { id: 1, name: 'Alex Morgan', role: 'Full Stack Developer' },
-    { id: 2, name: 'Jamie Chen', role: 'UI/UX Designer' },
-    { id: 3, name: 'Sam Wilson', role: 'DevOps Engineer' },
-    { id: 4, name: 'Taylor Reed', role: 'Mobile Developer' },
-    { id: 5, name: 'Jordan Lee', role: 'Data Scientist' },
-    { id: 6, name: 'Casey Kim', role: 'Blockchain Developer' }
+    { id: 1, name: "Alex Morgan", role: "Full Stack Developer" },
+    { id: 2, name: "Jamie Chen", role: "UI/UX Designer" },
+    { id: 3, name: "Sam Wilson", role: "DevOps Engineer" },
+    { id: 4, name: "Taylor Reed", role: "Mobile Developer" },
+    { id: 5, name: "Jordan Lee", role: "Data Scientist" },
+    { id: 6, name: "Casey Kim", role: "Blockchain Developer" },
   ];
 
   // Function to update milestone status
@@ -89,15 +93,15 @@ export function Dashboard({ userType }: DashboardProps) {
       milestones: updatedMilestones,
       // Recalculate progress based on completed milestones
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
+        (updatedMilestones.filter((m: any) => m.status === "completed").length /
           updatedMilestones.length) *
           100
-      )
+      ),
     });
 
     toast({
-      title: 'Milestone Updated',
-      description: `The milestone status has been updated to ${newStatus}.`
+      title: "Milestone Updated",
+      description: `The milestone status has been updated to ${newStatus}.`,
     });
   };
 
@@ -105,9 +109,9 @@ export function Dashboard({ userType }: DashboardProps) {
   const addMilestone = () => {
     if (!newMilestone.title || !newMilestone.dueDate) {
       toast({
-        title: 'Missing Information',
-        description: 'Please provide a title and due date for the milestone.',
-        variant: 'destructive'
+        title: "Missing Information",
+        description: "Please provide a title and due date for the milestone.",
+        variant: "destructive",
       });
       return;
     }
@@ -116,7 +120,7 @@ export function Dashboard({ userType }: DashboardProps) {
       id: Math.max(0, ...project.milestones.map((m: any) => m.id)) + 1,
       title: newMilestone.title,
       status: newMilestone.status,
-      dueDate: newMilestone.dueDate
+      dueDate: newMilestone.dueDate,
     };
 
     const updatedMilestones = [...project.milestones, newMilestoneObj];
@@ -125,17 +129,17 @@ export function Dashboard({ userType }: DashboardProps) {
       ...project,
       milestones: updatedMilestones,
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
+        (updatedMilestones.filter((m: any) => m.status === "completed").length /
           updatedMilestones.length) *
           100
-      )
+      ),
     });
 
-    setNewMilestone({ title: '', dueDate: '', status: 'not-started' });
+    setNewMilestone({ title: "", dueDate: "", status: "not-started" });
 
     toast({
-      title: 'Milestone Added',
-      description: `The new milestone "${newMilestone.title}" has been added to the project.`
+      title: "Milestone Added",
+      description: `The new milestone "${newMilestone.title}" has been added to the project.`,
     });
   };
 
@@ -148,23 +152,23 @@ export function Dashboard({ userType }: DashboardProps) {
     // Check if freelancer is already assigned
     if (project.freelancers.some((f: any) => f.name === freelancer.name)) {
       toast({
-        title: 'Freelancer Already Assigned',
+        title: "Freelancer Already Assigned",
         description: `${freelancer.name} is already assigned to this project.`,
-        variant: 'destructive'
+        variant: "destructive",
       });
       return;
     }
 
     setProject({
       ...project,
-      freelancers: [...project.freelancers, freelancer]
+      freelancers: [...project.freelancers, freelancer],
     });
 
     setIsAssigningFreelancer(false);
 
     toast({
-      title: 'Freelancer Assigned',
-      description: `${freelancer.name} has been assigned to the project.`
+      title: "Freelancer Assigned",
+      description: `${freelancer.name} has been assigned to the project.`,
     });
   };
 
@@ -172,10 +176,10 @@ export function Dashboard({ userType }: DashboardProps) {
   const calculateProjectStats = () => {
     const totalMilestones = project?.milestones?.length;
     const completedMilestones = project?.milestones?.filter(
-      (m: any) => m.status === 'completed'
+      (m: any) => m.status === "completed"
     )?.length;
     const inProgressMilestones = project?.milestones?.filter(
-      (m: any) => m.status === 'in-progress'
+      (m: any) => m.status === "in-progress"
     )?.length;
 
     const startDate = new Date(project?.startDate);
@@ -194,7 +198,7 @@ export function Dashboard({ userType }: DashboardProps) {
         totalMilestones > 0
           ? Math.round((completedMilestones / totalMilestones) * 100)
           : 0,
-      totalDays
+      totalDays,
     };
   };
 
@@ -202,25 +206,25 @@ export function Dashboard({ userType }: DashboardProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return (
           <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
             Completed
           </Badge>
         );
-      case 'in-progress':
+      case "in-progress":
         return (
           <Badge className="bg-blue-100 text-blue-800 border-blue-200">
             In Progress
           </Badge>
         );
-      case 'planning':
+      case "planning":
         return (
           <Badge className="bg-amber-100 text-amber-800 border-amber-200">
             Planning
           </Badge>
         );
-      case 'not-started':
+      case "not-started":
         return (
           <Badge className="bg-slate-100 text-slate-800 border-slate-200">
             Not Started
@@ -232,15 +236,18 @@ export function Dashboard({ userType }: DashboardProps) {
   };
   useEffect(() => {
     fetchProjects();
-    console.log('Projects:', projects);
+    console.log("Projects:", projects);
     if (projects?.data && projects?.data.length > 0) {
       setProject(projects.data[0]);
-      console.log('Project:', project);
+      console.log("Project:", project);
     }
   }, [fetchProjects]);
 
   return (
     <div className="space-y-6">
+      <div className="mb-2">
+        <BackButton path="/employer" />
+      </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -252,7 +259,7 @@ export function Dashboard({ userType }: DashboardProps) {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {project?.status !== 'completed' && userType === 'employer' && (
+          {project?.status !== "completed" && userType === "employer" && (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -370,9 +377,9 @@ export function Dashboard({ userType }: DashboardProps) {
                       className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
                     >
                       <div className="flex items-center gap-2">
-                        {milestone.status === 'completed' ? (
+                        {milestone.status === "completed" ? (
                           <CheckCircle className="h-4 w-4 text-emerald-500" />
-                        ) : milestone.status === 'in-progress' ? (
+                        ) : milestone.status === "in-progress" ? (
                           <Clock className="h-4 w-4 text-blue-500" />
                         ) : (
                           <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -387,7 +394,7 @@ export function Dashboard({ userType }: DashboardProps) {
                 <Button
                   variant="outline"
                   className="w-full mt-2 text-sm"
-                  onClick={() => setActiveTab('milestones')}
+                  onClick={() => setActiveTab("milestones")}
                 >
                   View All Milestones <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
@@ -409,9 +416,9 @@ export function Dashboard({ userType }: DashboardProps) {
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
                             {freelancer.name
-                              .split(' ')
+                              .split(" ")
                               .map((n: string) => n[0])
-                              .join('')}
+                              .join("")}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -431,12 +438,12 @@ export function Dashboard({ userType }: DashboardProps) {
                     </p>
                   )}
 
-                  {userType === 'employer' && (
+                  {userType === "employer" && (
                     <Button
                       variant="outline"
                       size="sm"
                       className="w-full mt-2 text-xs"
-                      onClick={() => setActiveTab('team')}
+                      onClick={() => setActiveTab("team")}
                     >
                       Manage Team
                     </Button>
@@ -469,7 +476,7 @@ export function Dashboard({ userType }: DashboardProps) {
                   variant="outline"
                   size="sm"
                   className="w-full mt-4 text-xs"
-                  onClick={() => setActiveTab('communication')}
+                  onClick={() => setActiveTab("communication")}
                 >
                   View All Updates
                 </Button>
@@ -502,8 +509,8 @@ export function Dashboard({ userType }: DashboardProps) {
                       <p className="text-xs font-medium">Current Phase</p>
                       <p className="text-xs text-slate-500">
                         {project?.milestones?.find(
-                          (m: any) => m.status === 'in-progress'
-                        )?.title || 'Planning'}
+                          (m: any) => m.status === "in-progress"
+                        )?.title || "Planning"}
                       </p>
                     </div>
                   </div>
@@ -520,7 +527,7 @@ export function Dashboard({ userType }: DashboardProps) {
                     </div>
                   </div>
 
-                  {project?.status === 'completed' && (
+                  {project?.status === "completed" && (
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
                         <CheckCircle className="h-3 w-3 text-emerald-600" />
@@ -540,7 +547,7 @@ export function Dashboard({ userType }: DashboardProps) {
             </Card>
           </div>
 
-          {project?.status === 'completed' && (
+          {project?.status === "completed" && (
             <Card>
               <CardHeader>
                 <CardTitle>Project Completion Report</CardTitle>
@@ -596,14 +603,14 @@ export function Dashboard({ userType }: DashboardProps) {
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
                             {project?.clientContact
-                              ?.split(' ')
+                              ?.split(" ")
                               .map((n: string) => n[0])
-                              .join('') || 'CL'}
+                              .join("") || "CL"}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium">
-                            {project?.clientContact || 'Client'}
+                            {project?.clientContact || "Client"}
                           </p>
                           <p className="text-xs text-slate-500">
                             {new Date(
@@ -666,7 +673,7 @@ export function Dashboard({ userType }: DashboardProps) {
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === 'employer' && project?.status !== 'completed' && (
+            {userType === "employer" && project?.status !== "completed" && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -691,7 +698,7 @@ export function Dashboard({ userType }: DashboardProps) {
                         onChange={(e) =>
                           setNewMilestone({
                             ...newMilestone,
-                            title: e.target.value
+                            title: e.target.value,
                           })
                         }
                       />
@@ -705,7 +712,7 @@ export function Dashboard({ userType }: DashboardProps) {
                         onChange={(e) =>
                           setNewMilestone({
                             ...newMilestone,
-                            dueDate: e.target.value
+                            dueDate: e.target.value,
                           })
                         }
                       />
@@ -738,9 +745,9 @@ export function Dashboard({ userType }: DashboardProps) {
                       variant="outline"
                       onClick={() =>
                         setNewMilestone({
-                          title: '',
-                          dueDate: '',
-                          status: 'not-started'
+                          title: "",
+                          dueDate: "",
+                          status: "not-started",
                         })
                       }
                     >
@@ -759,9 +766,9 @@ export function Dashboard({ userType }: DashboardProps) {
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2">
-                      {milestone.status === 'completed' ? (
+                      {milestone.status === "completed" ? (
                         <CheckCircle className="h-5 w-5 text-emerald-500" />
-                      ) : milestone.status === 'in-progress' ? (
+                      ) : milestone.status === "in-progress" ? (
                         <Clock className="h-5 w-5 text-blue-500" />
                       ) : (
                         <AlertCircle className="h-5 w-5 text-slate-400" />
@@ -781,7 +788,7 @@ export function Dashboard({ userType }: DashboardProps) {
                     </span>
                   </div>
                 </CardContent>
-                {userType === 'employer' && project?.status !== 'completed' && (
+                {userType === "employer" && project?.status !== "completed" && (
                   <CardFooter>
                     <Select
                       defaultValue={milestone.status}
@@ -957,23 +964,23 @@ export function Dashboard({ userType }: DashboardProps) {
               <div className="divide-y">
                 {[
                   {
-                    name: 'Project Proposal.pdf',
-                    type: 'pdf',
-                    size: '2.4 MB',
-                    date: '2023-07-01'
+                    name: "Project Proposal.pdf",
+                    type: "pdf",
+                    size: "2.4 MB",
+                    date: "2023-07-01",
                   },
                   {
-                    name: 'Requirements Specification.docx',
-                    type: 'docx',
-                    size: '1.8 MB',
-                    date: '2023-07-05'
+                    name: "Requirements Specification.docx",
+                    type: "docx",
+                    size: "1.8 MB",
+                    date: "2023-07-05",
                   },
                   {
-                    name: 'Design Assets.zip',
-                    type: 'zip',
-                    size: '15.2 MB',
-                    date: '2023-07-15'
-                  }
+                    name: "Design Assets.zip",
+                    type: "zip",
+                    size: "15.2 MB",
+                    date: "2023-07-15",
+                  },
                 ].map((file, idx) => (
                   <div
                     key={idx}
@@ -986,7 +993,7 @@ export function Dashboard({ userType }: DashboardProps) {
                       <div>
                         <p className="font-medium">{file.name}</p>
                         <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
+                          {file.size} • Uploaded on{" "}
                           {new Date(file.date).toLocaleDateString()}
                         </p>
                       </div>
@@ -1006,17 +1013,17 @@ export function Dashboard({ userType }: DashboardProps) {
               <div className="divide-y">
                 {[
                   {
-                    name: 'Final Presentation.pptx',
-                    type: 'pptx',
-                    size: '5.7 MB',
-                    date: '2023-09-20'
+                    name: "Final Presentation.pptx",
+                    type: "pptx",
+                    size: "5.7 MB",
+                    date: "2023-09-20",
                   },
                   {
-                    name: 'Source Code.zip',
-                    type: 'zip',
-                    size: '28.3 MB',
-                    date: '2023-09-25'
-                  }
+                    name: "Source Code.zip",
+                    type: "zip",
+                    size: "28.3 MB",
+                    date: "2023-09-25",
+                  },
                 ].map((file, idx) => (
                   <div
                     key={idx}
@@ -1029,7 +1036,7 @@ export function Dashboard({ userType }: DashboardProps) {
                       <div>
                         <p className="font-medium">{file.name}</p>
                         <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
+                          {file.size} • Uploaded on{" "}
                           {new Date(file.date).toLocaleDateString()}
                         </p>
                       </div>
@@ -1046,7 +1053,7 @@ export function Dashboard({ userType }: DashboardProps) {
       </Tabs>
 
       {/* If the project is completed, show the certificate/reward section */}
-      {project?.status === 'completed' && (
+      {project?.status === "completed" && (
         <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-4">
