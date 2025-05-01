@@ -101,3 +101,14 @@ export const sendProjectInvite = async (payload: {
       throw error;
     } 
   };
+  // http://localhost:4005/api/v1/project/detail?projectId=6812816d336faaed3397f30a
+  export const projectDetail = async (params: { projectId: string }) => {
+    try {
+      const response = await AxiosService.get('project/detail', {
+        params: params
+      });
+      return response?.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    }
+  };

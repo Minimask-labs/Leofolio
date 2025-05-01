@@ -54,11 +54,22 @@ interface DashboardProps {
 import { useProjectStore } from "@/store/projects";
 import { useRouter } from "next/navigation";
 import { BackButton } from "../back-button";
+ import { useProjectStore } from '@/store/projects';
+import { useRouter, useParams } from 'next/navigation';
 
 export function Dashboard({ userType }: DashboardProps) {
-  const router = useRouter();
-  const { handleCreateProject, fetchProjects, projects } = useProjectStore();
-  const [project, setProject] = useState<any>(null);
+//   const router = useRouter();
+//   const { handleCreateProject, fetchProjects, projects } = useProjectStore();
+
+// export function Dashboard({ userType }: DashboardProps) {
+  const {
+    handleCreateProject,
+    fetchProjects,
+    projects,
+    handleViewProjectDetail,
+    project_details
+  } = useProjectStore();
+   const [project, setProject] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
   const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
@@ -69,6 +80,9 @@ export function Dashboard({ userType }: DashboardProps) {
     dueDate: "",
     status: "not-started",
   });
+  const router = useRouter();
+  const params = useParams();
+  const projectId = params.id;
 
   // Mock available freelancers for assignment
   const availableFreelancers = [
@@ -235,11 +249,14 @@ export function Dashboard({ userType }: DashboardProps) {
     }
   };
   useEffect(() => {
-    fetchProjects();
-    console.log("Projects:", projects);
-    if (projects?.data && projects?.data.length > 0) {
-      setProject(projects.data[0]);
-      console.log("Project:", project);
+
+  if (projectId !== undefined) {
+  handleViewProjectDetail(String(projectId));
+  }
+    console.log('Projects:', projects);
+    if (project_details?.data) {
+      setProject(project_details?.data);
+      console.log('Project:', project_details);
     }
   }, [fetchProjects]);
 
