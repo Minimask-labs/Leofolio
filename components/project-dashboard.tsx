@@ -1,16 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { ProjectUpdates } from "./project-updates"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { ProjectUpdates } from "./project-updates";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Calendar,
   CheckCircle,
@@ -31,20 +44,29 @@ import {
   FileBarChart,
   Download,
   Gift,
-} from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+} from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 interface ProjectDashboardProps {
-  project: any
-  userType: "freelancer" | "employee"
+  project: any;
+  userType: "freelancer" | "employee";
 }
 
-export function ProjectDashboard({ project: initialProject, userType }: ProjectDashboardProps) {
-  const [project, setProject] = useState(initialProject)
-  const [activeTab, setActiveTab] = useState("overview")
-  const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false)
-  const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(null)
-  const [newMilestone, setNewMilestone] = useState({ title: "", dueDate: "", status: "not-started" })
+export function ProjectDashboard({
+  project: initialProject,
+  userType,
+}: ProjectDashboardProps) {
+  const [project, setProject] = useState(initialProject);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
+  const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
+    null
+  );
+  const [newMilestone, setNewMilestone] = useState({
+    title: "",
+    dueDate: "",
+    status: "not-started",
+  });
 
   // Mock available freelancers for assignment
   const availableFreelancers = [
@@ -54,28 +76,32 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
     { id: 4, name: "Taylor Reed", role: "Mobile Developer" },
     { id: 5, name: "Jordan Lee", role: "Data Scientist" },
     { id: 6, name: "Casey Kim", role: "Blockchain Developer" },
-  ]
+  ];
 
   // Function to update milestone status
   const updateMilestoneStatus = (milestoneId: number, newStatus: string) => {
     const updatedMilestones = project.milestones.map((milestone: any) =>
-      milestone.id === milestoneId ? { ...milestone, status: newStatus } : milestone,
-    )
+      milestone.id === milestoneId
+        ? { ...milestone, status: newStatus }
+        : milestone
+    );
 
     setProject({
       ...project,
       milestones: updatedMilestones,
       // Recalculate progress based on completed milestones
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === "completed").length / updatedMilestones.length) * 100,
+        (updatedMilestones.filter((m: any) => m.status === "completed").length /
+          updatedMilestones.length) *
+          100
       ),
-    })
+    });
 
     toast({
       title: "Milestone Updated",
       description: `The milestone status has been updated to ${newStatus}.`,
-    })
-  }
+    });
+  };
 
   // Function to add a new milestone
   const addMilestone = () => {
@@ -84,8 +110,8 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         title: "Missing Information",
         description: "Please provide a title and due date for the milestone.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     const newMilestoneObj = {
@@ -93,90 +119,119 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
       title: newMilestone.title,
       status: newMilestone.status,
       dueDate: newMilestone.dueDate,
-    }
+    };
 
-    const updatedMilestones = [...project.milestones, newMilestoneObj]
+    const updatedMilestones = [...project.milestones, newMilestoneObj];
 
     setProject({
       ...project,
       milestones: updatedMilestones,
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === "completed").length / updatedMilestones.length) * 100,
+        (updatedMilestones.filter((m: any) => m.status === "completed").length /
+          updatedMilestones.length) *
+          100
       ),
-    })
+    });
 
-    setNewMilestone({ title: "", dueDate: "", status: "not-started" })
+    setNewMilestone({ title: "", dueDate: "", status: "not-started" });
 
     toast({
       title: "Milestone Added",
       description: `The new milestone "${newMilestone.title}" has been added to the project.`,
-    })
-  }
+    });
+  };
 
   // Function to add a freelancer to the project
   const addFreelancer = (freelancerId: number) => {
-    const freelancer = availableFreelancers.find((f) => f.id === freelancerId)
+    const freelancer = availableFreelancers.find((f) => f.id === freelancerId);
 
-    if (!freelancer) return
+    if (!freelancer) return;
 
     // Check if freelancer is already assigned
-    if (project.freelancers.some((f: any) => f.name === freelancer.name)) {
+    if (project?.freelancers?.some((f: any) => f.name === freelancer.name)) {
       toast({
         title: "Freelancer Already Assigned",
         description: `${freelancer.name} is already assigned to this project.`,
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     setProject({
       ...project,
       freelancers: [...project.freelancers, freelancer],
-    })
+    });
 
-    setIsAssigningFreelancer(false)
+    setIsAssigningFreelancer(false);
 
     toast({
       title: "Freelancer Assigned",
       description: `${freelancer.name} has been assigned to the project.`,
-    })
-  }
+    });
+  };
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project?.milestones.length
-    const completedMilestones = project?.milestones.filter((m: any) => m.status === "completed").length
-    const inProgressMilestones = project?.milestones.filter((m: any) => m.status === "in-progress").length
+    const totalMilestones = project?.milestones.length;
+    const completedMilestones = project?.milestones.filter(
+      (m: any) => m.status === "completed"
+    ).length;
+    const inProgressMilestones = project?.milestones.filter(
+      (m: any) => m.status === "in-progress"
+    ).length;
 
-    const startDate = new Date(project?.startDate)
-    const endDate = project?.completionDate ? new Date(project?.completionDate) : new Date(project?.deadline)
-    const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    const startDate = new Date(project?.startDate);
+    const endDate = project?.completionDate
+      ? new Date(project?.completionDate)
+      : new Date(project?.deadline);
+    const totalDays = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     return {
       totalMilestones,
       completedMilestones,
       inProgressMilestones,
-      completionRate: totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0,
+      completionRate:
+        totalMilestones > 0
+          ? Math.round((completedMilestones / totalMilestones) * 100)
+          : 0,
       totalDays,
-    }
-  }
+    };
+  };
 
-  const stats = calculateProjectStats()
+  const stats = calculateProjectStats();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
-        return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Completed</Badge>
+        return (
+          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+            Completed
+          </Badge>
+        );
       case "in-progress":
-        return <Badge className="bg-blue-100 text-blue-800 border-blue-200">In Progress</Badge>
+        return (
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+            In Progress
+          </Badge>
+        );
       case "planning":
-        return <Badge className="bg-amber-100 text-amber-800 border-amber-200">Planning</Badge>
+        return (
+          <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+            Planning
+          </Badge>
+        );
       case "not-started":
-        return <Badge className="bg-slate-100 text-slate-800 border-slate-200">Not Started</Badge>
+        return (
+          <Badge className="bg-slate-100 text-slate-800 border-slate-200">
+            Not Started
+          </Badge>
+        );
       default:
-        return <Badge>{status}</Badge>
+        return <Badge>{status}</Badge>;
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -186,10 +241,12 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
           <h1 className="text-2xl font-bold">
             {project?.name || project?.title}
           </h1>
-          <p className="text-slate-600">{project?.client || project?.company}</p>
+          <p className="text-slate-600">
+            {project?.client || project?.company}
+          </p>
         </div>
         <div className="flex items-center gap-3">
-          {project?.status !== 'completed' && userType === 'employee' && (
+          {project?.status !== "completed" && userType === "employee" && (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -307,9 +364,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
                     >
                       <div className="flex items-center gap-2">
-                        {milestone.status === 'completed' ? (
+                        {milestone.status === "completed" ? (
                           <CheckCircle className="h-4 w-4 text-emerald-500" />
-                        ) : milestone.status === 'in-progress' ? (
+                        ) : milestone.status === "in-progress" ? (
                           <Clock className="h-4 w-4 text-blue-500" />
                         ) : (
                           <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -324,7 +381,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                 <Button
                   variant="outline"
                   className="w-full mt-2 text-sm"
-                  onClick={() => setActiveTab('milestones')}
+                  onClick={() => setActiveTab("milestones")}
                 >
                   View All Milestones <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
@@ -346,9 +403,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
                             {freelancer.name
-                              .split(' ')
+                              .split(" ")
                               .map((n: string) => n[0])
-                              .join('')}
+                              .join("")}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -368,12 +425,12 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </p>
                   )}
 
-                  {userType === 'employee' && (
+                  {userType === "employee" && (
                     <Button
                       variant="outline"
                       size="sm"
                       className="w-full mt-2 text-xs"
-                      onClick={() => setActiveTab('team')}
+                      onClick={() => setActiveTab("team")}
                     >
                       Manage Team
                     </Button>
@@ -406,7 +463,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                   variant="outline"
                   size="sm"
                   className="w-full mt-4 text-xs"
-                  onClick={() => setActiveTab('communication')}
+                  onClick={() => setActiveTab("communication")}
                 >
                   View All Updates
                 </Button>
@@ -439,8 +496,8 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       <p className="text-xs font-medium">Current Phase</p>
                       <p className="text-xs text-slate-500">
                         {project?.milestones.find(
-                          (m: any) => m.status === 'in-progress'
-                        )?.title || 'Planning'}
+                          (m: any) => m.status === "in-progress"
+                        )?.title || "Planning"}
                       </p>
                     </div>
                   </div>
@@ -457,7 +514,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </div>
                   </div>
 
-                  {project?.status === 'completed' && (
+                  {project?.status === "completed" && (
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
                         <CheckCircle className="h-3 w-3 text-emerald-600" />
@@ -477,7 +534,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
             </Card>
           </div>
 
-          {project?.status === 'completed' && (
+          {project?.status === "completed" && (
             <Card>
               <CardHeader>
                 <CardTitle>Project Completion Report</CardTitle>
@@ -533,14 +590,14 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
                             {project?.clientContact
-                              ?.split(' ')
+                              ?.split(" ")
                               .map((n: string) => n[0])
-                              .join('') || 'CL'}
+                              .join("") || "CL"}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium">
-                            {project?.clientContact || 'Client'}
+                            {project?.clientContact || "Client"}
                           </p>
                           <p className="text-xs text-slate-500">
                             {new Date(
@@ -603,7 +660,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === 'employee' && project?.status !== 'completed' && (
+            {userType === "employee" && project?.status !== "completed" && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -628,7 +685,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         onChange={(e) =>
                           setNewMilestone({
                             ...newMilestone,
-                            title: e.target.value
+                            title: e.target.value,
                           })
                         }
                       />
@@ -642,7 +699,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                         onChange={(e) =>
                           setNewMilestone({
                             ...newMilestone,
-                            dueDate: e.target.value
+                            dueDate: e.target.value,
                           })
                         }
                       />
@@ -675,9 +732,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       variant="outline"
                       onClick={() =>
                         setNewMilestone({
-                          title: '',
-                          dueDate: '',
-                          status: 'not-started'
+                          title: "",
+                          dueDate: "",
+                          status: "not-started",
                         })
                       }
                     >
@@ -696,9 +753,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2">
-                      {milestone.status === 'completed' ? (
+                      {milestone.status === "completed" ? (
                         <CheckCircle className="h-5 w-5 text-emerald-500" />
-                      ) : milestone.status === 'in-progress' ? (
+                      ) : milestone.status === "in-progress" ? (
                         <Clock className="h-5 w-5 text-blue-500" />
                       ) : (
                         <AlertCircle className="h-5 w-5 text-slate-400" />
@@ -718,7 +775,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     </span>
                   </div>
                 </CardContent>
-                {userType === 'employee' && project?.status !== 'completed' && (
+                {userType === "employee" && project?.status !== "completed" && (
                   <CardFooter>
                     <Select
                       defaultValue={milestone.status}
@@ -746,7 +803,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
         <TabsContent value="team" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
-            {userType === 'employee' && project?.status !== 'completed' && (
+            {userType === "employee" && project?.status !== "completed" && (
               <Button
                 size="sm"
                 className="gap-2"
@@ -766,9 +823,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                     <Avatar className="h-12 w-12">
                       <AvatarFallback className="text-lg">
                         {freelancer.name
-                          .split(' ')
+                          .split(" ")
                           .map((n: string) => n[0])
-                          .join('')}
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -835,9 +892,9 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                           <Avatar className="h-10 w-10">
                             <AvatarFallback>
                               {freelancer.name
-                                .split(' ')
+                                .split(" ")
                                 .map((n) => n[0])
-                                .join('')}
+                                .join("")}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -893,23 +950,23 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
               <div className="divide-y">
                 {[
                   {
-                    name: 'Project Proposal.pdf',
-                    type: 'pdf',
-                    size: '2.4 MB',
-                    date: '2023-07-01'
+                    name: "Project Proposal.pdf",
+                    type: "pdf",
+                    size: "2.4 MB",
+                    date: "2023-07-01",
                   },
                   {
-                    name: 'Requirements Specification.docx',
-                    type: 'docx',
-                    size: '1.8 MB',
-                    date: '2023-07-05'
+                    name: "Requirements Specification.docx",
+                    type: "docx",
+                    size: "1.8 MB",
+                    date: "2023-07-05",
                   },
                   {
-                    name: 'Design Assets.zip',
-                    type: 'zip',
-                    size: '15.2 MB',
-                    date: '2023-07-15'
-                  }
+                    name: "Design Assets.zip",
+                    type: "zip",
+                    size: "15.2 MB",
+                    date: "2023-07-15",
+                  },
                 ].map((file, idx) => (
                   <div
                     key={idx}
@@ -922,7 +979,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       <div>
                         <p className="font-medium">{file.name}</p>
                         <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
+                          {file.size} • Uploaded on{" "}
                           {new Date(file.date).toLocaleDateString()}
                         </p>
                       </div>
@@ -942,17 +999,17 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
               <div className="divide-y">
                 {[
                   {
-                    name: 'Final Presentation.pptx',
-                    type: 'pptx',
-                    size: '5.7 MB',
-                    date: '2023-09-20'
+                    name: "Final Presentation.pptx",
+                    type: "pptx",
+                    size: "5.7 MB",
+                    date: "2023-09-20",
                   },
                   {
-                    name: 'Source Code.zip',
-                    type: 'zip',
-                    size: '28.3 MB',
-                    date: '2023-09-25'
-                  }
+                    name: "Source Code.zip",
+                    type: "zip",
+                    size: "28.3 MB",
+                    date: "2023-09-25",
+                  },
                 ].map((file, idx) => (
                   <div
                     key={idx}
@@ -965,7 +1022,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
                       <div>
                         <p className="font-medium">{file.name}</p>
                         <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
+                          {file.size} • Uploaded on{" "}
                           {new Date(file.date).toLocaleDateString()}
                         </p>
                       </div>
@@ -982,7 +1039,7 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
       </Tabs>
 
       {/* If the project is completed, show the certificate/reward section */}
-      {project?.status === 'completed' && (
+      {project?.status === "completed" && (
         <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-4">
@@ -1008,4 +1065,3 @@ export function ProjectDashboard({ project: initialProject, userType }: ProjectD
     </div>
   );
 }
-

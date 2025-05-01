@@ -274,7 +274,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                       </tr>
                     </thead>
                     <tbody className="divide-y">
-                      {project.freelancers.map((freelancer: any, idx: number) => (
+                      {project?.freelancers?.map((freelancer: any, idx: number) => (
                         <tr key={idx}>
                           <td className="p-3">
                             <div className="flex items-center gap-2">
