@@ -17,7 +17,7 @@ interface HeaderProps {
 
 export function Header({  }: HeaderProps) {
     const router = useRouter();
-  const { userType } = useStore();
+  const { userType, loadUserType, userData } = useStore();
 
     const { publicKey, wallet, connected, disconnecting } = useWallet();
 
@@ -31,10 +31,17 @@ export function Header({  }: HeaderProps) {
     };
     useEffect(() => {
       if (disconnecting) {
-        console.log('disconnecting status:', disconnecting);
+        // console.log('disconnecting status:', disconnecting);
         handleLogout();
       }
-    }, [disconnecting]);
+      console.log('userType:', userType);
+     }, [disconnecting]);
+       useEffect(() => {
+         if (publicKey || connected) {
+         loadUserType();
+          }
+       }, [publicKey, connected]);
+     
   return (
     <header className="flex justify-between items-center sticky py-4  bg-black top-0 z-30">
       <div className="flex items-center justify-between gap-2 bg-black container w-full mx-auto">
