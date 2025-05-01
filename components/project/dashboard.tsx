@@ -52,16 +52,10 @@ interface DashboardProps {
   userType: "freelancer" | "employer";
 }
 import { useProjectStore } from "@/store/projects";
-import { useRouter } from "next/navigation";
-import { BackButton } from "../back-button";
- import { useProjectStore } from '@/store/projects';
-import { useRouter, useParams } from 'next/navigation';
+ import { BackButton } from "../back-button";
+ import { useRouter, useParams } from 'next/navigation';
 
 export function Dashboard({ userType }: DashboardProps) {
-//   const router = useRouter();
-//   const { handleCreateProject, fetchProjects, projects } = useProjectStore();
-
-// export function Dashboard({ userType }: DashboardProps) {
   const {
     handleCreateProject,
     fetchProjects,
