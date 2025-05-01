@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Calendar,
   Plus,
@@ -22,26 +22,26 @@ import {
   ChevronUp,
   Clock,
   CheckCircle,
-  AlertCircle,
-} from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
-import { Label } from "@/components/ui/label";
+  AlertCircle
+} from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProjectUpdates } from "@/components/project-updates";
-import { ProjectDashboard } from "@/components/project-dashboard";
-import { ProjectReport } from "@/components/project-report";
-import { useUserProfileStore } from "@/Store/userProfile";
-import { useProjectStore } from "@/Store/projects";
-import { AnyAaaaRecord } from "dns";
-import { useRouter } from "next/navigation";
+  SelectValue
+} from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ProjectUpdates } from '@/components/project-updates';
+import { ProjectDashboard } from '@/components/project-dashboard';
+import { ProjectReport } from '@/components/project-report';
+import { useUserProfileStore } from '@/store/userProfile';
+import { useProjectStore } from '@/store/projects';
+import { AnyAaaaRecord } from 'dns';
+import { useRouter } from 'next/navigation';
 
 export function ProjectManagement() {
   const router = useRouter();
@@ -51,69 +51,69 @@ export function ProjectManagement() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const { handleUploadMedia, media } = useUserProfileStore();
-  const [previewImage, setPreviewImage] = useState("");
+  const [previewImage, setPreviewImage] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isUploading, setIsUploading] = useState(false);
   const { handleCreateProject, fetchProjects, projects } = useProjectStore();
   const [projectPayload, setProjectPayload] = useState({
-    name: "Website Redesign",
+    name: 'Website Redesign',
     description:
-      "A project to redesign the company website for better UX and performance.",
-    deadline: "2025-06-30T23:59:59.000Z",
+      'A project to redesign the company website for better UX and performance.',
+    deadline: '2025-06-30T23:59:59.000Z',
     medias: [
       {
-        name: "Homepage Mockup",
-        url: "https://example.com/media/homepage-mockup.png",
+        name: 'Homepage Mockup',
+        url: 'https://example.com/media/homepage-mockup.png'
       },
       {
-        name: "Logo",
-        url: "https://example.com/media/logo.svg",
-      },
+        name: 'Logo',
+        url: 'https://example.com/media/logo.svg'
+      }
     ],
-    status: "planning",
+    status: 'planning',
     milestones: [
       {
-        title: "Wireframe Approval",
-        description: "Get wireframes approved by stakeholders.",
-        deadline: "2025-05-10T12:00:00.000Z",
-        status: "planning",
+        title: 'Wireframe Approval',
+        description: 'Get wireframes approved by stakeholders.',
+        deadline: '2025-05-10T12:00:00.000Z',
+        status: 'planning'
       },
       {
-        title: "Development Phase",
-        description: "Start frontend and backend development.",
-        deadline: "2025-05-25T12:00:00.000Z",
-        status: "planning",
-      },
+        title: 'Development Phase',
+        description: 'Start frontend and backend development.',
+        deadline: '2025-05-25T12:00:00.000Z',
+        status: 'planning'
+      }
     ],
-    price: 5000, // aleo token
+    price: 5000 // aleo token
   });
   const uploadedImage = async (image: any) => {
     setIsUploading(true);
     const formData = new FormData();
     if (image) {
-      formData.append("media", image);
+      formData.append('media', image);
     }
 
     try {
       const response = await handleUploadMedia(formData); // Explicitly define the response type
       if (media) {
         toast({
-          title: "Image uploaded successfully",
-          description: "Your profile image has been updated.",
-          variant: "default",
+          title: 'Image uploaded successfully',
+          description: 'Your profile image has been updated.',
+          variant: 'default'
         });
-        console.log("Image uploaded successfully:", media);
+        console.log('Image uploaded successfully:', media);
         setPreviewImage(media[0]);
-        console.log("Image uploaded successfully:", response);
+        console.log('Image uploaded successfully:', response);
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error('Error uploading image:', error);
       toast({
-        title: "Upload failed",
+        title: 'Upload failed',
         description:
-          "There was a problem uploading your image. Please try again.",
-        variant: "destructive",
+          'There was a problem uploading your image. Please try again.',
+        variant: 'destructive'
       });
     } finally {
       setIsUploading(false);
@@ -319,32 +319,32 @@ export function ProjectManagement() {
     const newErrors: Record<string, string> = {};
 
     if (!projectPayload.name.trim()) {
-      newErrors.name = "Project name is required";
+      newErrors.name = 'Project name is required';
     }
 
     if (!projectPayload.description.trim()) {
-      newErrors.description = "Project description is required";
+      newErrors.description = 'Project description is required';
     }
 
     if (!projectPayload.deadline) {
-      newErrors.deadline = "Deadline is required";
+      newErrors.deadline = 'Deadline is required';
     }
 
     if (!projectPayload.price || projectPayload.price <= 0) {
-      newErrors.price = "Valid price is required";
+      newErrors.price = 'Valid price is required';
     }
 
     if (projectPayload.milestones.length === 0) {
-      newErrors.milestones = "At least one milestone is required";
+      newErrors.milestones = 'At least one milestone is required';
     } else {
       // Validate each milestone
       projectPayload.milestones.forEach((milestone, index) => {
         if (!milestone.title.trim()) {
-          newErrors[`milestone-${index}-title`] = "Milestone title is required";
+          newErrors[`milestone-${index}-title`] = 'Milestone title is required';
         }
         if (!milestone.deadline) {
           newErrors[`milestone-${index}-deadline`] =
-            "Milestone deadline is required";
+            'Milestone deadline is required';
         }
       });
     }
@@ -353,9 +353,9 @@ export function ProjectManagement() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast({
-        title: "Validation Error",
-        description: "Please fix the errors in the form",
-        variant: "destructive",
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+        variant: 'destructive'
       });
       return;
     }
@@ -365,37 +365,37 @@ export function ProjectManagement() {
       const response = await handleCreateProject(projectPayload);
       if (
         response !== undefined &&
-        typeof response === "object" &&
-        "data" in response
+        typeof response === 'object' &&
+        'data' in response
       ) {
         const { data, success } = response as { data: {}; success: boolean };
         if (success) {
           fetchProjects();
           // If validation passes, log the payload
-          console.log("Project payload:", projectPayload);
+          console.log('Project payload:', projectPayload);
           setIsCreatingProject(false);
           setProjectPayload({
-            name: "",
-            description: "",
-            deadline: "",
+            name: '',
+            description: '',
+            deadline: '',
             medias: [],
-            status: "planning",
+            status: 'planning',
             milestones: [],
-            price: 0,
+            price: 0
           });
           toast({
-            title: "Project Created",
-            description: "Your new project has been created successfully.",
+            title: 'Project Created',
+            description: 'Your new project has been created successfully.'
           });
           setIsUploading(false);
         }
       }
     } catch (error: any) {
-      console.error("Error creating project:", error);
+      console.error('Error creating project:', error);
       toast({
-        title: "Error",
-        description: "Failed to create project. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to create project. Please try again.',
+        variant: 'destructive'
       });
       setIsUploading(false);
 
@@ -416,7 +416,7 @@ export function ProjectManagement() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
+      case 'completed':
         return (
           <Badge
             variant="outline"
@@ -425,7 +425,7 @@ export function ProjectManagement() {
             Completed
           </Badge>
         );
-      case "in-progress":
+      case 'in-progress':
         return (
           <Badge
             variant="outline"
@@ -434,7 +434,7 @@ export function ProjectManagement() {
             In Progress
           </Badge>
         );
-      case "planning":
+      case 'planning':
         return (
           <Badge
             variant="outline"
@@ -443,7 +443,7 @@ export function ProjectManagement() {
             Planning
           </Badge>
         );
-      case "not-started":
+      case 'not-started':
         return (
           <Badge
             variant="outline"
@@ -458,7 +458,7 @@ export function ProjectManagement() {
   };
   useEffect(() => {
     fetchProjects();
-    console.log("Projects:", projects);
+    console.log('Projects:', projects);
   }, [fetchProjects]);
 
   // If showing the project dashboard
@@ -542,7 +542,7 @@ export function ProjectManagement() {
                 onChange={(e) =>
                   setProjectPayload({ ...projectPayload, name: e.target.value })
                 }
-                className={errors.name ? "border-red-500" : ""}
+                className={errors.name ? 'border-red-500' : ''}
               />
               {errors.name && (
                 <p className="text-xs text-red-500 mt-1">{errors.name}</p>
@@ -556,12 +556,12 @@ export function ProjectManagement() {
                 onChange={(e) =>
                   setProjectPayload({
                     ...projectPayload,
-                    description: e.target.value,
+                    description: e.target.value
                   })
                 }
                 rows={3}
                 placeholder="Describe the project scope and goals..."
-                className={errors.description ? "border-red-500" : ""}
+                className={errors.description ? 'border-red-500' : ''}
               />
               {errors.description && (
                 <p className="text-xs text-red-500 mt-1">
@@ -583,10 +583,10 @@ export function ProjectManagement() {
                   onChange={(e) =>
                     setProjectPayload({
                       ...projectPayload,
-                      deadline: e.target.value,
+                      deadline: e.target.value
                     })
                   }
-                  className={errors.deadline ? "border-red-500" : ""}
+                  className={errors.deadline ? 'border-red-500' : ''}
                 />
                 {errors.deadline && (
                   <p className="text-xs text-red-500 mt-1">{errors.deadline}</p>
@@ -614,7 +614,7 @@ export function ProjectManagement() {
                   <SelectItem value="cancelled">cancelled</SelectItem>
                 </SelectContent>
               </Select>
-            </div>{" "}
+            </div>{' '}
             <div className="space-y-2">
               <Label htmlFor="price">Project Price (Aleo tokens)</Label>
               <div className="relative">
@@ -626,10 +626,10 @@ export function ProjectManagement() {
                   onChange={(e) =>
                     setProjectPayload({
                       ...projectPayload,
-                      price: Number.parseFloat(e.target.value) || 0,
+                      price: Number.parseFloat(e.target.value) || 0
                     })
                   }
-                  className={errors.price ? "border-red-500" : ""}
+                  className={errors.price ? 'border-red-500' : ''}
                 />
                 {errors.price && (
                   <p className="text-xs text-red-500 mt-1">{errors.price}</p>
@@ -657,12 +657,12 @@ export function ProjectManagement() {
                         className="h-8 w-8 p-0 text-red-500"
                         onClick={() => {
                           const updatedMilestones = [
-                            ...projectPayload.milestones,
+                            ...projectPayload.milestones
                           ];
                           updatedMilestones.splice(index, 1);
                           setProjectPayload({
                             ...projectPayload,
-                            milestones: updatedMilestones,
+                            milestones: updatedMilestones
                           });
                         }}
                       >
@@ -695,19 +695,19 @@ export function ProjectManagement() {
                           value={milestone.title}
                           onChange={(e) => {
                             const updatedMilestones = [
-                              ...projectPayload.milestones,
+                              ...projectPayload.milestones
                             ];
                             updatedMilestones[index].title = e.target.value;
                             setProjectPayload({
                               ...projectPayload,
-                              milestones: updatedMilestones,
+                              milestones: updatedMilestones
                             });
                           }}
                           placeholder="Milestone title"
                           className={
                             errors[`milestone-${index}-title`]
-                              ? "border-red-500"
-                              : ""
+                              ? 'border-red-500'
+                              : ''
                           }
                         />
                         {errors[`milestone-${index}-title`] && (
@@ -725,13 +725,13 @@ export function ProjectManagement() {
                           value={milestone.description}
                           onChange={(e) => {
                             const updatedMilestones = [
-                              ...projectPayload.milestones,
+                              ...projectPayload.milestones
                             ];
                             updatedMilestones[index].description =
                               e.target.value;
                             setProjectPayload({
                               ...projectPayload,
-                              milestones: updatedMilestones,
+                              milestones: updatedMilestones
                             });
                           }}
                           placeholder="Describe this milestone"
@@ -750,25 +750,25 @@ export function ProjectManagement() {
                               milestone.deadline
                                 ? new Date(milestone.deadline)
                                     .toISOString()
-                                    .split("T")[0]
-                                : ""
+                                    .split('T')[0]
+                                : ''
                             }
                             onChange={(e) => {
                               const updatedMilestones = [
-                                ...projectPayload.milestones,
+                                ...projectPayload.milestones
                               ];
                               updatedMilestones[index].deadline = new Date(
                                 e.target.value
                               ).toISOString();
                               setProjectPayload({
                                 ...projectPayload,
-                                milestones: updatedMilestones,
+                                milestones: updatedMilestones
                               });
                             }}
                             className={
                               errors[`milestone-${index}-deadline`]
-                                ? "border-red-500"
-                                : ""
+                                ? 'border-red-500'
+                                : ''
                             }
                           />
                           {errors[`milestone-${index}-deadline`] && (
@@ -785,12 +785,12 @@ export function ProjectManagement() {
                             value={milestone.status}
                             onValueChange={(value) => {
                               const updatedMilestones = [
-                                ...projectPayload.milestones,
+                                ...projectPayload.milestones
                               ];
                               updatedMilestones[index].status = value;
                               setProjectPayload({
                                 ...projectPayload,
-                                milestones: updatedMilestones,
+                                milestones: updatedMilestones
                               });
                             }}
                           >
@@ -824,17 +824,14 @@ export function ProjectManagement() {
                     className="w-full mt-2"
                     onClick={() => {
                       const newMilestone = {
-                        title: "",
-                        description: "",
+                        title: '',
+                        description: '',
                         deadline: new Date().toISOString(),
-                        status: "planning",
+                        status: 'planning'
                       };
                       setProjectPayload({
                         ...projectPayload,
-                        milestones: [
-                          ...projectPayload.milestones,
-                          newMilestone,
-                        ],
+                        milestones: [...projectPayload.milestones, newMilestone]
                       });
                     }}
                   >
@@ -894,7 +891,7 @@ export function ProjectManagement() {
                           updatedMedias.splice(index, 1);
                           setProjectPayload({
                             ...projectPayload,
-                            medias: updatedMedias,
+                            medias: updatedMedias
                           });
                         }}
                       >
@@ -959,17 +956,17 @@ export function ProjectManagement() {
                               if (media && media[0]) {
                                 const newMedia = {
                                   name: file.name,
-                                  url: media[0],
+                                  url: media[0]
                                 };
                                 setProjectPayload({
                                   ...projectPayload,
-                                  medias: [...projectPayload.medias, newMedia],
+                                  medias: [...projectPayload.medias, newMedia]
                                 });
                               }
                             });
                           }
                           // Reset the input value so the same file can be selected again
-                          e.target.value = "";
+                          e.target.value = '';
                         }}
                       />
                     </Label>
@@ -1106,12 +1103,12 @@ export function ProjectManagement() {
             <div className="grid grid-cols-1 gap-4">
               {Array.isArray(projects?.data) &&
                 projects.data
-                  .filter((p: any) => p.status !== "completed")
+                  .filter((p: any) => p.status !== 'completed')
                   .map((project: any) => (
                     <Card
                       key={project._id}
                       className={
-                        expandedProject === project._id ? "border-blue-300" : ""
+                        expandedProject === project._id ? 'border-blue-300' : ''
                       }
                     >
                       <CardHeader className="pb-2">
@@ -1135,7 +1132,7 @@ export function ProjectManagement() {
                         <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
                           <Calendar className="h-4 w-4" />
                           <span>
-                            Deadline:{" "}
+                            Deadline:{' '}
                             {new Date(project.deadline).toLocaleDateString()}
                           </span>
                         </div>
@@ -1157,9 +1154,9 @@ export function ProjectManagement() {
                                   <Avatar className="h-6 w-6">
                                     <AvatarFallback className="text-xs">
                                       {freelancer.name
-                                        .split(" ")
+                                        .split(' ')
                                         .map((n: any) => n[0])
-                                        .join("")}
+                                        .join('')}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
@@ -1189,9 +1186,9 @@ export function ProjectManagement() {
                                     className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                                   >
                                     <div className="flex items-center gap-2">
-                                      {milestone.status === "completed" ? (
+                                      {milestone.status === 'completed' ? (
                                         <CheckCircle className="h-4 w-4 text-emerald-500" />
-                                      ) : milestone.status === "in_progress" ? (
+                                      ) : milestone.status === 'in_progress' ? (
                                         <Clock className="h-4 w-4 text-blue-500" />
                                       ) : (
                                         <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -1202,7 +1199,7 @@ export function ProjectManagement() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <span className="text-xs text-blue-300">
-                                        Due:{" "}
+                                        Due:{' '}
                                         {new Date(
                                           milestone.deadline
                                         ).toLocaleDateString()}
@@ -1283,14 +1280,14 @@ export function ProjectManagement() {
             <div className="grid grid-cols-1 gap-4">
               {Array.isArray(projects) &&
                 projects
-                  .filter((p: any) => p.status === "completed")
+                  .filter((p: any) => p.status === 'completed')
                   .map((project: any) => (
                     <Card
                       key={project.id}
                       className={
                         expandedProject === project.id
-                          ? "border-emerald-300"
-                          : ""
+                          ? 'border-emerald-300'
+                          : ''
                       }
                     >
                       <CardHeader className="pb-2">
@@ -1309,12 +1306,12 @@ export function ProjectManagement() {
                         <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
                           <Calendar className="h-4 w-4" />
                           <span>
-                            Completed on:{" "}
+                            Completed on:{' '}
                             {project.completionDate
                               ? new Date(
                                   project.completionDate
                                 ).toLocaleDateString()
-                              : "N/A"}
+                              : 'N/A'}
                           </span>
                         </div>
 
@@ -1335,9 +1332,9 @@ export function ProjectManagement() {
                                   <Avatar className="h-6 w-6">
                                     <AvatarFallback className="text-xs">
                                       {freelancer.name
-                                        .split(" ")
+                                        .split(' ')
                                         .map((n: any) => n[0])
-                                        .join("")}
+                                        .join('')}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>

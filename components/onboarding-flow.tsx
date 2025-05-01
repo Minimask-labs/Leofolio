@@ -27,7 +27,7 @@ import {
   X,
   ImagePlus,
   Loader2,
-   Mail,
+  Mail,
   CheckCircle
 } from 'lucide-react';
 import { DevfolioPreview } from './devfolio-preview';
@@ -224,11 +224,8 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
     try {
       const response = await handleRequestVerifyEmailOtp(profile.email);
       console.log('Email verification response:', response);
-      if (
-        response !== undefined &&
-        typeof response === 'object'
-      ) {
-                console.log('Email verification response2:', response);
+      if (response !== undefined && typeof response === 'object') {
+        console.log('Email verification response2:', response);
         const { success, message } = response as {
           data: {};
           success: boolean;
@@ -369,8 +366,9 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
       if (!profile.username.trim()) newErrors.username = 'Username is required';
       if (!profile.profileImage.trim())
         newErrors.profileImage = 'Profile image is required';
-      if (!profile.email.trim()) newErrors.email = "Email is required"
-        else if (!isEmailVerified) newErrors.email = "Email must be verified before proceeding";
+      if (!profile.email.trim()) newErrors.email = 'Email is required';
+      else if (!isEmailVerified)
+        newErrors.email = 'Email must be verified before proceeding';
       if (!profile.professionalTitle.trim())
         newErrors.professionalTitle = 'Professional title is required';
       if (!profile.bio.trim()) newErrors.bio = 'Bio is required';

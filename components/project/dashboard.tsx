@@ -1,16 +1,29 @@
-"use client"
+'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { ProjectUpdates } from "@/components/project-updates"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import { ProjectUpdates } from '@/components/project-updates';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -18,8 +31,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  DialogTrigger
+} from '@/components/ui/dialog';
 import {
   Calendar,
   CheckCircle,
@@ -30,174 +43,213 @@ import {
   ArrowRight,
   FileBarChart,
   Download,
-  Gift,
-} from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+  Gift
+} from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
 interface DashboardProps {
-   userType: "freelancer" | "employer"
+  userType: 'freelancer' | 'employer';
 }
 import { useProjectStore } from '@/store/projects';
 
 export function Dashboard({ userType }: DashboardProps) {
- const { handleCreateProject, fetchProjects, projects } = useProjectStore();
+  const { handleCreateProject, fetchProjects, projects } = useProjectStore();
   const [project, setProject] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("overview")
-  const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false)
-  const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(null)
-  const [newMilestone, setNewMilestone] = useState({ title: "", dueDate: "", status: "not-started" })
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
+  const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
+    null
+  );
+  const [newMilestone, setNewMilestone] = useState({
+    title: '',
+    dueDate: '',
+    status: 'not-started'
+  });
 
   // Mock available freelancers for assignment
   const availableFreelancers = [
-    { id: 1, name: "Alex Morgan", role: "Full Stack Developer" },
-    { id: 2, name: "Jamie Chen", role: "UI/UX Designer" },
-    { id: 3, name: "Sam Wilson", role: "DevOps Engineer" },
-    { id: 4, name: "Taylor Reed", role: "Mobile Developer" },
-    { id: 5, name: "Jordan Lee", role: "Data Scientist" },
-    { id: 6, name: "Casey Kim", role: "Blockchain Developer" },
-  ]
+    { id: 1, name: 'Alex Morgan', role: 'Full Stack Developer' },
+    { id: 2, name: 'Jamie Chen', role: 'UI/UX Designer' },
+    { id: 3, name: 'Sam Wilson', role: 'DevOps Engineer' },
+    { id: 4, name: 'Taylor Reed', role: 'Mobile Developer' },
+    { id: 5, name: 'Jordan Lee', role: 'Data Scientist' },
+    { id: 6, name: 'Casey Kim', role: 'Blockchain Developer' }
+  ];
 
   // Function to update milestone status
   const updateMilestoneStatus = (milestoneId: number, newStatus: string) => {
     const updatedMilestones = project.milestones.map((milestone: any) =>
-      milestone.id === milestoneId ? { ...milestone, status: newStatus } : milestone,
-    )
+      milestone.id === milestoneId
+        ? { ...milestone, status: newStatus }
+        : milestone
+    );
 
     setProject({
       ...project,
       milestones: updatedMilestones,
       // Recalculate progress based on completed milestones
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === "completed").length / updatedMilestones.length) * 100,
-      ),
-    })
+        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
+          updatedMilestones.length) *
+          100
+      )
+    });
 
     toast({
-      title: "Milestone Updated",
-      description: `The milestone status has been updated to ${newStatus}.`,
-    })
-  }
+      title: 'Milestone Updated',
+      description: `The milestone status has been updated to ${newStatus}.`
+    });
+  };
 
   // Function to add a new milestone
   const addMilestone = () => {
     if (!newMilestone.title || !newMilestone.dueDate) {
       toast({
-        title: "Missing Information",
-        description: "Please provide a title and due date for the milestone.",
-        variant: "destructive",
-      })
-      return
+        title: 'Missing Information',
+        description: 'Please provide a title and due date for the milestone.',
+        variant: 'destructive'
+      });
+      return;
     }
 
     const newMilestoneObj = {
       id: Math.max(0, ...project.milestones.map((m: any) => m.id)) + 1,
       title: newMilestone.title,
       status: newMilestone.status,
-      dueDate: newMilestone.dueDate,
-    }
+      dueDate: newMilestone.dueDate
+    };
 
-    const updatedMilestones = [...project.milestones, newMilestoneObj]
+    const updatedMilestones = [...project.milestones, newMilestoneObj];
 
     setProject({
       ...project,
       milestones: updatedMilestones,
       progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === "completed").length / updatedMilestones.length) * 100,
-      ),
-    })
+        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
+          updatedMilestones.length) *
+          100
+      )
+    });
 
-    setNewMilestone({ title: "", dueDate: "", status: "not-started" })
+    setNewMilestone({ title: '', dueDate: '', status: 'not-started' });
 
     toast({
-      title: "Milestone Added",
-      description: `The new milestone "${newMilestone.title}" has been added to the project.`,
-    })
-  }
+      title: 'Milestone Added',
+      description: `The new milestone "${newMilestone.title}" has been added to the project.`
+    });
+  };
 
   // Function to add a freelancer to the project
   const addFreelancer = (freelancerId: number) => {
-    const freelancer = availableFreelancers.find((f) => f.id === freelancerId)
+    const freelancer = availableFreelancers.find((f) => f.id === freelancerId);
 
-    if (!freelancer) return
+    if (!freelancer) return;
 
     // Check if freelancer is already assigned
     if (project.freelancers.some((f: any) => f.name === freelancer.name)) {
       toast({
-        title: "Freelancer Already Assigned",
+        title: 'Freelancer Already Assigned',
         description: `${freelancer.name} is already assigned to this project.`,
-        variant: "destructive",
-      })
-      return
+        variant: 'destructive'
+      });
+      return;
     }
 
     setProject({
       ...project,
-      freelancers: [...project.freelancers, freelancer],
-    })
+      freelancers: [...project.freelancers, freelancer]
+    });
 
-    setIsAssigningFreelancer(false)
+    setIsAssigningFreelancer(false);
 
     toast({
-      title: "Freelancer Assigned",
-      description: `${freelancer.name} has been assigned to the project.`,
-    })
-  }
+      title: 'Freelancer Assigned',
+      description: `${freelancer.name} has been assigned to the project.`
+    });
+  };
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project?.milestones?.length
-    const completedMilestones = project?.milestones?.filter((m: any) => m.status === "completed")?.length
-    const inProgressMilestones = project?.milestones?.filter((m: any) => m.status === "in-progress")?.length
+    const totalMilestones = project?.milestones?.length;
+    const completedMilestones = project?.milestones?.filter(
+      (m: any) => m.status === 'completed'
+    )?.length;
+    const inProgressMilestones = project?.milestones?.filter(
+      (m: any) => m.status === 'in-progress'
+    )?.length;
 
-    const startDate = new Date(project?.startDate)
-    const endDate = project?.completionDate ? new Date(project?.completionDate) : new Date(project?.deadline)
-    const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    const startDate = new Date(project?.startDate);
+    const endDate = project?.completionDate
+      ? new Date(project?.completionDate)
+      : new Date(project?.deadline);
+    const totalDays = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     return {
       totalMilestones,
       completedMilestones,
       inProgressMilestones,
-      completionRate: totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0,
-      totalDays,
-    }
-  }
+      completionRate:
+        totalMilestones > 0
+          ? Math.round((completedMilestones / totalMilestones) * 100)
+          : 0,
+      totalDays
+    };
+  };
 
-  const stats = calculateProjectStats()
+  const stats = calculateProjectStats();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
-        return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Completed</Badge>
-      case "in-progress":
-        return <Badge className="bg-blue-100 text-blue-800 border-blue-200">In Progress</Badge>
-      case "planning":
-        return <Badge className="bg-amber-100 text-amber-800 border-amber-200">Planning</Badge>
-      case "not-started":
-        return <Badge className="bg-slate-100 text-slate-800 border-slate-200">Not Started</Badge>
+      case 'completed':
+        return (
+          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+            Completed
+          </Badge>
+        );
+      case 'in-progress':
+        return (
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+            In Progress
+          </Badge>
+        );
+      case 'planning':
+        return (
+          <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+            Planning
+          </Badge>
+        );
+      case 'not-started':
+        return (
+          <Badge className="bg-slate-100 text-slate-800 border-slate-200">
+            Not Started
+          </Badge>
+        );
       default:
-        return <Badge>{status}</Badge>
+        return <Badge>{status}</Badge>;
     }
-  }
+  };
   useEffect(() => {
     fetchProjects();
     console.log('Projects:', projects);
     if (projects?.data && projects?.data.length > 0) {
       setProject(projects.data[0]);
-          console.log('Project:', project);
-
+      console.log('Project:', project);
     }
-
   }, [fetchProjects]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">
             {project?.name || project?.title}
           </h1>
-          <p className="text-slate-600">{project?.client || project?.company}</p>
+          <p className="text-slate-600">
+            {project?.client || project?.company}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           {project?.status !== 'completed' && userType === 'employer' && (
@@ -1020,4 +1072,3 @@ export function Dashboard({ userType }: DashboardProps) {
     </div>
   );
 }
-

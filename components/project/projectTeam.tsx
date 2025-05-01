@@ -26,7 +26,7 @@ import { Briefcase, Filter, Loader, Search, Shield, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import {useRouter, useParams} from "next/navigation";
+import { useRouter, useParams } from 'next/navigation';
 interface Project {
   freelancers: { name: string; role: string }[];
   status?: string;
@@ -59,9 +59,9 @@ export function ProjectTeam({
   const [sendingInvite, setSendingInvite] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-    const router = useRouter();
-    const params = useParams();
-    const projectId = params.id;
+  const router = useRouter();
+  const params = useParams();
+  const projectId = params.id;
 
   const handleSendInvite = async (freelancerId: string) => {
     try {
@@ -111,7 +111,7 @@ export function ProjectTeam({
 
   useEffect(() => {
     if (projectId) {
-      handleViewProjectInvitationsList({projectId});
+      handleViewProjectInvitationsList({ projectId });
     }
   }, [projectId, handleViewProjectInvitationsList]);
 

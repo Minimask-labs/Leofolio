@@ -85,7 +85,7 @@ export function DevfolioView() {
   } = useUserProfileStore();
   const [editedProfile, setEditedProfile] = useState(user);
   const [isUploading, setIsUploading] = useState(false);
-const [emailVerificationCode, setEmailVerificationCode] = useState('');
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
     useState(false);
   const [emailToVerify, setEmailToVerify] = useState('');
@@ -169,7 +169,7 @@ const [emailVerificationCode, setEmailVerificationCode] = useState('');
       setIsUploading(false);
     }
   };
-  
+
   const requestEmailverifyOtp = async () => {
     setIsUploading(true);
     try {
@@ -196,46 +196,16 @@ const [emailVerificationCode, setEmailVerificationCode] = useState('');
         variant: 'destructive'
       });
     } finally {
-      setIsUploading(false);  
+      setIsUploading(false);
     }
-        };
-        const validateEmailOtp = async () => {
+  };
+  const validateEmailOtp = async () => {
     setIsUploading(true);
     try {
       const response = await handleValidateVerifyEmailOtp(
         editedProfile?.email,
-         emailVerificationCode
+        emailVerificationCode
       );
-      if (
-        response !== undefined &&
-        typeof response === 'object' &&
-        'data' in response
-      ) {
-        const { data, success } = response as { data: {}; success: boolean };
-        if (success) {
-          toast({
-            title: 'Email Verified',
-            description: 'Your email has been verified successfully.'
-          });
-        }
-      }
-    } catch (error: any) {
-      const errorMessage =
-        (error as any)?.response?.data?.message || 'An unknown error occurred';
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive'
-      });    
-    } finally {
-      setIsUploading(false);  
-    }
-    };
-    
-  const verifyEmail = async () => {
-    setIsUploading(true);
-    try {
-      const response = await handleVerifyEmail(editedProfile?.email, emailVerificationCode);
       if (
         response !== undefined &&
         typeof response === 'object' &&
@@ -261,12 +231,45 @@ const [emailVerificationCode, setEmailVerificationCode] = useState('');
       setIsUploading(false);
     }
   };
-   const handleEmailChange = async () => {
-     if (emailToVerify && emailToVerify !== user?.email) {
-       await requestEmailverifyOtp();
-       setIsEmailVerificationModalOpen(true);
-     }
-   };
+
+  const verifyEmail = async () => {
+    setIsUploading(true);
+    try {
+      const response = await handleVerifyEmail(
+        editedProfile?.email,
+        emailVerificationCode
+      );
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as { data: {}; success: boolean };
+        if (success) {
+          toast({
+            title: 'Email Verified',
+            description: 'Your email has been verified successfully.'
+          });
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  const handleEmailChange = async () => {
+    if (emailToVerify && emailToVerify !== user?.email) {
+      await requestEmailverifyOtp();
+      setIsEmailVerificationModalOpen(true);
+    }
+  };
 
   const handleVerifyOtp = async (otp: string) => {
     setEmailVerificationCode(otp);
@@ -290,21 +293,20 @@ const [emailVerificationCode, setEmailVerificationCode] = useState('');
     }
   };
 
-
-useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   // Update editedProfile whenever user data changes
   useEffect(() => {
     if (user) {
-      setEditedProfile(user)
+      setEditedProfile(user);
       // Reset email verification state when user data changes
-      setEmailToVerify("")
-      setPreviousEmail("")
+      setEmailToVerify('');
+      setPreviousEmail('');
     }
-  }, [user])
-    if (isEditing) {
+  }, [user]);
+  if (isEditing) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
