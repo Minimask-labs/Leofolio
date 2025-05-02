@@ -42,6 +42,14 @@ import { useUserProfileStore } from '@/store/userProfile';
 import { useProjectStore } from '@/store/projects';
 import { AnyAaaaRecord } from 'dns';
 import { useRouter } from 'next/navigation';
+import {
+  Transaction,
+  WalletAdapterNetwork,
+  WalletNotConnectedError
+} from '@demox-labs/aleo-wallet-adapter-base';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
+import React, { FC, useCallback } from 'react';
+const ESCROW_PROGRAM_ID = 'zk_privacy_escrow.aleo';
 
 export function ProjectManagement() {
   const router = useRouter();
@@ -119,199 +127,152 @@ export function ProjectManagement() {
       setIsUploading(false);
     }
   };
+  const { publicKey, wallet, requestTransaction } = useWallet();
 
-  // Mock project data
-  // const projects = [
-  //   {
-  //     id: 1,
-  //     name: 'Website Redesign',
-  //     description: 'Complete overhaul of company website with new branding',
-  //     status: 'in_progress',
-  //     deadline: '2023-09-30',
-  //     startDate: '2023-07-01',
-  //     freelancers: [
-  //       { name: 'Alex Morgan', role: 'Full Stack Developer' },
-  //       { name: 'Jamie Chen', role: 'UI/UX Designer' }
-  //     ],
-  //     progress: 65,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Requirements Gathering',
-  //         status: 'completed',
-  //         dueDate: '2023-07-10'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'UI/UX Design',
-  //         status: 'completed',
-  //         dueDate: '2023-07-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Frontend Development',
-  //         status: 'in-progress',
-  //         dueDate: '2023-08-31'
-  //       },
-  //       {
-  //         id: 4,
-  //         title: 'Backend Integration',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-15'
-  //       },
-  //       {
-  //         id: 5,
-  //         title: 'Testing & Launch',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-30'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-08-15',
-  //         content:
-  //           "The designs look great! I've shared some feedback on the checkout flow in the attached document.",
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Alex Morgan',
-  //         role: 'Freelancer',
-  //         date: '2023-08-16',
-  //         content:
-  //           "Thanks for the feedback! I've updated the checkout flow based on your suggestions. Please take a look at the latest designs.",
-  //         isClient: false
-  //       },
-  //       {
-  //         id: 3,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-08-18',
-  //         content:
-  //           'The updated checkout flow looks perfect. Please proceed with the implementation.',
-  //         isClient: true
-  //       }
-  //     ],
-  //     client: 'Retail Innovations Inc.',
-  //     clientContact: 'Sarah Johnson'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Mobile App Development',
-  //     description: 'Cross-platform mobile application for customer engagement',
-  //     status: 'planning',
-  //     deadline: '2023-11-15',
-  //     startDate: '2023-06-15',
-  //     freelancers: [{ name: 'Taylor Reed', role: 'Mobile Developer' }],
-  //     progress: 20,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Requirements Analysis',
-  //         status: 'completed',
-  //         dueDate: '2023-07-30'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'UI/UX Design',
-  //         status: 'in-progress',
-  //         dueDate: '2023-08-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Core Functionality',
-  //         status: 'not-started',
-  //         dueDate: '2023-09-30'
-  //       },
-  //       {
-  //         id: 4,
-  //         title: 'Testing & Deployment',
-  //         status: 'not-started',
-  //         dueDate: '2023-11-15'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-07-25',
-  //         content:
-  //           "I've shared the requirements document. Let me know if you have any questions.",
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Taylor Reed',
-  //         role: 'Freelancer',
-  //         date: '2023-07-26',
-  //         content:
-  //           "Thanks for the document. I'll review it and get back to you with any questions.",
-  //         isClient: false
-  //       }
-  //     ],
-  //     client: 'HealthTrack',
-  //     clientContact: 'Jessica Williams'
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'DevOps Infrastructure',
-  //     description: 'Modernize deployment pipeline and cloud infrastructure',
-  //     status: 'completed',
-  //     deadline: '2023-06-15',
-  //     startDate: '2023-05-01',
-  //     completionDate: '2023-06-10',
-  //     freelancers: [{ name: 'Sam Wilson', role: 'DevOps Engineer' }],
-  //     progress: 100,
-  //     milestones: [
-  //       {
-  //         id: 1,
-  //         title: 'Infrastructure Assessment',
-  //         status: 'completed',
-  //         dueDate: '2023-05-15'
-  //       },
-  //       {
-  //         id: 2,
-  //         title: 'CI/CD Pipeline Setup',
-  //         status: 'completed',
-  //         dueDate: '2023-05-31'
-  //       },
-  //       {
-  //         id: 3,
-  //         title: 'Cloud Migration',
-  //         status: 'completed',
-  //         dueDate: '2023-06-15'
-  //       }
-  //     ],
-  //     updates: [
-  //       {
-  //         id: 1,
-  //         author: 'Sarah Johnson',
-  //         role: 'Client',
-  //         date: '2023-06-16',
-  //         content:
-  //           'Great work on the infrastructure upgrade! Everything is running smoothly.',
-  //         isClient: true
-  //       },
-  //       {
-  //         id: 2,
-  //         author: 'Sam Wilson',
-  //         role: 'Freelancer',
-  //         date: '2023-06-16',
-  //         content:
-  //           "Thank you! I've documented everything in the handover document. Let me know if you need any clarification.",
-  //         isClient: false
-  //       }
-  //     ],
-  //     client: 'Tech Solutions Inc.',
-  //     clientContact: 'Michael Chen'
-  //   }
-  // ];
+const onCreateJob = async ({
+    jobId,
+  paymentAmount,
+ }: {
+     jobId: string;
+  paymentAmount: number;
+ }) => {
+  if (!publicKey) throw new Error('Wallet not connected');
 
-  const createProject = async () => {
+  // Format inputs as required by the Leo contract
+  const inputs = [
+    jobId + 'u64', // job_id as u64
+    paymentAmount + 'u64' // payment_amount as u64
+  ];
+console.log('Inputs:', inputs);
+  const fee = 50_000; // Set an appropriate fee
+
+  // Create the transaction
+  const aleoTransaction = Transaction.createTransaction(
+    publicKey,
+    WalletAdapterNetwork.TestnetBeta,
+    'escrow_contract.aleo',
+    'create_job',
+    inputs,
+    fee
+  );
+
+  // Send the transaction
+  if (requestTransaction) {
+    await requestTransaction(aleoTransaction);
+  }
+};
+  const handleFundAccount = async ({
+    jobId,
+    paymentAmount
+  }: {
+    jobId: string;
+    paymentAmount: number;
+  }) => {
+    if (!publicKey || !wallet) {
+      toast({
+        title: 'Wallet Not Connected',
+        description: 'Please connect your wallet to fund your account.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    if (!requestTransaction) {
+      toast({
+        title: 'Wallet Error',
+        description: 'Request Transaction function not available.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // const amountMicrocredits = parseInt(fundingAmount, 10);
+    // if (isNaN(amountMicrocredits) || amountMicrocredits <= 0) {
+    //   toast({
+    //     title: "Invalid Amount",
+    //     description:
+    //       "Please enter a valid positive amount to fund (microcredits).",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
+
+    // setIsFunding(true);
+    try {
+      // IMPORTANT: Adjust fee as needed. This is a placeholder.
+      // You might need a fee record or a dynamic fee estimation strategy.
+      const inputs = [
+        BigInt(`0x${jobId}`).toString() + 'u64', // job_id as u64
+        paymentAmount.toString() + 'u64' // payment_amount as u64
+      ];
+      console.log('Inputs:', inputs);
+      const fee = 50_000; // Set an appropriate fee
+
+      const feeInMicrocredits = 1000000;
+
+      const aleoTransaction = Transaction.createTransaction(
+        publicKey,
+        WalletAdapterNetwork.TestnetBeta, // Ensure this matches your contract deployment network
+        ESCROW_PROGRAM_ID,
+        'post_job', // Transition function from escrow_contract.aleo
+        inputs, // Input argument(s) as strings
+        feeInMicrocredits
+        // undefined, // feeRecord - Pass undefined if not providing a specific record
+      );
+
+      console.log('Requesting funding transaction:', aleoTransaction);
+      const txId = await requestTransaction(aleoTransaction);
+      console.log('Transaction ID:', txId);
+
+      if (txId) {
+        // toast({
+        //   title: "Funding Transaction Sent",
+        //   description: `Transaction ID: ${txId.substring(
+        //     0,
+        //     20
+        //   )}... Monitor your wallet or explorer for confirmation.`,
+        //   action: (
+        //     <a
+        //       href={`https://explorer.aleo.org/transaction/${txId}`} // Adjust explorer URL if needed (e.g., testnet3.aleo.network)
+        //       target="_blank"
+        //       rel="noopener noreferrer"
+        //       className="ml-2 underline"
+        //     >
+        //       View on Explorer
+        //     </a>
+        //   ),
+        // });
+        // setFundingAmount(""); // Clear input on success
+        // Optionally, trigger a simulated balance refresh after a delay
+        // Note: This won't show the *actual* new balance yet.
+        // setTimeout(fetchBalance, 7000); // Refresh balance simulation after 7s
+      } else {
+        toast({
+          title: 'Transaction Not Broadcast',
+          description: 'The transaction was likely cancelled in the wallet.',
+          variant: 'destructive'
+        });
+      }
+    } catch (e) {
+      console.error('Funding error:', e);
+      let description = 'An unknown error occurred during funding.';
+      if (e instanceof WalletNotConnectedError) {
+        description = 'Wallet disconnected. Please reconnect.';
+      } else if (e instanceof Error) {
+        // Attempt to provide a more specific error if possible
+        description = e.message.includes('rejected')
+          ? 'Transaction rejected by user in wallet.'
+          : e.message;
+      }
+      toast({
+        title: 'Funding Failed',
+        description: description,
+        variant: 'destructive'
+      });
+    } finally {
+      // setIsFunding(false);
+    }
+  };
+   const createProject = async () => {
     // Reset previous errors
     setErrors({});
 
@@ -368,8 +329,12 @@ export function ProjectManagement() {
         typeof response === 'object' &&
         'data' in response
       ) {
-        const { data, success } = response as { data: {}; success: boolean };
+        const { data, success } = response as { data: {_id: string}; success: boolean };
         if (success) {
+          handleFundAccount({
+            jobId: data._id,
+            paymentAmount: projectPayload.price,
+           });
           fetchProjects();
           // If validation passes, log the payload
           console.log('Project payload:', projectPayload);
