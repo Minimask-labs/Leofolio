@@ -7,7 +7,7 @@ import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { logout } from '@/service/auth';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/Store/user';
+import { useStore } from '@/store/user';
 
 interface HeaderProps {
   // connected: boolean;
@@ -15,26 +15,34 @@ interface HeaderProps {
   // userType: 'freelancer' | 'employee';
 }
 
-export function Header({  }: HeaderProps) {
-    const router = useRouter();
-  const { userType } = useStore();
+export function Header({}: HeaderProps) {
+  const router = useRouter();
+  const { userType, loadUserType, userData } = useStore();
 
-    const { publicKey, wallet, connected, disconnecting } = useWallet();
+  const { publicKey, wallet, connected, disconnecting } = useWallet();
 
-    const handleLogout =  () => {
-      try {
-        logout();
-        router.push('/auth');
-      } catch (error) {
-        console.error('Error during logout:', error);
-      }
-    };
-    useEffect(() => {
-      if (disconnecting) {
-        console.log('disconnecting status:', disconnecting);
-        handleLogout();
-      }
-    }, [disconnecting]);
+  const handleLogout = () => {
+    try {
+      logout();
+      router.push('/auth');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+  useEffect(() => {
+    if (disconnecting) {
+      // console.log('disconnecting status:', disconnecting);
+      handleLogout();
+    }
+    console.log('userType:', userType);
+  }, [disconnecting]);
+  useEffect(() => {
+    if (publicKey || connected) {
+      loadUserType();
+    }
+    console.log('userData:', userData);
+  }, [publicKey, connected]);
+
   return (
     <header className="flex justify-between items-center sticky py-4  bg-black top-0 z-30">
       <div className="flex items-center justify-between gap-2 bg-black container w-full mx-auto">
@@ -46,20 +54,20 @@ export function Header({  }: HeaderProps) {
           />
           <h1 className="text-2xl font-bold">Leofolio</h1>
           <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 ml-2">
-            {userType === 'freelancer' ? 'Freelancer' : 'Employee'}
+            {userType === 'freelancer' ? 'Freelancer' : 'Employer'}
           </span>
         </div>{' '}
         <div>
           {/* {connected ? ( */}
-            <WalletMultiButton
-              className={
-                userType === 'freelancer'
-                  ? '!bg-emerald-50 !text-emerald-700 hover:!bg-emerald-700 w-full hover:!text-white !border-emerald-200'
-                  : '!bg-blue-50 !text-blue-700 hover:!bg-blue-700 w-full hover:!text-blue-50 !border-blue-200'
-              }
-            />
-         </div>
+          <WalletMultiButton
+            className={
+              userType === 'freelancer'
+                ? '!bg-emerald-50 !text-emerald-700 hover:!bg-emerald-700 w-full hover:!text-white !border-emerald-200'
+                : '!bg-blue-50 !text-blue-700 hover:!bg-blue-700 w-full hover:!text-blue-50 !border-blue-200'
+            }
+          />
+        </div>
       </div>
-     </header>
+    </header>
   );
 }

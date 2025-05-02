@@ -1,13 +1,26 @@
-"use client"
+'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Briefcase, Filter, Search, Shield, Star } from "lucide-react"
+import { Briefcase, Filter, Search, Shield, Star } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,85 +28,85 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { toast } from "@/components/ui/use-toast"
-import { useUserProfileStore } from '@/Store/userProfile';
+  DialogTrigger
+} from '@/components/ui/dialog';
+import { toast } from '@/components/ui/use-toast';
+import { useUserProfileStore } from '@/store/userProfile';
 
 export function FreelancerDirectory() {
-  const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null)
+  const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
   const { handleFindUsers, users } = useUserProfileStore();
 
   // Mock freelancer data
   const freelancers = [
     {
       id: 1,
-      name: "Alex Morgan",
-      title: "Full Stack Developer",
-      skills: ["React", "Node.js", "GraphQL"],
-      experience: "5+ years",
+      name: 'Alex Morgan',
+      title: 'Full Stack Developer',
+      skills: ['React', 'Node.js', 'GraphQL'],
+      experience: '5+ years',
       rating: 4.9,
-      verifiedCredentials: ["AWS Certified", "Computer Science Degree"],
+      verifiedCredentials: ['AWS Certified', 'Computer Science Degree'],
       hourlyRate: 85,
-      availability: "Available",
-      bio: "Specialized in building scalable web applications with modern JavaScript frameworks.",
+      availability: 'Available',
+      bio: 'Specialized in building scalable web applications with modern JavaScript frameworks.'
     },
     {
       id: 2,
-      name: "Jamie Chen",
-      title: "UI/UX Designer",
-      skills: ["Figma", "Adobe XD", "User Research"],
-      experience: "7+ years",
+      name: 'Jamie Chen',
+      title: 'UI/UX Designer',
+      skills: ['Figma', 'Adobe XD', 'User Research'],
+      experience: '7+ years',
       rating: 4.8,
-      verifiedCredentials: ["UX Certification", "Design Degree"],
+      verifiedCredentials: ['UX Certification', 'Design Degree'],
       hourlyRate: 95,
-      availability: "Available in 2 weeks",
-      bio: "Creating intuitive and beautiful user experiences for web and mobile applications.",
+      availability: 'Available in 2 weeks',
+      bio: 'Creating intuitive and beautiful user experiences for web and mobile applications.'
     },
     {
       id: 3,
-      name: "Sam Wilson",
-      title: "DevOps Engineer",
-      skills: ["AWS", "Docker", "Kubernetes"],
-      experience: "4+ years",
+      name: 'Sam Wilson',
+      title: 'DevOps Engineer',
+      skills: ['AWS', 'Docker', 'Kubernetes'],
+      experience: '4+ years',
       rating: 4.7,
-      verifiedCredentials: ["AWS Solutions Architect", "Kubernetes Admin"],
+      verifiedCredentials: ['AWS Solutions Architect', 'Kubernetes Admin'],
       hourlyRate: 90,
-      availability: "Limited Availability",
-      bio: "Automating infrastructure and optimizing deployment pipelines for maximum efficiency.",
+      availability: 'Limited Availability',
+      bio: 'Automating infrastructure and optimizing deployment pipelines for maximum efficiency.'
     },
     {
       id: 4,
-      name: "Taylor Reed",
-      title: "Mobile Developer",
-      skills: ["React Native", "Swift", "Kotlin"],
-      experience: "3+ years",
+      name: 'Taylor Reed',
+      title: 'Mobile Developer',
+      skills: ['React Native', 'Swift', 'Kotlin'],
+      experience: '3+ years',
       rating: 4.6,
-      verifiedCredentials: ["Apple Developer Certification"],
+      verifiedCredentials: ['Apple Developer Certification'],
       hourlyRate: 80,
-      availability: "Available",
-      bio: "Building cross-platform mobile applications with a focus on performance and user experience.",
-    },
-  ]
+      availability: 'Available',
+      bio: 'Building cross-platform mobile applications with a focus on performance and user experience.'
+    }
+  ];
 
   const handleHireFreelancer = (freelancer: any) => {
     toast({
-      title: "Hiring Request Sent",
-      description: `Your request to hire ${freelancer.name} has been sent privately.`,
-    })
-  }
+      title: 'Hiring Request Sent',
+      description: `Your request to hire ${freelancer.name} has been sent privately.`
+    });
+  };
 
   const handleVerifyCredentials = (freelancer: any) => {
     toast({
-      title: "Credentials Verified",
-      description: "The credentials have been verified using zero-knowledge proofs.",
-    })
-  }
+      title: 'Credentials Verified',
+      description:
+        'The credentials have been verified using zero-knowledge proofs.'
+    });
+  };
   useEffect(() => {
     handleFindUsers({ role: 'freelancer' });
     console.log(users);
   }, [handleFindUsers]);
-
 
   return (
     <div className="space-y-6">
@@ -338,4 +351,3 @@ export function FreelancerDirectory() {
     </div>
   );
 }
-

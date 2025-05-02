@@ -1,26 +1,26 @@
-'use client';
+"use client";
 // import type { Metadata } from 'next';
-import React, { useMemo } from 'react';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { WalletModalProvider } from '@demox-labs/aleo-wallet-adapter-reactui';
-import { WalletProvider } from '@demox-labs/aleo-wallet-adapter-react';
+import React, { useMemo } from "react";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
+import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
 import {
   DecryptPermission,
-  WalletAdapterNetwork
-} from '@demox-labs/aleo-wallet-adapter-base';
+  WalletAdapterNetwork,
+} from "@demox-labs/aleo-wallet-adapter-base";
 // import { Toaster } from 'react-hot-toast';
 import {
   PuzzleWalletAdapter,
   LeoWalletAdapter,
   FoxWalletAdapter,
-  SoterWalletAdapter
-} from 'aleo-adapters';
-import { Toaster } from '@/components/ui/toaster';
-import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
+  SoterWalletAdapter,
+} from "aleo-adapters";
+import { Toaster } from "@/components/ui/toaster";
+import "@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css";
 
- const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //   title: 'Leofolio - Privacy-preserving Freelancer Platform',
@@ -94,7 +94,7 @@ import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
 // };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -105,7 +105,10 @@ export default function RootLayout({
       }),
       new PuzzleWalletAdapter({
         programIdPermissions: {
-          [WalletAdapterNetwork.TestnetBeta]: ['token_registry.aleo']
+          [WalletAdapterNetwork.TestnetBeta]: [
+            'escrow_contract.aleo',
+            'escrow_contract_v1.aleo'
+          ]
         },
         appName: 'Aleo app',
         appDescription: 'A privacy-focused DeFi app',
@@ -130,7 +133,7 @@ export default function RootLayout({
             (function() {
               document.documentElement.classList.add('dark');
             })();
-          `
+          `,
           }}
         />
       </head>
@@ -139,7 +142,7 @@ export default function RootLayout({
           <WalletProvider
             wallets={wallets}
             decryptPermission={DecryptPermission.UponRequest}
-            network={WalletAdapterNetwork.MainnetBeta}
+            network={WalletAdapterNetwork.TestnetBeta}
           >
             {/*            autoConnect
              */}

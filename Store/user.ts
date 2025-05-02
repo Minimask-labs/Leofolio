@@ -13,6 +13,8 @@ interface UserState {
   removeRememberUserDetails: () => void;
   removeUserData: () => void;
   loadUserData: () => void;
+  loadUserToken: () => void;
+  loadUserType: () => void;
   saveUserType: (data: any) => void;
   currencySign: string;
 }
@@ -111,5 +113,13 @@ export const useStore = create<UserState>((set) => ({
   loadUserData: () => {
     const data = getFromCookies('userData');
     set({ userData: data });
+  },
+  loadUserToken: () => {
+    const data = getFromCookies('token');
+    set({ token: data });
+  },
+  loadUserType: () => {
+    const data = getFromCookies('userType');
+    set({ userType: data });
   }
 }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { ProjectUpdates } from "./project-updates";
+import { ProjectUpdates } from "@/components/project-updates";
 import {
   Select,
   SelectContent,
@@ -44,19 +44,26 @@ import {
   FileBarChart,
   Download,
   Gift,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-
-interface ProjectDashboardProps {
-  project: any;
-  userType: "freelancer" | "employee";
+import { ProjectTeam } from "./projectTeam";
+interface DashboardProps {
+  userType: "freelancer" | "employer";
 }
+import { useProjectStore } from "@/store/projects";
+ import { BackButton } from "../back-button";
+ import { useRouter, useParams } from 'next/navigation';
 
-export function ProjectDashboard({
-  project: initialProject,
-  userType,
-}: ProjectDashboardProps) {
-  const [project, setProject] = useState(initialProject);
+export function Dashboard({ userType }: DashboardProps) {
+  const {
+    handleCreateProject,
+    fetchProjects,
+    projects,
+    handleViewProjectDetail,
+    project_details
+  } = useProjectStore();
+   const [project, setProject] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
   const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
@@ -67,6 +74,9 @@ export function ProjectDashboard({
     dueDate: "",
     status: "not-started",
   });
+  const router = useRouter();
+  const params = useParams();
+  const projectId = params.id;
 
   // Mock available freelancers for assignment
   const availableFreelancers = [
@@ -148,7 +158,7 @@ export function ProjectDashboard({
     if (!freelancer) return;
 
     // Check if freelancer is already assigned
-    if (project?.freelancers?.some((f: any) => f.name === freelancer.name)) {
+    if (project.freelancers.some((f: any) => f.name === freelancer.name)) {
       toast({
         title: "Freelancer Already Assigned",
         description: `${freelancer.name} is already assigned to this project.`,
@@ -172,13 +182,13 @@ export function ProjectDashboard({
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project?.milestones.length;
-    const completedMilestones = project?.milestones.filter(
+    const totalMilestones = project?.milestones?.length;
+    const completedMilestones = project?.milestones?.filter(
       (m: any) => m.status === "completed"
-    ).length;
-    const inProgressMilestones = project?.milestones.filter(
+    )?.length;
+    const inProgressMilestones = project?.milestones?.filter(
       (m: any) => m.status === "in-progress"
-    ).length;
+    )?.length;
 
     const startDate = new Date(project?.startDate);
     const endDate = project?.completionDate
@@ -232,9 +242,23 @@ export function ProjectDashboard({
         return <Badge>{status}</Badge>;
     }
   };
+  useEffect(() => {
+
+  if (projectId !== undefined) {
+  handleViewProjectDetail(String(projectId));
+  }
+    console.log('Projects:', projects);
+    if (project_details?.data) {
+      setProject(project_details?.data);
+      console.log('Project:', project_details);
+    }
+  }, [fetchProjects]);
 
   return (
     <div className="space-y-6">
+      <div className="mb-2">
+        <BackButton path="/employer" />
+      </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -246,7 +270,7 @@ export function ProjectDashboard({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {project?.status !== "completed" && userType === "employee" && (
+          {project?.status !== "completed" && userType === "employer" && (
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -425,7 +449,7 @@ export function ProjectDashboard({
                     </p>
                   )}
 
-                  {userType === "employee" && (
+                  {userType === "employer" && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -495,7 +519,7 @@ export function ProjectDashboard({
                     <div>
                       <p className="text-xs font-medium">Current Phase</p>
                       <p className="text-xs text-slate-500">
-                        {project?.milestones.find(
+                        {project?.milestones?.find(
                           (m: any) => m.status === "in-progress"
                         )?.title || "Planning"}
                       </p>
@@ -660,7 +684,7 @@ export function ProjectDashboard({
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === "employee" && project?.status !== "completed" && (
+            {userType === "employer" && project?.status !== "completed" && (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -748,7 +772,7 @@ export function ProjectDashboard({
           </div>
 
           <div className="space-y-4">
-            {project?.milestones.map((milestone: any) => (
+            {project?.milestones?.map((milestone: any) => (
               <Card key={milestone.id}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
@@ -775,7 +799,7 @@ export function ProjectDashboard({
                     </span>
                   </div>
                 </CardContent>
-                {userType === "employee" && project?.status !== "completed" && (
+                {userType === "employer" && project?.status !== "completed" && (
                   <CardFooter>
                     <Select
                       defaultValue={milestone.status}
@@ -801,9 +825,10 @@ export function ProjectDashboard({
 
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6 mt-6">
-          <div className="flex items-center justify-between">
+          <ProjectTeam projectDetails={project} />
+          {/* <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
-            {userType === "employee" && project?.status !== "completed" && (
+            {userType === 'employer' && project?.status !== 'completed' && (
               <Button
                 size="sm"
                 className="gap-2"
@@ -823,9 +848,9 @@ export function ProjectDashboard({
                     <Avatar className="h-12 w-12">
                       <AvatarFallback className="text-lg">
                         {freelancer.name
-                          .split(" ")
+                          .split(' ')
                           .map((n: string) => n[0])
-                          .join("")}
+                          .join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -892,9 +917,9 @@ export function ProjectDashboard({
                           <Avatar className="h-10 w-10">
                             <AvatarFallback>
                               {freelancer.name
-                                .split(" ")
+                                .split(' ')
                                 .map((n) => n[0])
-                                .join("")}
+                                .join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -923,7 +948,7 @@ export function ProjectDashboard({
                 </Button>
               </CardFooter>
             </Card>
-          )}
+          )} */}
         </TabsContent>
 
         {/* Communication Tab */}

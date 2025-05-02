@@ -1,21 +1,37 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { DevfolioPreview } from "./devfolio-preview"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Github, Globe, Linkedin, Twitter, Instagram, Plus, X,  Loader2
- } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CredentialManager } from "./credential-manager"
-import { WorkHistory } from "./work-history"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { DevfolioPreview } from './devfolio-preview';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Github,
+  Globe,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Plus,
+  X,
+  Loader2
+} from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CredentialManager } from './credential-manager';
+import { WorkHistory } from './work-history';
+import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
 import { useUserProfileStore } from '@/Store/userProfile';
 
 // interface DevfolioViewProps {
@@ -53,39 +69,70 @@ import { useUserProfileStore } from '@/Store/userProfile';
 //   >;
 // }
 
-export function DevfolioView( ) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [newSkill, setNewSkill] = useState("")
-  const [activeTab, setActiveTab] = useState("overview")
-  const { handleUpdateUser, handleUploadMedia, media, fetchUser, user } = useUserProfileStore();
+export function DevfolioView() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newSkill, setNewSkill] = useState('');
+  const [activeTab, setActiveTab] = useState('overview');
+  const {
+    handleUpdateUser,
+    handleUploadMedia,
+    media,
+    fetchUser,
+    user,
+    handleVerifyEmail,
+    handleRequestVerifyEmailOtp,
+    handleValidateVerifyEmailOtp
+  } = useUserProfileStore();
   const [editedProfile, setEditedProfile] = useState(user);
-const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
+  const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
+    useState(false);
+  const [emailToVerify, setEmailToVerify] = useState('');
+  const [previousEmail, setPreviousEmail] = useState('');
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setEditedProfile((prev: any) => ({ ...prev, [name]: value }))
-  }
+    // Check if email is being changed
+    if (name === 'email' && value !== user?.email) {
+      if (!previousEmail) {
+        setPreviousEmail(user?.email || '');
+      }
+      setEmailToVerify(value);
+    }
+
+    setEditedProfile((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setEditedProfile((prev: any) => ({ ...prev, [name]: value }));
+  // };
 
   const addSkill = () => {
     if (newSkill && !editedProfile?.skills?.includes(newSkill)) {
-      setEditedProfile((prev: { skills: any; }) => ({
+      setEditedProfile((prev: { skills: any }) => ({
         ...prev,
-        skills: [...prev?.skills, newSkill],
-      }))
-      setNewSkill("")
+        skills: [...prev?.skills, newSkill]
+      }));
+      setNewSkill('');
     }
-  }
+  };
 
   const removeSkill = (skill: string) => {
-    setEditedProfile((prev: { skills: any[]; }) => ({
+    setEditedProfile((prev: { skills: any[] }) => ({
       ...prev,
-      skills: prev?.skills.filter((s: string) => s !== skill),
-    }))
-  }
+      skills: prev?.skills.filter((s: string) => s !== skill)
+    }));
+  };
 
   const saveChanges = async () => {
     // setProfile(editedProfile)
-          setIsUploading(true);
+    setIsUploading(true);
 
     toast({
       title: 'Profile Updated',
@@ -98,13 +145,12 @@ const [isUploading, setIsUploading] = useState(false);
         typeof response === 'object' &&
         'data' in response
       ) {
-    const { data, success } = response as { data: {}; success: boolean };
-    const { role } = data as { role: 'freelancer' | 'employer' };
-    if (success) {
-    setIsEditing(false);
-           fetchUser();
-
-    }
+        const { data, success } = response as { data: {}; success: boolean };
+        const { role } = data as { role: 'freelancer' | 'employer' };
+        if (success) {
+          setIsEditing(false);
+          fetchUser();
+        }
       }
       toast({
         title: 'Profile Image  Updated',
@@ -123,14 +169,143 @@ const [isUploading, setIsUploading] = useState(false);
       setIsUploading(false);
     }
   };
+
+  const requestEmailverifyOtp = async () => {
+    setIsUploading(true);
+    try {
+      const response = await handleRequestVerifyEmailOtp(emailToVerify);
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as { data: {}; success: boolean };
+        if (success) {
+          toast({
+            title: 'Email Verification Code Sent',
+            description: 'A verification code has been sent to your email.'
+          });
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  const validateEmailOtp = async () => {
+    setIsUploading(true);
+    try {
+      const response = await handleValidateVerifyEmailOtp(
+        editedProfile?.email,
+        emailVerificationCode
+      );
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as { data: {}; success: boolean };
+        if (success) {
+          toast({
+            title: 'Email Verified',
+            description: 'Your email has been verified successfully.'
+          });
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const verifyEmail = async () => {
+    setIsUploading(true);
+    try {
+      const response = await handleVerifyEmail(
+        editedProfile?.email,
+        emailVerificationCode
+      );
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as { data: {}; success: boolean };
+        if (success) {
+          toast({
+            title: 'Email Verified',
+            description: 'Your email has been verified successfully.'
+          });
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  const handleEmailChange = async () => {
+    if (emailToVerify && emailToVerify !== user?.email) {
+      await requestEmailverifyOtp();
+      setIsEmailVerificationModalOpen(true);
+    }
+  };
+
+  const handleVerifyOtp = async (otp: string) => {
+    setEmailVerificationCode(otp);
+    try {
+      // First validate the OTP
+      await validateEmailOtp();
+
+      // Then verify the email
+      await verifyEmail();
+
+      // Close the modal after successful verification
+      setIsEmailVerificationModalOpen(false);
+      setPreviousEmail('');
+
+      toast({
+        title: 'Email Updated',
+        description: 'Your email has been successfully verified and updated.'
+      });
+    } catch (error) {
+      // Error handling is already in the validateEmailOtp and verifyEmail functions
+    }
+  };
+
   useEffect(() => {
-       fetchUser();
-      //  if(user){
-      //  console.log('user', user);
-      // //  setProfile(user);
-      // }
+    fetchUser();
   }, [fetchUser]);
 
+  // Update editedProfile whenever user data changes
+  useEffect(() => {
+    if (user) {
+      setEditedProfile(user);
+      // Reset email verification state when user data changes
+      setEmailToVerify('');
+      setPreviousEmail('');
+    }
+  }, [user]);
   if (isEditing) {
     return (
       <div className="space-y-6">
@@ -170,6 +345,26 @@ const [isUploading, setIsUploading] = useState(false);
                 value={editedProfile?.fullName}
                 onChange={handleChange}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="email"
+                  name="email"
+                  value={editedProfile?.email}
+                  onChange={handleChange}
+                />
+                {emailToVerify && emailToVerify !== user?.email && (
+                  <Button
+                    type="button"
+                    onClick={handleEmailChange}
+                    disabled={isUploading}
+                  >
+                    Verify
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
@@ -359,6 +554,14 @@ const [isUploading, setIsUploading] = useState(false);
             </Button>
           </CardFooter>
         </Card>
+        {/* Email Verification Modal */}
+        <EmailVerificationModal
+          isOpen={isEmailVerificationModalOpen}
+          onClose={() => setIsEmailVerificationModalOpen(false)}
+          email={emailToVerify}
+          onVerify={handleVerifyOtp}
+          isLoading={isUploading}
+        />
       </div>
     );
   }
@@ -378,4 +581,3 @@ const [isUploading, setIsUploading] = useState(false);
     </div>
   );
 }
-

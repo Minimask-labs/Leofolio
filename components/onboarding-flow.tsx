@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -26,12 +26,15 @@ import {
   Plus,
   X,
   ImagePlus,
-  Loader2
+  Loader2,
+  Mail,
+  CheckCircle
 } from 'lucide-react';
 import { DevfolioPreview } from './devfolio-preview';
-import { useUserProfileStore } from '@/Store/userProfile';
+import { useUserProfileStore } from '@/store/userProfile';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, redirect } from 'next/navigation';
+import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
@@ -39,143 +42,160 @@ interface OnboardingFlowProps {
 }
 
 export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
-const [step, setStep] = useState(1);
-const { handleUpdateUser, handleUploadMedia,fetchUser, media } = useUserProfileStore();
-const [previewImage, setPreviewImage] = useState('');
+  const [step, setStep] = useState(1);
+  const {
+    handleUpdateUser,
+    handleUploadMedia,
+    fetchUser,
+    media,
+    user,
+    handleVerifyEmail,
+    handleRequestVerifyEmailOtp,
+    handleValidateVerifyEmailOtp
+  } = useUserProfileStore();
+  const [previewImage, setPreviewImage] = useState('');
   const { toast } = useToast();
-const [profile, setProfile] = useState({
-  fullName: '',
-  username: '',
-  profileImage: media?.length > 0 ? media[0] : '',
-  professionalTitle: '',
-  bio: '',
-  location: '',
-  skills: [] as string[],
-  socials: {
-    twitter: '',
-    linkedin: '',
-    github: '',
-    instagram: '',
-    website: ''
-  },
-   newSkill: ''
-});
+  const [profile, setProfile] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    profileImage: media?.length > 0 ? media[0] : '',
+    professionalTitle: '',
+    bio: '',
+    location: '',
+    skills: [] as string[],
+    socials: {
+      twitter: '',
+      linkedin: '',
+      github: '',
+      instagram: '',
+      website: ''
+    },
+    newSkill: ''
+  });
   const router = useRouter();
 
-// const data = {
-//   fullName: '',
-//   username: '',
-//   profileImage: ' ',
-//   professionalTitle: 'Senior Blockchain Developer',
-//   bio: 'Experienced blockchain developer specializing in smart contracts and DeFi applications. Passionate about open source and decentralized tech.',
-//   location: 'San Francisco, CA',
-//   skills: ['Solidity', 'React', 'Node.js', 'Web3.js'],
-//   socials: {
-//     twitter: 'janedoe',
-//     linkedin: 'janedoe-linkedin',
-//     github: 'janedoe',
-//     instagram: 'janedoe_insta',
-//     website: 'https://janedoe.dev'
-//   }
-// };
-const [previewMode, setPreviewMode] = useState(false);
-const [errors, setErrors] = useState<Record<string, string>>({});
-const [isUploading, setIsUploading] = useState(false);
+  // const data = {
+  //   fullName: '',
+  //   username: '',
+  //   profileImage: ' ',
+  //   professionalTitle: 'Senior Blockchain Developer',
+  //   bio: 'Experienced blockchain developer specializing in smart contracts and DeFi applications. Passionate about open source and decentralized tech.',
+  //   location: 'San Francisco, CA',
+  //   skills: ['Solidity', 'React', 'Node.js', 'Web3.js'],
+  //   socials: {
+  //     twitter: 'janedoe',
+  //     linkedin: 'janedoe-linkedin',
+  //     github: 'janedoe',
+  //     instagram: 'janedoe_insta',
+  //     website: 'https://janedoe.dev'
+  //   }
+  // };
+  // Email verification states
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
+    useState(false);
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
 
-const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
-  const { name, value } = e.target;
+  const [previewMode, setPreviewMode] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isUploading, setIsUploading] = useState(false);
 
-  // Handle nested social properties
-  if (
-    name === 'github' ||
-    name === 'linkedin' ||
-    name === 'twitter' ||
-    name === 'instagram' ||
-    name === 'website'
-  ) {
-    setProfile((prev) => ({
-      ...prev,
-      socials: {
-        ...prev.socials,
-        [name]: value
-      }
-    }));
-  } else {
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
 
-  // Clear error for this field if it exists
-  if (errors[name]) {
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      delete newErrors[name];
-      return newErrors;
-    });
-  }
-};
-
-const handleSelectChange = (name: string, value: string) => {
-  setProfile((prev) => ({ ...prev, [name]: value }));
-};
-
-const addSkill = () => {
-  if (profile.newSkill && !profile.skills.includes(profile.newSkill)) {
-    setProfile((prev) => ({
-      ...prev,
-      skills: [...prev.skills, prev.newSkill],
-      newSkill: ''
-    }));
-  }
-};
-
-const removeSkill = (skill: string) => {
-  setProfile((prev) => ({
-    ...prev,
-    skills: prev.skills.filter((s) => s !== skill)
-  }));
-};
-
-const uploadedImage = async (image: any) => {
-  setIsUploading(true);
-  const formData = new FormData();
-  if (image) {
-    formData.append('media', image);
-  }
-
-  try {
-    const response = await handleUploadMedia(formData); // Explicitly define the response type
-     if (media) {
+    // Handle nested social properties
+    if (
+      name === 'github' ||
+      name === 'linkedin' ||
+      name === 'twitter' ||
+      name === 'instagram' ||
+      name === 'website'
+    ) {
       setProfile((prev) => ({
         ...prev,
-        profileImage: media[0]
+        socials: {
+          ...prev.socials,
+          [name]: value
+        }
       }));
-      toast({
-        title: 'Image uploaded successfully',
-        description: 'Your profile image has been updated.',
-        variant: 'default'
-      });
-      console.log('Image uploaded successfully:', media);
-          setPreviewImage(media[0]);
-          console.log('Image uploaded successfully:', response);
+    } else {
+      setProfile((prev) => ({ ...prev, [name]: value }));
     }
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    toast({
-      title: 'Upload failed',
-      description:
-        'There was a problem uploading your image. Please try again.',
-      variant: 'destructive'
-    });
-  } finally {
-    setIsUploading(false);
-  }
-};
 
-const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  // if (file) {
+    // Clear error for this field if it exists
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const addSkill = () => {
+    if (profile.newSkill && !profile.skills.includes(profile.newSkill)) {
+      setProfile((prev) => ({
+        ...prev,
+        skills: [...prev.skills, prev.newSkill],
+        newSkill: ''
+      }));
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((s) => s !== skill)
+    }));
+  };
+
+  const uploadedImage = async (image: any) => {
+    setIsUploading(true);
+    const formData = new FormData();
+    if (image) {
+      formData.append('media', image);
+    }
+
+    try {
+      const response = await handleUploadMedia(formData); // Explicitly define the response type
+      if (media) {
+        setProfile((prev) => ({
+          ...prev,
+          profileImage: media[0]
+        }));
+        toast({
+          title: 'Image uploaded successfully',
+          description: 'Your profile image has been updated.',
+          variant: 'default'
+        });
+        console.log('Image uploaded successfully:', media);
+        setPreviewImage(media[0]);
+        console.log('Image uploaded successfully:', response);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Upload failed',
+        description:
+          'There was a problem uploading your image. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // if (file) {
     // const reader = new FileReader();
     // reader.onloadend = () => {
     //   setProfile((prev) => ({
@@ -187,92 +207,214 @@ const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (file) {
       uploadedImage(file);
     }
-  // }
-};
-const UpdateUserProfile = async () => {
-            setIsUploading(true);
-   const { newSkill, ...dataWithoutnewSkill } = profile;
-console.log('Profile data:', dataWithoutnewSkill);
-  try {
-  let response = await handleUpdateUser(dataWithoutnewSkill);
-  if (response !== undefined && typeof response === 'object' && 'data' in response) {
-           fetchUser();
-
-    const { data } = response as { data: {} };
-    const { role } = data as { role: 'freelancer' | 'employer'};
-    if (role === 'freelancer') {
-      router.replace('/freelancer');
-    } else if (role === 'employer') {
-      router.replace('/employer');
-    }
-  }
-    // if (response?.role === 'freelancer') {
-    //   // Use router.replace for faster navigation (no history entry)
-    //     router.replace('/freelancer');
-    //   // Show toast after navigation
-    // } else if (response?.role === 'employer') {
-    //     router.replace('/employer');
     // }
-    toast({
-      title: 'Profile Image  Updated',
-      description: 'Your profile was updated successfully.',
-      variant: 'default'
-    });
-  } catch (error: any) {
-    const errorMessage =
-      (error as any)?.response?.data?.message || 'An unknown error occurred';
-    toast({
-      title: 'Error',
-      description: errorMessage,
-      variant: 'destructive'
-    });
-  }finally {
-    setIsUploading(false);
-   }
-};
+  };
+  // Email verification functions
+  const requestEmailVerification = async () => {
+    if (!profile.email) {
+      toast({
+        title: 'Email Required',
+        description: 'Please enter an email address to verify.',
+        variant: 'destructive'
+      });
+      return;
+    }
 
-const validateStep = (currentStep: number): boolean => {
-  const newErrors: Record<string, string> = {};
+    setIsVerifyingEmail(true);
+    try {
+      const response = await handleRequestVerifyEmailOtp(profile.email);
+      console.log('Email verification response:', response);
+      if (response !== undefined && typeof response === 'object') {
+        console.log('Email verification response2:', response);
+        const { success, message } = response as {
+          data: {};
+          success: boolean;
+          message: string;
+        };
+        console.log('Email verification success:', success);
+        console.log('Email verification message:', message);
+        if (success) {
+          setIsEmailVerificationModalOpen(true);
+          toast({
+            title: 'Verification Code Sent',
+            description: message
+          });
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsVerifyingEmail(false);
+    }
+  };
 
-  if (currentStep === 1) {
-    if (!profile.fullName.trim()) newErrors.fullName = 'Full name is required';
-    if (!profile.username.trim()) newErrors.username = 'Username is required';
-    if (!profile.professionalTitle.trim())
-      newErrors.professionalTitle = 'Professional title is required';
-    if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
-    if (!profile.location.trim()) newErrors.location = 'Location is required';
-  } else if (currentStep === 2) {
-    if (profile.skills.length === 0)
-      newErrors.skills = 'At least one skill is required';
-  }
+  const handleVerifyOtp = async (otp: string) => {
+    setEmailVerificationCode(otp);
+    setIsVerifyingEmail(true);
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    try {
+      // First validate the OTP
+      const validateResponse = await handleValidateVerifyEmailOtp(
+        profile.email,
+        otp
+      );
 
-const nextStep = () => {
-  if (!validateStep(step)) {
-    toast({
-      title: 'Validation Error',
-      description: 'Please fill in all required fields before proceeding.',
-      variant: 'destructive'
-    });
-    return;
-  }
+      if (
+        validateResponse !== undefined &&
+        typeof validateResponse === 'object' &&
+        'data' in validateResponse
+      ) {
+        const { success } = validateResponse as { data: {}; success: boolean };
 
-  if (step < 3) {
-    setStep(step + 1);
-  } else {
-    // UpdateUserProfile();
-    setPreviewMode(true);
-  }
-};
+        if (success) {
+          // Then verify the email
+          const verifyResponse = await handleVerifyEmail(profile.email, otp);
 
-const prevStep = () => {
-  if (step > 1) {
-    setStep(step - 1);
-  }
-};
+          if (
+            verifyResponse !== undefined &&
+            typeof verifyResponse === 'object' &&
+            'data' in verifyResponse
+          ) {
+            const { success: verifySuccess } = verifyResponse as {
+              data: {};
+              success: boolean;
+            };
+
+            if (verifySuccess) {
+              setIsEmailVerified(true);
+              setIsEmailVerificationModalOpen(false);
+
+              toast({
+                title: 'Email Verified',
+                description: 'Your email has been successfully verified.'
+              });
+            }
+          }
+        }
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Verification Failed',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsVerifyingEmail(false);
+    }
+  };
+
+  const UpdateUserProfile = async () => {
+    setIsUploading(true);
+    const { newSkill, ...dataWithoutnewSkill } = profile;
+    console.log('Profile data:', dataWithoutnewSkill);
+    try {
+      let response = await handleUpdateUser(dataWithoutnewSkill);
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        fetchUser();
+
+        const { data } = response as { data: {} };
+        const { role } = data as { role: 'freelancer' | 'employer' };
+        if (role === 'freelancer') {
+          router.replace('/freelancer');
+        } else if (role === 'employer') {
+          router.replace('/employer');
+        }
+      }
+      // if (response?.role === 'freelancer') {
+      //   // Use router.replace for faster navigation (no history entry)
+      //     router.replace('/freelancer');
+      //   // Show toast after navigation
+      // } else if (response?.role === 'employer') {
+      //     router.replace('/employer');
+      // }
+      toast({
+        title: 'Profile Image  Updated',
+        description: 'Your profile was updated successfully.',
+        variant: 'default'
+      });
+    } catch (error: any) {
+      const errorMessage =
+        (error as any)?.response?.data?.message || 'An unknown error occurred';
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const validateStep = (currentStep: number): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (currentStep === 1) {
+      if (!profile.fullName.trim())
+        newErrors.fullName = 'Full name is required';
+      if (!profile.username.trim()) newErrors.username = 'Username is required';
+      if (!profile.profileImage.trim())
+        newErrors.profileImage = 'Profile image is required';
+      if (!profile.email.trim()) newErrors.email = 'Email is required';
+      else if (!isEmailVerified)
+        newErrors.email = 'Email must be verified before proceeding';
+      if (!profile.professionalTitle.trim())
+        newErrors.professionalTitle = 'Professional title is required';
+      if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
+      if (!profile.location.trim()) newErrors.location = 'Location is required';
+    } else if (currentStep === 2) {
+      if (profile.skills.length === 0)
+        newErrors.skills = 'At least one skill is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const nextStep = () => {
+    if (!validateStep(step)) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in all required fields before proceeding.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (step < 3) {
+      setStep(step + 1);
+    } else {
+      // UpdateUserProfile();
+      setPreviewMode(true);
+    }
+  };
+
+  const prevStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  // Update editedProfile whenever user data changes
+  useEffect(() => {
+    if (user) {
+      setProfile(user);
+    }
+  }, [user]);
 
   if (previewMode) {
     return (
@@ -286,7 +428,7 @@ const prevStep = () => {
                   Edit Profile
                 </Button>
                 <Button
-                disabled={isUploading}
+                  disabled={isUploading}
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={UpdateUserProfile}
                 >
@@ -295,7 +437,7 @@ const prevStep = () => {
                   ) : (
                     <span>Save Setup</span>
                   )}
-                 </Button>
+                </Button>
               </div>
             </div>
             <div className="w-full h-[85vh] overflow-y-auto pb-12 ">
@@ -383,8 +525,8 @@ const prevStep = () => {
             <CardContent className="space-y-4">
               {step === 1 && (
                 <>
-                  <div className="flex justify-center mb-6">
-                    <div className="flex flex-col relative items-center">
+                  <div className="flex flex-col justify-center items-center mb-6">
+                    <div className="flex flex-col relative w-fit items-center">
                       <Avatar className="h-24 w-24">
                         <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
                           {profile.fullName
@@ -424,7 +566,62 @@ const prevStep = () => {
                         onChange={handleUploadImage}
                         className="hidden"
                       />
+                    </div>{' '}
+                    {/* {profile.profileImage} */}
+                    {errors.profileImage && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.profileImage}
+                      </p>
+                    )}
+                  </div>{' '}
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="flex lg:flex-row flex-col gap-2">
+                      <div className="relative flex-grow">
+                        <Input
+                          id="email"
+                          name="email"
+                          placeholder="your@email.com"
+                          type="email"
+                          autoComplete="email"
+                          value={profile.email}
+                          onChange={handleChange}
+                          className={
+                            errors.email ? 'border-red-500 pr-10' : 'pr-10'
+                          }
+                          disabled={isEmailVerified}
+                        />
+                        {isEmailVerified && (
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-emerald-600" />
+                        )}
+                      </div>
+                      {!isEmailVerified && (
+                        <Button
+                          type="button"
+                          onClick={requestEmailVerification}
+                          disabled={isVerifyingEmail || !profile.email}
+                          className="whitespace-nowrap"
+                        >
+                          {isVerifyingEmail ? (
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          ) : (
+                            <Mail className="h-4 w-4 mr-2" />
+                          )}
+                          Verify Email
+                        </Button>
+                      )}
                     </div>
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </p>
+                    )}
+                    {isEmailVerified && (
+                      <p className="text-emerald-600 text-sm mt-1 flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-1" /> Email verified
+                        successfully
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
@@ -715,6 +912,14 @@ const prevStep = () => {
           </Card>
         </div>
       </div>
+      {/* Email Verification Modal */}
+      <EmailVerificationModal
+        isOpen={isEmailVerificationModalOpen}
+        onClose={() => setIsEmailVerificationModalOpen(false)}
+        email={profile.email}
+        onVerify={handleVerifyOtp}
+        isLoading={isVerifyingEmail}
+      />
     </div>
   );
 }

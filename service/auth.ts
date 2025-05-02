@@ -18,10 +18,44 @@ export const getWalletSigner = async (walletAddress: string) => {
     throw error;
   }
 };
-
-export const logout = () => {
-  Cookies.remove("token");
-  Cookies.remove("userData");
-  Cookies.remove("userType");
+export const verify = async (payload:{
+    email: string,
+    type: string,
+    code: string
+}) => {
+  try {
+    const response = await AxiosService.post(`auth/verify-email`, payload);
+    return response.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
+export const requestOtp = async (payload: {
+  email: string;
+  type: string;
+}) => {
+  try {
+    const response = await AxiosService.post(`otp/request`, payload);
+    return response.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
+export const validateOtp = async (payload: {
+  email: string;
+  type: string;
+  code: string;
+}) => {
+  try {
+    const response = await AxiosService.post(`otp/validate`, payload);
+    return response.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
+  export const logout = () => {
+  Cookies.remove('token');
+  Cookies.remove('userData');
+  Cookies.remove('userType');
 };
 
