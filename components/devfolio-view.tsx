@@ -61,7 +61,6 @@ export function DevfolioView( ) {
   const [editedProfile, setEditedProfile] = useState(user);
 const [isUploading, setIsUploading] = useState(false);
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setEditedProfile((prev: any) => ({ ...prev, [name]: value }))
@@ -186,6 +185,15 @@ const [isUploading, setIsUploading] = useState(false);
                   onChange={handleChange}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                name="email"
+                value={editedProfile?.email}
+                onChange={handleChange}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="professionalTitle">Professional Title</Label>
