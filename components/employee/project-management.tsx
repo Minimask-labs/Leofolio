@@ -49,8 +49,8 @@ import {
 } from '@demox-labs/aleo-wallet-adapter-base';
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import React, { FC, useCallback } from 'react';
-const ESCROW_PROGRAM_ID = 'zk_privacy_escrow.aleo';
-
+const ESCROW_PROGRAM_ID = 'escrow_contract_v2.aleo';
+import {mongoIdToAleoField} from '@/libs/util';
 export function ProjectManagement() {
   const router = useRouter();
   const [isCreatingProject, setIsCreatingProject] = useState(false);
@@ -140,7 +140,7 @@ export function ProjectManagement() {
 
     // Format inputs as required by the Leo contract
     const inputs = [
-      jobId + 'u64', // job_id as u64
+      mongoIdToAleoField(jobId), // job_id as u64
       paymentAmount + 'u64' // payment_amount as u64
     ];
     console.log('Inputs:', inputs);
@@ -150,7 +150,7 @@ export function ProjectManagement() {
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.TestnetBeta,
-      'escrow_contract.aleo',
+      'escrow_contract_v2.aleo',
       'create_job',
       inputs,
       fee
@@ -213,7 +213,7 @@ export function ProjectManagement() {
         publicKey,
         WalletAdapterNetwork.TestnetBeta, // Ensure this matches your contract deployment network
         ESCROW_PROGRAM_ID,
-        'post_job', // Transition function from escrow_contract.aleo
+        'create_job',
         inputs, // Input argument(s) as strings
         feeInMicrocredits
         // undefined, // feeRecord - Pass undefined if not providing a specific record
@@ -334,7 +334,7 @@ export function ProjectManagement() {
           success: boolean;
         };
         if (success) {
-          handleFundAccount({
+          onCreateJob({
             jobId: data._id,
             paymentAmount: projectPayload.price
           });
