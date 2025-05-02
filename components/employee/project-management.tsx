@@ -38,10 +38,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProjectUpdates } from '@/components/project-updates';
 import { ProjectDashboard } from '@/components/project-dashboard';
 import { ProjectReport } from '@/components/project-report';
-import { useUserProfileStore } from '@/store/userProfile';
-import { useProjectStore } from '@/store/projects';
 import { AnyAaaaRecord } from 'dns';
 import { useRouter } from 'next/navigation';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useProjectStore } from '@/Store/projects';
 
 export function ProjectManagement() {
   const router = useRouter();
@@ -1180,9 +1180,9 @@ export function ProjectManagement() {
                                 Milestones
                               </h4>
                               <div className="space-y-2">
-                                {project?.milestones?.map((milestone: any) => (
+                                {project?.milestones?.map((milestone: any, index: number) => (
                                   <div
-                                    key={milestone?._id}
+                                    key={index}
                                     className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                                   >
                                     <div className="flex items-center gap-2">

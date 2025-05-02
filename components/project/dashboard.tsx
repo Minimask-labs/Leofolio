@@ -51,9 +51,10 @@ import { ProjectTeam } from "./projectTeam";
 interface DashboardProps {
   userType: "freelancer" | "employer";
 }
-import { useProjectStore } from "@/store/projects";
  import { BackButton } from "../back-button";
  import { useRouter, useParams } from 'next/navigation';
+import { useProjectStore } from "@/Store/projects";
+import ProjectChat from "../project-chat";
 
 export function Dashboard({ userType }: DashboardProps) {
   const {
@@ -373,9 +374,12 @@ export function Dashboard({ userType }: DashboardProps) {
                   </div>
                   <div>
                     <p className="font-medium text-2xl">
-                      {stats.totalMilestones -
+                      {/* {stats.totalMilestones -
                         stats.completedMilestones -
-                        stats.inProgressMilestones}
+                        stats.inProgressMilestones} */}
+                        {Number(stats.totalMilestones || 0) -
+                        Number(stats.completedMilestones || 0) -
+                        Number(stats.inProgressMilestones || 0)}
                     </p>
                     <p className="text-slate-500">Pending</p>
                   </div>
@@ -954,7 +958,9 @@ export function Dashboard({ userType }: DashboardProps) {
         {/* Communication Tab */}
         <TabsContent value="communication" className="space-y-6 mt-6">
           <h2 className="text-lg font-medium">Project Communication</h2>
-          <ProjectUpdates project={project} />
+       
+          {/* <ProjectUpdates project={project} /> */}
+          <ProjectChat/>
         </TabsContent>
 
         {/* Files Tab */}
@@ -995,7 +1001,7 @@ export function Dashboard({ userType }: DashboardProps) {
                 ].map((file, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-3 hover:bg-slate-50"
+                    className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
                   >
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
@@ -1038,7 +1044,7 @@ export function Dashboard({ userType }: DashboardProps) {
                 ].map((file, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-3 hover:bg-slate-50"
+                    className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
                   >
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 bg-emerald-100 rounded-md flex items-center justify-center text-emerald-700">

@@ -20,13 +20,13 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
-import { useUserProfileStore } from '@/store/userProfile';
-import { useProjectStore } from '@/store/projects';
 import { Briefcase, Filter, Loader, Search, Shield, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter, useParams } from 'next/navigation';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useProjectStore } from '@/Store/projects';
 interface Project {
   freelancers: { name: string; role: string }[];
   status?: string;
@@ -617,7 +617,7 @@ export function ProjectTeam({
                 Close
               </Button>
               <Button
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 text-white hover:bg-blue-700"
                 onClick={() => {
                   setShowInviteModal(true);
                 }}
