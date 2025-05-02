@@ -129,38 +129,38 @@ export function ProjectManagement() {
   };
   const { publicKey, wallet, requestTransaction } = useWallet();
 
-const onCreateJob = async ({
+  const onCreateJob = async ({
     jobId,
-  paymentAmount,
- }: {
-     jobId: string;
-  paymentAmount: number;
- }) => {
-  if (!publicKey) throw new Error('Wallet not connected');
+    paymentAmount
+  }: {
+    jobId: string;
+    paymentAmount: number;
+  }) => {
+    if (!publicKey) throw new Error('Wallet not connected');
 
-  // Format inputs as required by the Leo contract
-  const inputs = [
-    jobId + 'u64', // job_id as u64
-    paymentAmount + 'u64' // payment_amount as u64
-  ];
-console.log('Inputs:', inputs);
-  const fee = 50_000; // Set an appropriate fee
+    // Format inputs as required by the Leo contract
+    const inputs = [
+      jobId + 'u64', // job_id as u64
+      paymentAmount + 'u64' // payment_amount as u64
+    ];
+    console.log('Inputs:', inputs);
+    const fee = 50_000; // Set an appropriate fee
 
-  // Create the transaction
-  const aleoTransaction = Transaction.createTransaction(
-    publicKey,
-    WalletAdapterNetwork.TestnetBeta,
-    'escrow_contract.aleo',
-    'create_job',
-    inputs,
-    fee
-  );
+    // Create the transaction
+    const aleoTransaction = Transaction.createTransaction(
+      publicKey,
+      WalletAdapterNetwork.TestnetBeta,
+      'escrow_contract.aleo',
+      'create_job',
+      inputs,
+      fee
+    );
 
-  // Send the transaction
-  if (requestTransaction) {
-    await requestTransaction(aleoTransaction);
-  }
-};
+    // Send the transaction
+    if (requestTransaction) {
+      await requestTransaction(aleoTransaction);
+    }
+  };
   const handleFundAccount = async ({
     jobId,
     paymentAmount
@@ -272,7 +272,7 @@ console.log('Inputs:', inputs);
       // setIsFunding(false);
     }
   };
-   const createProject = async () => {
+  const createProject = async () => {
     // Reset previous errors
     setErrors({});
 
@@ -329,12 +329,15 @@ console.log('Inputs:', inputs);
         typeof response === 'object' &&
         'data' in response
       ) {
-        const { data, success } = response as { data: {_id: string}; success: boolean };
+        const { data, success } = response as {
+          data: { _id: string };
+          success: boolean;
+        };
         if (success) {
           handleFundAccount({
             jobId: data._id,
-            paymentAmount: projectPayload.price,
-           });
+            paymentAmount: projectPayload.price
+          });
           fetchProjects();
           // If validation passes, log the payload
           console.log('Project payload:', projectPayload);

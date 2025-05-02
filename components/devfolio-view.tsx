@@ -32,7 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CredentialManager } from './credential-manager';
 import { WorkHistory } from './work-history';
 import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
-import { useUserProfileStore } from '@/Store/userProfile';
+import { useUserProfileStore } from '@/store/userProfile';
 
 // interface DevfolioViewProps {
 //   profile: {
