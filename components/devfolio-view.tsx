@@ -31,8 +31,8 @@ import { toast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CredentialManager } from './credential-manager';
 import { WorkHistory } from './work-history';
-import { useUserProfileStore } from '@/store/userProfile';
 import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
+import { useUserProfileStore } from '@/Store/userProfile';
 
 // interface DevfolioViewProps {
 //   profile: {
@@ -380,6 +380,15 @@ export function DevfolioView() {
                   onChange={handleChange}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                name="email"
+                value={editedProfile?.email}
+                onChange={handleChange}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="professionalTitle">Professional Title</Label>
