@@ -51,10 +51,10 @@ import { ProjectTeam } from './projectTeam';
 interface DashboardProps {
   userType: 'freelancer' | 'employer';
 }
- import { BackButton } from "../back-button";
- import { useRouter, useParams } from 'next/navigation';
-import { useProjectStore } from "@/Store/projects";
-import ProjectChat from "../project-chat";
+import { BackButton } from '../back-button';
+import { useRouter, useParams } from 'next/navigation';
+import { useProjectStore } from '@/store/projects';
+import ProjectChat from '../project-chat';
 
 export function Dashboard({ userType }: DashboardProps) {
   const {
@@ -376,7 +376,7 @@ export function Dashboard({ userType }: DashboardProps) {
                       {/* {stats.totalMilestones -
                         stats.completedMilestones -
                         stats.inProgressMilestones} */}
-                        {Number(stats.totalMilestones || 0) -
+                      {Number(stats.totalMilestones || 0) -
                         Number(stats.completedMilestones || 0) -
                         Number(stats.inProgressMilestones || 0)}
                     </p>
@@ -957,9 +957,9 @@ export function Dashboard({ userType }: DashboardProps) {
         {/* Communication Tab */}
         <TabsContent value="communication" className="space-y-6 mt-6">
           <h2 className="text-lg font-medium">Project Communication</h2>
-       
+
           {/* <ProjectUpdates project={project} /> */}
-          <ProjectChat/>
+          <ProjectChat />
         </TabsContent>
 
         {/* Files Tab */}
