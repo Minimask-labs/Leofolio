@@ -107,7 +107,8 @@ export default function RootLayout({
         programIdPermissions: {
           [WalletAdapterNetwork.TestnetBeta]: [
             'escrow_contract.aleo',
-            'escrow_contract_v1.aleo'
+            'escrow_contract_v1.aleo',
+            'zk_privacy_escrow.aleo'
           ]
         },
         appName: 'Aleo app',
