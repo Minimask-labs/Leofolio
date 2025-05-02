@@ -53,7 +53,7 @@ interface DashboardProps {
 }
 import { BackButton } from '../back-button';
 import { useRouter, useParams } from 'next/navigation';
-import { useProjectStore } from '@/store/projects';
+import { useProjectStore } from '@/Store/projects';
 import ProjectChat from '../project-chat';
 
 export function Dashboard({ userType }: DashboardProps) {

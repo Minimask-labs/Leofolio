@@ -40,8 +40,8 @@ import { ProjectDashboard } from '@/components/project-dashboard';
 import { ProjectReport } from '@/components/project-report';
 import { AnyAaaaRecord } from 'dns';
 import { useRouter } from 'next/navigation';
-import { useUserProfileStore } from '@/store/userProfile';
-import { useProjectStore } from '@/store/projects';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useProjectStore } from '@/Store/projects';
 import {
   Transaction,
   WalletAdapterNetwork,

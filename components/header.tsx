@@ -7,7 +7,7 @@ import '@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css';
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { logout } from '@/service/auth';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/store/user';
+import { useStore } from '@/Store/user';
 
 interface HeaderProps {
   // connected: boolean;

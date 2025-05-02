@@ -26,7 +26,7 @@ import { Progress } from '@/components/ui/progress';
 import { ProjectUpdates } from './project-updates';
 import { ProjectDashboard } from './project-dashboard';
 import { ProjectReport } from './project-report';
-import { useProjectStore } from '@/store/projects';
+import { useProjectStore } from '@/Store/projects';
 // import projects-Invitation-card from "./projects-Invitation-card"
 import { InvitationCard } from '@/components/cards/projects-Invitation-card';
 export function MyProjects() {

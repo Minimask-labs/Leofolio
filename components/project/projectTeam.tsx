@@ -25,8 +25,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter, useParams } from 'next/navigation';
-import { useUserProfileStore } from '@/store/userProfile';
-import { useProjectStore } from '@/store/projects';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useProjectStore } from '@/Store/projects';
 interface Project {
   freelancers: { name: string; role: string }[];
   status?: string;

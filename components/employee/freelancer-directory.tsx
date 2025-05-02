@@ -31,7 +31,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
-import { useUserProfileStore } from '@/store/userProfile';
+import { useUserProfileStore } from '@/Store/userProfile';
 
 export function FreelancerDirectory() {
   const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
