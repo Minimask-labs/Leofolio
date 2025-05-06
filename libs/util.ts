@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import BN from 'bn.js';
 
 const FIELD_MODULUS = BigInt('8444461749428370424248824938781546531375899335154063827935233455917409239040');
 
@@ -161,3 +162,24 @@ export function parseStringToBigIntArray(input: string): bigint[] {
   const bigInts = matches.map((match) => BigInt(match.slice(0, -4)));
   return bigInts;
 }
+
+export function mongoIdToAleoField(mongoId: string): string {
+  // Remove any non-hex characters
+  const cleanHex = mongoId.replace(/[^0-9a-fA-F]/g, '');
+
+  // Convert hex to decimal
+  const decimal = new BN(cleanHex, 16);
+
+  // Ensure it's within Aleo's field modulus
+  // Aleo's field modulus is roughly 2^251 + something
+  const modulus = new BN(
+    '8444461749428370424248824938781546531375899335154063827935233455917409239040'
+  );
+  const fieldValue = decimal.mod(modulus);
+
+  return `${fieldValue.toString()}field`;
+}
+
+// Usage
+const mongoId = '6618e5dfc4a32b001eaae5b0';
+const aleoInput = [mongoIdToAleoField(mongoId), '1u64'];

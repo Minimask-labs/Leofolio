@@ -18,7 +18,7 @@ import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base';
 import { LeoWalletAdapter } from '@demox-labs/aleo-wallet-adapter-leo';
 import { walletAuth } from '@/service/auth';
-import { useStore } from '@/store/user';
+import { useStore } from '@/Store/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, redirect } from 'next/navigation';
 

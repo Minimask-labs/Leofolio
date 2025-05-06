@@ -108,6 +108,8 @@ export default function RootLayout({
           [WalletAdapterNetwork.TestnetBeta]: [
             'escrow_contract.aleo',
             'escrow_contract_v1.aleo',
+            'escrow_contract_v2.aleo',
+            'escrow_contract_v3.aleo',
             'zk_privacy_escrow.aleo'
           ]
         },

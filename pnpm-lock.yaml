@@ -125,6 +125,9 @@ importers:
       axios:
         specifier: ^1.8.4
         version: 1.8.4
+      bn.js:
+        specifier: ^5.2.2
+        version: 5.2.2
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -201,6 +204,9 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3(@types/react@19.1.0)(immer@9.0.21)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
+      '@types/bn.js':
+        specifier: ^5.1.6
+        version: 5.1.6
       '@types/crypto-js':
         specifier: ^4.2.2
         version: 4.2.2
@@ -1136,6 +1142,9 @@ packages:
   '@trpc/server@10.45.2':
     resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
 
+  '@types/bn.js@5.1.6':
+    resolution: {integrity: sha512-Xh8vSwUeMKeYYrj3cX4lGQgFSF/N03r+tv4AiLl1SucqV+uTQpxRcnM8AkXKHwYP9ZPXOYXRr2KPXpVlIvqh9w==}
+
   '@types/crypto-js@4.2.2':
     resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
 
@@ -1235,6 +1244,9 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+
+  bn.js@5.2.2:
+    resolution: {integrity: sha512-v2YAxEmKaBLahNwE1mjp4WON6huMNeuDvagFZW+ASCuA/ku0bXR9hSMw0XpiqMoA3+rmnyck/tPRSFQkoC9Cuw==}
 
   brace-expansion@2.0.1:
     resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
@@ -3121,6 +3133,10 @@ snapshots:
 
   '@trpc/server@10.45.2': {}
 
+  '@types/bn.js@5.1.6':
+    dependencies:
+      '@types/node': 22.14.0
+
   '@types/crypto-js@4.2.2': {}
 
   '@types/d3-array@3.2.1': {}
@@ -3224,6 +3240,8 @@ snapshots:
   base64-js@1.5.1: {}
 
   binary-extensions@2.3.0: {}
+
+  bn.js@5.2.2: {}
 
   brace-expansion@2.0.1:
     dependencies:
