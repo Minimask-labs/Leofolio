@@ -18,11 +18,13 @@ export type UserActions = {
   fetchMychat: () => void;
   handleCreateConversations: (body: any) => Promise<void>;
   handleGetSingleConversation: (body: any) => Promise<void>;
+   handleSendMessage: (conversationId: string, message: string) => Promise<void>;
+  handleViewMessages: (conversationId: string) => Promise<void>;
 };
 
 export type UserStore = UserState & UserActions;
 
-export const usechattore = create<UserStore>((set) => ({
+export const useChatStore = create<UserStore>((set) => ({
   chat: null,
   status: 'idle',
   error: null,

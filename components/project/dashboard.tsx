@@ -52,8 +52,9 @@ interface DashboardProps {
   userType: 'freelancer' | 'employer';
 }
  import { BackButton } from "../back-button";
- import { useRouter, useParams } from 'next/navigation';
+ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from "@/Store/projects";
+import {useChatStore} from "@/Store/chat";
 import ProjectChat from "../project-chat";
 
 export function Dashboard({ userType }: DashboardProps) {
@@ -64,8 +65,27 @@ export function Dashboard({ userType }: DashboardProps) {
     handleViewProjectDetail,
     project_details
   } = useProjectStore();
+  const {
+  fetchMychat,
+    handleCreateConversations,
+    handleGetSingleConversation,
+    handleSendMessage,
+    handleViewMessages
+    } = useChatStore();
   const [project, setProject] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  
+  // const [activeTab, setActiveTab] = useState('overview');
+    const searchParams = useSearchParams();
+   const validTabs = ['overview', 'milestones', 'team', 'chat', 'files'];
+  const tabParam = searchParams.get('tab');
+  const activeTab = tabParam && validTabs.includes(tabParam) ? tabParam : 'overview';
+
+  const updateUrlTab = (tab: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set('tab', tab);
+    router.replace(`?${newSearchParams.toString()}`);
+  };
+
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
   const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
     null
@@ -113,6 +133,20 @@ export function Dashboard({ userType }: DashboardProps) {
       description: `The milestone status has been updated to ${newStatus}.`
     });
   };
+
+  useEffect(() => {
+    const fetchChat = async () => {
+      try {
+        const chats = fetchMychat();
+       console.log("chats", chats);
+      } catch (error) {
+        console.error("Error fetching chat data:", error);
+      }
+    };
+
+    fetchChat();
+  }, []); 
+ 
 
   // Function to add a new milestone
   const addMilestone = () => {
@@ -302,12 +336,12 @@ export function Dashboard({ userType }: DashboardProps) {
       </div>
 
       {/* Project Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={(tab) => updateUrlTab(tab)}>
         <TabsList className="grid grid-cols-5 w-full">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="milestones">Milestones</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
-          <TabsTrigger value="communication">Communication</TabsTrigger>
+          <TabsTrigger value="chat">Communication</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
 
@@ -408,7 +442,7 @@ export function Dashboard({ userType }: DashboardProps) {
                 <Button
                   variant="outline"
                   className="w-full mt-2 text-sm"
-                  onClick={() => setActiveTab('milestones')}
+                  onClick={() => updateUrlTab('milestones')}
                 >
                   View All Milestones <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
@@ -457,10 +491,11 @@ export function Dashboard({ userType }: DashboardProps) {
                       variant="outline"
                       size="sm"
                       className="w-full mt-2 text-xs"
-                      onClick={() => setActiveTab('team')}
+                      onClick={() => updateUrlTab('team')}
                     >
                       Manage Team
                     </Button>
+
                   )}
                 </div>
               </CardContent>
@@ -490,7 +525,7 @@ export function Dashboard({ userType }: DashboardProps) {
                   variant="outline"
                   size="sm"
                   className="w-full mt-4 text-xs"
-                  onClick={() => setActiveTab('communication')}
+                  onClick={() => updateUrlTab('chat')}
                 >
                   View All Updates
                 </Button>
@@ -955,7 +990,7 @@ export function Dashboard({ userType }: DashboardProps) {
         </TabsContent>
 
         {/* Communication Tab */}
-        <TabsContent value="communication" className="space-y-6 mt-6">
+        <TabsContent value="chat" className="space-y-6 mt-6">
           <h2 className="text-lg font-medium">Project Communication</h2>
        
           {/* <ProjectUpdates project={project} /> */}

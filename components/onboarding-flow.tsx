@@ -31,10 +31,10 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { DevfolioPreview } from './devfolio-preview';
-import { useUserProfileStore } from '@/store/userProfile';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, redirect } from 'next/navigation';
 import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
+import { useUserProfileStore } from '@/Store/userProfile';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
@@ -560,6 +560,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         )}
                       </Button>
                       <input
+                      title="uploads"
                         type="file"
                         id="fileInput"
                         accept="image/*"
