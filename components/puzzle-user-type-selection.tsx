@@ -241,10 +241,13 @@ export function UserTypeSelection() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="flex justify-center mb-2">
-          <Shield className="h-12 w-12 text-emerald-600" />
-        </div>
-        <CardTitle className="text-2xl">Leofolio</CardTitle>
+        <CardTitle
+          className={`text-2xl font-bold animate-pulse ${
+            selectedType === 'employer' ? 'text-blue-700' : 'text-emerald-700'
+          }`}
+        >
+          Leofolio
+        </CardTitle>
         <CardDescription>
           Privacy-preserving credential management and hiring platform
         </CardDescription>
