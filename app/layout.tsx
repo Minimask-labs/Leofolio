@@ -112,7 +112,8 @@ export default function RootLayout({
             'escrow_contract_v2.aleo',
             'escrow_contract_v3.aleo',
             'zk_privacy_escrow.aleo',
-            'escrow_contract11.aleo'
+            'escrow_contract11.aleo','escrow_contract_beta.aleo
+'
           ]
         },
         appName: 'Aleo app',
