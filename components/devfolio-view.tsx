@@ -201,12 +201,12 @@ export function DevfolioView() {
       setIsUploading(false);
     }
   };
-  const validateEmailOtp = async () => {
+  const validateEmailOtp = async (otp: string) => {
     setIsUploading(true);
     try {
       const response = await handleValidateVerifyEmailOtp(
         editedProfile?.email ? editedProfile?.email : user?.email,
-        emailVerificationCode
+        otp
       );
       if (
         response !== undefined &&
@@ -234,12 +234,12 @@ export function DevfolioView() {
     }
   };
 
-  const verifyEmail = async () => {
+  const verifyEmail = async (otp: string) => {
     setIsUploading(true);
     try {
       const response = await handleVerifyEmail(
         editedProfile?.email ? editedProfile?.email : user?.email,
-        emailVerificationCode
+        otp
       );
       if (
         response !== undefined &&
@@ -277,10 +277,10 @@ export function DevfolioView() {
     setEmailVerificationCode(otp);
     try {
       // First validate the OTP
-      await validateEmailOtp();
+      await validateEmailOtp(otp);
 
       // Then verify the email
-      await verifyEmail();
+      await verifyEmail(otp);
 
       // Close the modal after successful verification
       setIsEmailVerificationModalOpen(false);
@@ -292,6 +292,8 @@ export function DevfolioView() {
       });
     } catch (error) {
       // Error handling is already in the validateEmailOtp and verifyEmail functions
+    }finally {
+    fetchUser();
     }
   };
 
@@ -548,14 +550,14 @@ export function DevfolioView() {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          {/* <CardFooter>
             <Button
               className="w-full bg-blue-600 text-white hover:bg-blue-700"
               onClick={saveChanges}
             >
               Save All Changes
             </Button>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
         {/* Email Verification Modal */}
         <EmailVerificationModal

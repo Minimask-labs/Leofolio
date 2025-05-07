@@ -21,6 +21,14 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ProjectUpdates } from './project-updates';
@@ -37,7 +45,9 @@ export function MyProjects() {
   const {
     handleViewProjectInvitationsList,
     projects_invites,
-    handleProjectInviteResponse
+    handleProjectInviteResponse,
+    fetchProjects,
+    projects
   } = useProjectStore();
   // Mock active projects data
   const activeProjects = [
@@ -357,6 +367,8 @@ export function MyProjects() {
   useEffect(() => {
     const fetchData = async () => {
       await handleViewProjectInvitationsList();
+          fetchProjects();
+
     };
     fetchData();
   }, [handleViewProjectInvitationsList]);
@@ -377,131 +389,176 @@ export function MyProjects() {
         </TabsList>
 
         <TabsContent value="active" className="mt-4 space-y-4">
-          {activeProjects.map((project) => (
-            <Card
-              key={project.id}
-              className={
-                expandedProject === project.id ? 'border-blue-300' : ''
-              }
-            >
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-blue-600" />
-                      <CardTitle>{project.title}</CardTitle>
-                    </div>
-                    <CardDescription>{project.client}</CardDescription>
-                  </div>
-                  {getStatusBadge(project.status)}
-                </div>
-              </CardHeader>
-
-              <CardContent className="pb-2">
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">Progress</span>
-                    <span className="text-sm">{project.progress}%</span>
-                  </div>
-                  <Progress value={project.progress} className="h-2" />
-                </div>
-
-                <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
-                  <Calendar className="h-4 w-4" />
-                  <span>
-                    Deadline: {new Date(project.deadline).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 mb-3">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-xs">
-                      {project.clientContact
-                        .split(' ')
-                        .map((n: string) => n[0])
-                        .join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm">{project.clientContact}</span>
-                </div>
-
-                {expandedProject === project.id && (
-                  <div className="mt-4 space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">
-                        Project Description
-                      </h4>
-                      <p className="text-sm text-slate-700">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">Milestones</h4>
-                      <div className="space-y-2">
-                        {project.milestones.map((milestone) => (
-                          <div
-                            key={milestone.id}
-                            className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
-                          >
-                            <div className="flex items-center gap-2">
-                              {milestone.status === 'completed' ? (
-                                <CheckCircle className="h-4 w-4 text-blue-500" />
-                              ) : milestone.status === 'in-progress' ? (
-                                <Clock className="h-4 w-4 text-blue-500" />
-                              ) : (
-                                <AlertCircle className="h-4 w-4 text-slate-400" />
-                              )}
-                              <span className="text-sm">{milestone.title}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-slate-500">
-                                Due:{' '}
-                                {new Date(
-                                  milestone.dueDate
-                                ).toLocaleDateString()}
-                              </span>
-                              {getStatusBadge(milestone.status)}
-                            </div>
-                          </div>
-                        ))}
+          {Array.isArray(projects?.data) &&
+            projects.data
+              .filter((p: any) => p.status !== 'completed')
+              .map((project: any) => (
+                <Card
+                  key={project._id}
+                  className={
+                    expandedProject === project._id ? 'border-blue-300' : ''
+                  }
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-blue-600" />
+                          <CardTitle>{project.title}</CardTitle>
+                        </div>
+                        <CardDescription>{project.client}</CardDescription>
                       </div>
+                      {getStatusBadge(project.status)}
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="pb-2">
+                    <div className="mb-4">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-sm font-medium">Progress</span>
+                        <span className="text-sm">{project.progress}%</span>
+                      </div>
+                      <Progress value={project.progress} className="h-2" />
                     </div>
 
-                    <ProjectUpdates project={project} />
-                  </div>
-                )}
-              </CardContent>
+                    <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        Deadline:{' '}
+                        {new Date(project.deadline).toLocaleDateString()}
+                      </span>
+                    </div>
 
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  className="text-sm"
-                  onClick={() => toggleProjectExpansion(project.id)}
-                >
-                  {expandedProject === project.id ? (
-                    <>
-                      <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-4 w-4 mr-1" /> Show Details
-                    </>
-                  )}
-                </Button>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs">
+                          {project.clientContact
+                            .split(' ')
+                            .map((n: string) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm">{project.clientContact}</span>
+                    </div>
 
-                <Button
-                  className="bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={() => {
-                    setSelectedProject(project);
-                    setShowDashboard(true);
-                  }}
-                >
-                  Project Dashboard
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                    {expandedProject === project.id && (
+                      <div className="mt-4 space-y-4">
+                        <div>
+                          <h4 className="text-sm font-medium mb-2">
+                            Project Description
+                          </h4>
+                          <p className="text-sm text-slate-700">
+                            {project.description}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="text-sm font-medium mb-2">
+                            Milestones
+                          </h4>
+                          <div className="space-y-2">
+                        {expandedProject === project.id && (
+                          <div className="mt-6 space-y-4">
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">
+                                Milestones
+                              </h4>
+                              <div className="space-y-2">
+                                {project?.milestones?.map(
+                                  (milestone: any, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        {milestone.status === 'completed' ? (
+                                          <CheckCircle className="h-4 w-4 text-blue-500" />
+                                        ) : milestone.status ===
+                                          'in_progress' ? (
+                                          <Clock className="h-4 w-4 text-blue-500" />
+                                        ) : (
+                                          <AlertCircle className="h-4 w-4 text-slate-400" />
+                                        )}
+                                        <span className="text-sm">
+                                          {milestone.title}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs text-blue-300">
+                                          Due:{' '}
+                                          {new Date(
+                                            milestone.deadline
+                                          ).toLocaleDateString()}
+                                        </span>
+                                        <Select defaultValue={milestone.status}>
+                                          <SelectTrigger className="h-7 w-[130px]">
+                                            <SelectValue placeholder="Status" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="planning">
+                                              Planning
+                                            </SelectItem>
+                                            <SelectItem value="in_progress">
+                                              In Progress
+                                            </SelectItem>
+                                            <SelectItem value="on_hold">
+                                              on hold
+                                            </SelectItem>
+                                            <SelectItem value="completed">
+                                              Completed
+                                            </SelectItem>
+                                            <SelectItem value="cancelled">
+                                              cancelled
+                                            </SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+
+                            <ProjectUpdates project={project} />
+                          </div>
+                        )}
+                          </div>
+                        </div>
+
+                        <ProjectUpdates project={project} />
+                      </div>
+                    )}
+                  </CardContent>
+
+                  <CardFooter className="flex justify-between">
+                    <Button
+                      variant="outline"
+                      className="text-sm"
+                      onClick={() => toggleProjectExpansion(project.id)}
+                    >
+                      {expandedProject === project.id ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" /> Show Details
+                        </>
+                      )}
+                    </Button>
+
+                    <Button
+                      className="bg-blue-600 text-white hover:bg-blue-700"
+                      onClick={() => {
+                        setSelectedProject(project);
+                        setShowDashboard(true);
+                      }}
+                    >
+                      Project Dashboard
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
         </TabsContent>
 
         <TabsContent value="completed" className="mt-4 space-y-4">
