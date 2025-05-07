@@ -429,9 +429,9 @@ export function Dashboard({ userType }: DashboardProps) {
                 <div className="space-y-2">
                   {project_details?.milestones
                     ?.slice(0, 3)
-                    ?.map((milestone: any) => (
+                    ?.map((milestone: any, index: number) => (
                       <div
-                        key={milestone.id}
+                        key={index}
                         className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
                       >
                         <div className="flex items-center gap-2">
@@ -882,7 +882,7 @@ export function Dashboard({ userType }: DashboardProps) {
 
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6 mt-6">
-          <ProjectTeam projectDetails={project} />
+          <ProjectTeam projectDetails={project_details} />
           {/* <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
             {userType === 'employer' && project_details?.status !== 'completed' && (
