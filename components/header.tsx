@@ -49,14 +49,14 @@ export function Header({}: HeaderProps) {
         <div className="flex items-center gap-2">
           {/* <Shield
             className={`h-8 w-8 ${
-              userType === 'freelancer' ? 'text-emerald-600' : 'text-blue-600'
+              userType === 'freelancer' ? 'text-blue-600' : 'text-blue-600'
             }`}
           /> */}
           <h1
             className={`text-2xl font-bold ${
-              userType === 'freelancer' ? 'text-emerald-600' : 'text-blue-600'
+              userType === 'freelancer' ? 'text-blue-600' : 'text-blue-600'
             }`}
-           >
+          >
             Leofolio
           </h1>
           <span className="lg:text-xs text-[10px] lg:flex hidden px-2 py-1 rounded-full bg-slate-100 text-slate-700 ml-2">
@@ -69,7 +69,7 @@ export function Header({}: HeaderProps) {
           {/* <WalletMultiButton
             className={
               userType === 'freelancer'
-                ? '!bg-emerald-50 !text-emerald-700 hover:!bg-emerald-700 w-full hover:!text-white !border-emerald-200'
+                ? '!bg-blue-50 !text-blue-700 hover:!bg-blue-700 w-full hover:!text-white !border-blue-200'
                 : '!bg-blue-50 !text-blue-700 hover:!bg-blue-700 w-full hover:!text-blue-50 !border-blue-200'
             }
           /> */}

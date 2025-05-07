@@ -429,7 +429,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </Button>
                 <Button
                   disabled={isUploading}
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                   onClick={UpdateUserProfile}
                 >
                   {isUploading ? (
@@ -455,7 +455,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-center ">
-            <Shield className="h-8 w-8 text-emerald-600 mr-2" />
+            <Shield className="h-8 w-8 text-blue-600 mr-2" />
             <h1 className="lg:text-2xl text-lg font-bold">
               Leofolio Onboarding
             </h1>
@@ -467,7 +467,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 1
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -475,13 +475,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </div>
                 <div
                   className={`h-1 w-16 ${
-                    step >= 2 ? 'bg-emerald-600' : 'bg-slate-200'
+                    step >= 2 ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 ></div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 2
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -489,13 +489,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </div>
                 <div
                   className={`h-1 w-16 ${
-                    step >= 3 ? 'bg-emerald-600' : 'bg-slate-200'
+                    step >= 3 ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 ></div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 3
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -528,7 +528,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   <div className="flex flex-col justify-center items-center mb-6">
                     <div className="flex flex-col relative w-fit items-center">
                       <Avatar className="h-24 w-24">
-                        <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
+                        <AvatarFallback className="bg-blue-100 text-blue-800 text-xl">
                           {profile.fullName
                             ? profile.fullName
                                 .split(' ')
@@ -560,7 +560,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         )}
                       </Button>
                       <input
-                      title="uploads"
+                        title="uploads"
                         type="file"
                         id="fileInput"
                         accept="image/*"
@@ -593,7 +593,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           disabled={isEmailVerified}
                         />
                         {isEmailVerified && (
-                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-emerald-600" />
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600" />
                         )}
                       </div>
                       {!isEmailVerified && (
@@ -618,7 +618,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                       </p>
                     )}
                     {isEmailVerified && (
-                      <p className="text-emerald-600 text-sm mt-1 flex items-center">
+                      <p className="text-blue-600 text-sm mt-1 flex items-center">
                         <CheckCircle className="h-4 w-4 mr-1" /> Email verified
                         successfully
                       </p>
@@ -772,7 +772,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                     <Button
                       type="button"
                       onClick={addSkill}
-                      className="bg-emerald-600 hover:bg-emerald-700"
+                      className="bg-blue-600 hover:bg-blue-700"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -904,7 +904,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 Back
               </Button>
               <Button
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                className="bg-blue-600 text-white hover:bg-blue-700"
                 onClick={nextStep}
               >
                 {step < 3 ? 'Next' : 'Preview Profile'}

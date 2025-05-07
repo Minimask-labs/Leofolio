@@ -268,7 +268,7 @@ export function MyProjects() {
     switch (status) {
       case 'completed':
         return (
-          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
             Completed
           </Badge>
         );
@@ -446,7 +446,7 @@ export function MyProjects() {
                           >
                             <div className="flex items-center gap-2">
                               {milestone.status === 'completed' ? (
-                                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                                <CheckCircle className="h-4 w-4 text-blue-500" />
                               ) : milestone.status === 'in-progress' ? (
                                 <Clock className="h-4 w-4 text-blue-500" />
                               ) : (
@@ -511,12 +511,12 @@ export function MyProjects() {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-emerald-600" />
+                      <FileText className="h-5 w-5 text-blue-600" />
                       <CardTitle>{project.title}</CardTitle>
                     </div>
                     <CardDescription>{project.client}</CardDescription>
                   </div>
-                  <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+                  <Badge className="bg-blue-100 text-blue-800 border-blue-200">
                     Completed
                   </Badge>
                 </div>
@@ -546,7 +546,7 @@ export function MyProjects() {
                             className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
                           >
                             <div className="flex items-center gap-2">
-                              <CheckCircle className="h-4 w-4 text-emerald-500" />
+                              <CheckCircle className="h-4 w-4 text-blue-500" />
                               <span className="text-sm">
                                 {milestone?.title}
                               </span>
@@ -585,7 +585,7 @@ export function MyProjects() {
                 </Button>
 
                 <Button
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                   onClick={() => {
                     setSelectedProject(project);
                     setShowReport(true);

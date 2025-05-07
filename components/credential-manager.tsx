@@ -1,14 +1,27 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Award, FileText, Plus, Upload } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Award, FileText, Plus, Upload } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 export function CredentialManager({ className }: { className?: string }) {
   const [credentials, setCredentials] = useState([
@@ -45,10 +58,10 @@ export function CredentialManager({ className }: { className?: string }) {
   return (
     <div className={`${className} space-y-6`}>
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Your  Credentials</h2>
+        <h2 className="text-xl font-semibold">Your Credentials</h2>
         <Button
           onClick={() => setIsAdding(true)}
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Credential
@@ -113,7 +126,7 @@ export function CredentialManager({ className }: { className?: string }) {
             </Button>
             <Button
               onClick={addCredential}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               Store Privately on Aleo
             </Button>
@@ -127,15 +140,15 @@ export function CredentialManager({ className }: { className?: string }) {
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
                     {credential.type === 'certification' ? (
-                      <FileText className="h-5 w-5 text-emerald-600" />
+                      <FileText className="h-5 w-5 text-blue-600" />
                     ) : (
-                      <Award className="h-5 w-5 text-emerald-600" />
+                      <Award className="h-5 w-5 text-blue-600" />
                     )}
                     <CardTitle className="text-lg">{credential.name}</CardTitle>
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                    className="bg-blue-50 text-blue-700 border-blue-200"
                   >
                     {credential.private ? 'Private' : 'Public'}
                   </Badge>
@@ -159,4 +172,3 @@ export function CredentialManager({ className }: { className?: string }) {
     </div>
   );
 }
-

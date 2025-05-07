@@ -1,40 +1,40 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, PaperclipIcon } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Send, PaperclipIcon } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 interface ProjectUpdatesProps {
   project: {
-    id: number
+    id: number;
     updates: {
-      id: number
-      author: string
-      role: string
-      date: string
-      content: string
-      isClient: boolean
-    }[]
-  }
+      id: number;
+      author: string;
+      role: string;
+      date: string;
+      content: string;
+      isClient: boolean;
+    }[];
+  };
 }
 
 export function ProjectUpdates({ project }: ProjectUpdatesProps) {
-  const [newUpdate, setNewUpdate] = useState("")
+  const [newUpdate, setNewUpdate] = useState('');
 
   const handleSubmitUpdate = () => {
-    if (!newUpdate.trim()) return
+    if (!newUpdate.trim()) return;
 
     // In a real implementation, this would send the update to the server
     toast({
-      title: "Update Posted",
-      description: "Your update has been shared with the client.",
-    })
+      title: 'Update Posted',
+      description: 'Your update has been shared with the client.'
+    });
 
-    setNewUpdate("")
-  }
+    setNewUpdate('');
+  };
 
   return (
     <div className="space-y-4">
@@ -63,7 +63,7 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
               className={`max-w-[80%] p-3 rounded-lg ${
                 update.isClient
                   ? 'bg-white/10 border border-slate-200'
-                  : 'bg-emerald-100 text-emerald-900'
+                  : 'bg-blue-100 text-blue-900'
               }`}
             >
               <div className="flex justify-between items-center mb-1">
@@ -79,7 +79,7 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
 
             {!update.isClient && (
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-xs bg-emerald-100 text-emerald-800">
+                <AvatarFallback className="text-xs bg-blue-100 text-blue-800">
                   AM
                 </AvatarFallback>
               </Avatar>
@@ -106,7 +106,7 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
         <Button
           onClick={handleSubmitUpdate}
           disabled={!newUpdate.trim()}
-          className="bg-emerald-600 text-white hover:bg-emerald-700 gap-1"
+          className="bg-blue-600 text-white hover:bg-blue-700 gap-1"
         >
           <Send className="h-4 w-4" />
           Post Update
@@ -115,4 +115,3 @@ export function ProjectUpdates({ project }: ProjectUpdatesProps) {
     </div>
   );
 }
-

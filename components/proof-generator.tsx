@@ -1,20 +1,33 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { AlertCircle, Check, Copy, Shield } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { AlertCircle, Check, Copy, Shield } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function ProofGenerator() {
-  const [proofType, setProofType] = useState("skills")
-  const [generatedProof, setGeneratedProof] = useState("")
+  const [proofType, setProofType] = useState('skills');
+  const [generatedProof, setGeneratedProof] = useState('');
 
   const generateProof = () => {
     // In a real implementation, this would create a zero-knowledge proof
@@ -23,30 +36,33 @@ export function ProofGenerator() {
     // Simulate proof generation with a shorter example proof
     setTimeout(() => {
       setGeneratedProof(
-        "proof1qyqsqzgex0wjzanku9q9wz3vk8yeahs9v90ghuv4ks8qt4tg4c4u4xvnc4vxm2rzn4fk0t7vmc8c24j3tnqnyv07kzzkgm5cq3v0nq9q9qyqsyqsrzjfkta4vrxgeskfa9v0nz3vscvrzd3sxgarzd3jxgarjd3jxgc",
-      )
+        'proof1qyqsqzgex0wjzanku9q9wz3vk8yeahs9v90ghuv4ks8qt4tg4c4u4xvnc4vxm2rzn4fk0t7vmc8c24j3tnqnyv07kzzkgm5cq3v0nq9q9qyqsyqsrzjfkta4vrxgeskfa9v0nz3vscvrzd3sxgarzd3jxgarjd3jxgc'
+      );
 
       toast({
-        title: "Proof Generated",
-        description: "Your zero-knowledge proof has been created successfully",
-      })
-    }, 1500)
-  }
+        title: 'Proof Generated',
+        description: 'Your zero-knowledge proof has been created successfully'
+      });
+    }, 1500);
+  };
 
   const copyProof = () => {
-    navigator.clipboard.writeText(generatedProof)
+    navigator.clipboard.writeText(generatedProof);
     toast({
-      title: "Copied to Clipboard",
-      description: "The proof has been copied to your clipboard",
-    })
-  }
+      title: 'Copied to Clipboard',
+      description: 'The proof has been copied to your clipboard'
+    });
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold mb-2">Generate Zero-Knowledge Proofs</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          Generate Zero-Knowledge Proofs
+        </h2>
         <p className="text-slate-600">
-          Create verifiable proofs of your credentials without revealing sensitive information.
+          Create verifiable proofs of your credentials without revealing
+          sensitive information.
         </p>
       </div>
 
@@ -54,14 +70,17 @@ export function ProofGenerator() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Privacy-Preserving Verification</AlertTitle>
         <AlertDescription>
-          Zero-knowledge proofs allow you to prove facts about your credentials without revealing the actual data.
+          Zero-knowledge proofs allow you to prove facts about your credentials
+          without revealing the actual data.
         </AlertDescription>
       </Alert>
 
       <Card>
         <CardHeader>
           <CardTitle>Create New Proof</CardTitle>
-          <CardDescription>Select what you want to prove about your credentials</CardDescription>
+          <CardDescription>
+            Select what you want to prove about your credentials
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -73,14 +92,16 @@ export function ProofGenerator() {
               <SelectContent>
                 <SelectItem value="skills">Skills Verification</SelectItem>
                 <SelectItem value="experience">Years of Experience</SelectItem>
-                <SelectItem value="certification">Certification Ownership</SelectItem>
+                <SelectItem value="certification">
+                  Certification Ownership
+                </SelectItem>
                 <SelectItem value="education">Education Level</SelectItem>
                 <SelectItem value="income">Income Range</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {proofType === "skills" && (
+          {proofType === 'skills' && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Select Skills to Prove</Label>
@@ -126,13 +147,18 @@ export function ProofGenerator() {
 
               <div className="space-y-2">
                 <Label htmlFor="recipient">Recipient (Optional)</Label>
-                <Input id="recipient" placeholder="e.g. client@example.com or Aleo address" />
-                <p className="text-xs text-slate-500">Who will be verifying this proof?</p>
+                <Input
+                  id="recipient"
+                  placeholder="e.g. client@example.com or Aleo address"
+                />
+                <p className="text-xs text-slate-500">
+                  Who will be verifying this proof?
+                </p>
               </div>
             </div>
           )}
 
-          {proofType === "experience" && (
+          {proofType === 'experience' && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Prove Experience Level</Label>
@@ -158,7 +184,10 @@ export function ProofGenerator() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Reset</Button>
-          <Button onClick={generateProof} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button
+            onClick={generateProof}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             Generate Zero-Knowledge Proof
           </Button>
         </CardFooter>
@@ -169,21 +198,30 @@ export function ProofGenerator() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Generated Proof</CardTitle>
-              <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-200">
+              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
                 <Shield className="h-3 w-3 mr-1" />
                 Zero-Knowledge
               </Badge>
             </div>
-            <CardDescription>Share this proof with anyone who needs to verify your credentials</CardDescription>
+            <CardDescription>
+              Share this proof with anyone who needs to verify your credentials
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="bg-slate-50 p-3 rounded-md border relative">
-              <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-all">{generatedProof}</pre>
-              <Button size="sm" variant="ghost" className="absolute top-2 right-2" onClick={copyProof}>
+              <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-all">
+                {generatedProof}
+              </pre>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute top-2 right-2"
+                onClick={copyProof}
+              >
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
-            <div className="mt-4 flex items-center text-sm text-emerald-600">
+            <div className="mt-4 flex items-center text-sm text-blue-600">
               <Check className="h-4 w-4 mr-1" />
               This proof can be verified without revealing your private data
             </div>
@@ -197,6 +235,5 @@ export function ProofGenerator() {
         </Card>
       )}
     </div>
-  )
+  );
 }
-

@@ -255,7 +255,7 @@ export function InvitationCard({
         </div>
       </CardContent>
       <CardFooter className="w-full">
-         {isActionable !== true ? (
+        {isActionable !== true ? (
           <div className="flex gap-2 pt-2 w-full">
             <Button
               variant="outline"
@@ -266,7 +266,7 @@ export function InvitationCard({
               <X className="h-4 w-4 mr-2" /> Reject
             </Button>
             <Button
-              className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
+              className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
               disabled={!isActionable}
               onClick={handleAccept}
             >

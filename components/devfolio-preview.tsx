@@ -2,9 +2,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CredentialManager } from "./credential-manager"
-import { WorkHistory } from "./work-history"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CredentialManager } from './credential-manager';
+import { WorkHistory } from './work-history';
 import { useState, useEffect } from 'react';
 import GitHubCalendar from 'react-github-calendar';
 
@@ -58,8 +58,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
   const extractUsername = (githubUrlOrUsername: string) => {
     try {
       const url = new URL(githubUrlOrUsername);
-      return setUsername(url.pathname.replace(/^\/+|\/+$/g, '')) 
-      
+      return setUsername(url.pathname.replace(/^\/+|\/+$/g, ''));
     } catch {
       // If it's not a valid URL, assume it's a raw username
       return githubUrlOrUsername?.trim();
@@ -68,7 +67,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
 
   useEffect(() => {
     if (profile?.socials?.github !== '') {
-    extractUsername(profile?.socials?.github); // extractUsername(profile?.socials?.github);
+      extractUsername(profile?.socials?.github); // extractUsername(profile?.socials?.github);
     }
   }, []);
 
@@ -78,7 +77,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
       <div className="border-b lg:p-8 p-4">
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="h-32 w-32 rounded-full">
-            <AvatarFallback className="text-3xl bg-emerald-100 text-emerald-800">
+            <AvatarFallback className="text-3xl bg-blue-100 text-blue-800">
               {profile?.fullName
                 ? profile.fullName
                     .split(' ')
@@ -102,7 +101,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   @{profile?.username || 'username'}
                 </p>
               </div>
-              {/* <Button className="bg-emerald-600 hover:bg-emerald-700 self-start">
+              {/* <Button className="bg-blue-600 hover:bg-blue-700 self-start">
                 Edit Profile
               </Button> */}
             </div>
@@ -119,7 +118,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   href={profile?.socials?.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-emerald-600"
+                  className="text-[#E0E0E0] hover:text-blue-600"
                 >
                   <Github className="h-6 w-6" />
                 </a>
@@ -130,7 +129,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   href={profile?.socials?.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-emerald-600"
+                  className="text-[#E0E0E0] hover:text-blue-600"
                 >
                   <Linkedin className="h-6 w-6" />
                 </a>
@@ -140,7 +139,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   href={profile?.socials?.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-emerald-600"
+                  className="text-[#E0E0E0] hover:text-blue-600"
                 >
                   <Twitter className="h-6 w-6" />
                 </a>
@@ -150,7 +149,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   href={profile?.socials?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-emerald-600"
+                  className="text-[#E0E0E0] hover:text-blue-600"
                 >
                   <Instagram className="h-6 w-6" />
                 </a>
@@ -160,7 +159,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                   href={profile?.socials?.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-emerald-600"
+                  className="text-[#E0E0E0] hover:text-blue-600"
                 >
                   <Globe className="h-6 w-6" />
                 </a>
@@ -226,10 +225,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                 </CardContent>
               </Card>
 
-              <Card className="bg-emerald-50">
+              <Card className="bg-blue-50">
                 <CardContent className="lg:p-4 p-2 flex items-center gap-3">
-                  <div className="bg-emerald-100 p-2 rounded-md">
-                    <Trophy className="h-6 w-6 text-emerald-600" />
+                  <div className="bg-blue-100 p-2 rounded-md">
+                    <Trophy className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
                     <p className="text-2xl text-black font-bold">0</p>

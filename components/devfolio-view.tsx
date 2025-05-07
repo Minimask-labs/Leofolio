@@ -317,7 +317,7 @@ export function DevfolioView() {
             </Button>
             <Button
               disabled={isUploading}
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-blue-600 text-white hover:bg-blue-700"
               onClick={saveChanges}
             >
               {isUploading ? (
@@ -470,7 +470,7 @@ export function DevfolioView() {
               <Button
                 type="button"
                 onClick={addSkill}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                className="bg-blue-600 text-white hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -547,7 +547,7 @@ export function DevfolioView() {
           </CardContent>
           <CardFooter>
             <Button
-              className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+              className="w-full bg-blue-600 text-white hover:bg-blue-700"
               onClick={saveChanges}
             >
               Save All Changes
@@ -571,7 +571,7 @@ export function DevfolioView() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Your Devfolio</h2>
         <Button
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
+          className="bg-blue-600 text-white hover:bg-blue-700"
           onClick={() => setIsEditing(true)}
         >
           Edit Devfolio

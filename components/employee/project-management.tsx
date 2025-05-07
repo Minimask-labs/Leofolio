@@ -149,7 +149,7 @@ export function ProjectManagement() {
     functionId: 'create_job',
     fee: 1.23,
     inputs: [
-       jobId, // This will now be the hashed jobId
+      jobId, // This will now be the hashed jobId
       paymentAmount
         ? paymentAmount + 'u64'
         : projectPayload.price.toString() + 'u64',
@@ -322,7 +322,7 @@ export function ProjectManagement() {
         return (
           <Badge
             variant="outline"
-            className="bg-emerald-50 text-emerald-700 border-emerald-200"
+            className="bg-blue-50 text-blue-700 border-blue-200"
           >
             Completed
           </Badge>
@@ -1089,7 +1089,7 @@ export function ProjectManagement() {
                                     >
                                       <div className="flex items-center gap-2">
                                         {milestone.status === 'completed' ? (
-                                          <CheckCircle className="h-4 w-4 text-emerald-500" />
+                                          <CheckCircle className="h-4 w-4 text-blue-500" />
                                         ) : milestone.status ===
                                           'in_progress' ? (
                                           <Clock className="h-4 w-4 text-blue-500" />
@@ -1189,9 +1189,7 @@ export function ProjectManagement() {
                     <Card
                       key={project.id}
                       className={
-                        expandedProject === project.id
-                          ? 'border-emerald-300'
-                          : ''
+                        expandedProject === project.id ? 'border-blue-300' : ''
                       }
                     >
                       <CardHeader className="pb-2">
@@ -1199,7 +1197,7 @@ export function ProjectManagement() {
                           <CardTitle>{project.name}</CardTitle>
                           <Badge
                             variant="outline"
-                            className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                            className="bg-blue-50 text-blue-700 border-blue-200"
                           >
                             Completed
                           </Badge>
@@ -1280,7 +1278,7 @@ export function ProjectManagement() {
                           )}
                         </Button>
                         <Button
-                          className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
+                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
                           onClick={() => {
                             setSelectedProject(project);
                             setShowReport(true);
