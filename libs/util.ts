@@ -183,3 +183,113 @@ export function mongoIdToAleoField(mongoId: string): string {
 // Usage
 const mongoId = '6618e5dfc4a32b001eaae5b0';
 const aleoInput = [mongoIdToAleoField(mongoId), '1u64'];
+/**
+ * Converts a MongoDB ObjectId to an Aleo u64 format using a chunk-based approach
+ * @param objectId - The MongoDB ObjectId as a string
+ * @returns The Aleo u64 representation as a string
+ */
+function mongoIdToAleoU64(objectId: string): string {
+  // Validate the input is a valid MongoDB ObjectId format
+  if (!/^[0-9a-fA-F]{24}$/.test(objectId)) {
+    throw new Error('Invalid MongoDB ObjectId format');
+  }
+
+  // Method 1: Use the timestamp portion (first 8 chars) which is guaranteed to be a valid number
+  // MongoDB ObjectId starts with a 4-byte timestamp
+  const timestampHex: string = objectId.substring(0, 8);
+  const timestamp: number = parseInt(timestampHex, 16);
+  
+  // Method 2: Process the ObjectId in smaller chunks to avoid BigInt conversion issues
+  // Split the remaining part into 4-byte chunks
+  const chunk1: number = parseInt(objectId.substring(8, 16), 16);
+  const chunk2: number = parseInt(objectId.substring(16, 24), 16);
+  
+  // Combine the chunks using XOR and addition to create a unique number
+  // This avoids BigInt conversion issues while still creating a deterministic value
+  let result: number = timestamp;
+  result = (result * 16777216) + chunk1; // 16777216 = 2^24
+  result = result ^ chunk2; // XOR with the last chunk
+  
+  // Ensure the result is positive and within u64 range
+  result = Math.abs(result) % Number.MAX_SAFE_INTEGER;
+  
+  // Format for Aleo - u64 values in Aleo are typically represented as decimal
+  return `${result.toString()}u64`;
+}
+
+/**
+ * Converts a MongoDB ObjectId to an Aleo u64 format using a hash-based approach
+ * @param objectId - The MongoDB ObjectId as a string
+ * @returns The Aleo u64 representation as a string
+ */
+function mongoIdToAleoU64Hash(objectId: string): string {
+  // Validate the input
+  if (!/^[0-9a-fA-F]{24}$/.test(objectId)) {
+    throw new Error('Invalid MongoDB ObjectId format');
+  }
+  
+  // Simple hash function (djb2)
+  let hash: number = 5381;
+  for (let i: number = 0; i < objectId.length; i++) {
+    // Get char code and convert hex chars to their numeric value
+    let charValue: number;
+    const char: string = objectId[i].toLowerCase();
+    if (char >= '0' && char <= '9') {
+      charValue = parseInt(char, 16);
+    } else {
+      charValue = char.charCodeAt(0);
+    }
+    
+    // djb2 algorithm: hash * 33 + char
+    hash = ((hash << 5) + hash) + charValue;
+    
+    // Keep within safe integer bounds
+    hash = hash >>> 0; // Convert to unsigned 32-bit integer
+  }
+  
+  // Ensure it's positive and within safe range
+  hash = Math.abs(hash) % Number.MAX_SAFE_INTEGER;
+  
+  return `${hash.toString()}u64`;
+}
+
+// The specific MongoDB ObjectId to convert
+const specificObjectId: string = '681aab930f0b994312e685a5';
+
+console.log('Converting specific MongoDB ObjectId to Aleo u64:');
+console.log('------------------------------------------------');
+console.log(`ObjectId: ${specificObjectId}`);
+
+try {
+  // Method 1: Chunk-based approach
+  const result1: string = mongoIdToAleoU64(specificObjectId);
+  console.log(`Method 1 (Chunk-based): ${result1}`);
+  
+  // Method 2: Hash-based approach
+  const result2: string = mongoIdToAleoU64Hash(specificObjectId);
+  console.log(`Method 2 (Hash-based): ${result2}`);
+  
+  // Extract timestamp information
+  const timestampHex: string = specificObjectId.substring(0, 8);
+  const timestamp: number = parseInt(timestampHex, 16);
+  const date: Date = new Date(timestamp * 1000);
+  console.log(`\nTimestamp information:`);
+  console.log(`Timestamp hex: ${timestampHex}`);
+  console.log(`Timestamp decimal: ${timestamp}`);
+  console.log(`Creation date: ${date.toISOString()}`);
+  
+  // Detailed breakdown of the ObjectId
+  console.log(`\nObjectId breakdown:`);
+  console.log(`First 8 chars (timestamp): ${specificObjectId.substring(0, 8)}`);
+  console.log(`Next 8 chars (machine+pid): ${specificObjectId.substring(8, 16)}`);
+  console.log(`Last 8 chars (counter): ${specificObjectId.substring(16, 24)}`);
+} catch (error) {
+  if (error instanceof Error) {
+    console.error(`Error: ${error.message}`);
+  } else {
+    console.error('Unknown error occurred');
+  }
+}
+
+// Export the functions for use in other modules
+export { mongoIdToAleoU64, mongoIdToAleoU64Hash };

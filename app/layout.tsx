@@ -19,6 +19,7 @@ import {
 } from "aleo-adapters";
 import { Toaster } from "@/components/ui/toaster";
 import "@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css";
+import { PuzzleWalletProvider } from '@puzzlehq/sdk';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -110,7 +111,8 @@ export default function RootLayout({
             'escrow_contract_v1.aleo',
             'escrow_contract_v2.aleo',
             'escrow_contract_v3.aleo',
-            'zk_privacy_escrow.aleo'
+            'zk_privacy_escrow.aleo',
+            'escrow_contract11.aleo'
           ]
         },
         appName: 'Aleo app',
@@ -136,21 +138,23 @@ export default function RootLayout({
             (function() {
               document.documentElement.classList.add('dark');
             })();
-          `,
+          `
           }}
         />
       </head>
       <body className={inter.className}>
         <ThemeProvider>
-          <WalletProvider
+          {/* <WalletProvider
             wallets={wallets}
             decryptPermission={DecryptPermission.UponRequest}
             network={WalletAdapterNetwork.TestnetBeta}
-          >
-            {/*            autoConnect
-             */}
-            <WalletModalProvider>{children}</WalletModalProvider>
-          </WalletProvider>
+          > */}
+          <PuzzleWalletProvider>{children}</PuzzleWalletProvider>
+
+          {/*            autoConnect
+           */}
+          {/* <WalletModalProvider>{children}</WalletModalProvider>
+          </WalletProvider> */}
         </ThemeProvider>
         <Toaster />
       </body>
