@@ -65,13 +65,16 @@ export function Dashboard({ userType }: DashboardProps) {
     handleViewProjectDetail,
     project_details
   } = useProjectStore();
+
   const {
   fetchMychat,
+  chat,
     handleCreateConversations,
     handleGetSingleConversation,
     handleSendMessage,
     handleViewMessages
     } = useChatStore();
+
   const [project, setProject] = useState<any>(null);
   
   // const [activeTab, setActiveTab] = useState('overview');
@@ -137,8 +140,8 @@ export function Dashboard({ userType }: DashboardProps) {
   useEffect(() => {
     const fetchChat = async () => {
       try {
-        const chats = fetchMychat();
-       console.log("chats", chats);
+        fetchMychat()
+        console.log(chat, " chat")
       } catch (error) {
         console.error("Error fetching chat data:", error);
       }
