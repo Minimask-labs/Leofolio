@@ -98,7 +98,7 @@ body {
     padding: 0;
     height: 100vh;
     background: black;
-    overflow: hidden;
+    overflow:scroll;
     position: relative;
   }
 
