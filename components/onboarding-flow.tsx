@@ -210,106 +210,106 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
     // }
   };
   // Email verification functions
-  const requestEmailVerification = async () => {
-    if (!profile.email) {
-      toast({
-        title: 'Email Required',
-        description: 'Please enter an email address to verify.',
-        variant: 'destructive'
-      });
-      return;
-    }
+  // const requestEmailVerification = async () => {
+  //   if (!profile.email) {
+  //     toast({
+  //       title: 'Email Required',
+  //       description: 'Please enter an email address to verify.',
+  //       variant: 'destructive'
+  //     });
+  //     return;
+  //   }
 
-    setIsVerifyingEmail(true);
-    try {
-      const response = await handleRequestVerifyEmailOtp(profile.email);
-      console.log('Email verification response:', response);
-      if (response !== undefined && typeof response === 'object') {
-        console.log('Email verification response2:', response);
-        const { success, message } = response as {
-          data: {};
-          success: boolean;
-          message: string;
-        };
-        console.log('Email verification success:', success);
-        console.log('Email verification message:', message);
-        if (success) {
-          setIsEmailVerificationModalOpen(true);
-          toast({
-            title: 'Verification Code Sent',
-            description: message
-          });
-        }
-      }
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || 'An unknown error occurred';
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive'
-      });
-    } finally {
-      setIsVerifyingEmail(false);
-    }
-  };
+  //   setIsVerifyingEmail(true);
+  //   try {
+  //     const response = await handleRequestVerifyEmailOtp(profile.email);
+  //     console.log('Email verification response:', response);
+  //     if (response !== undefined && typeof response === 'object') {
+  //       console.log('Email verification response2:', response);
+  //       const { success, message } = response as {
+  //         data: {};
+  //         success: boolean;
+  //         message: string;
+  //       };
+  //       console.log('Email verification success:', success);
+  //       console.log('Email verification message:', message);
+  //       if (success) {
+  //         setIsEmailVerificationModalOpen(true);
+  //         toast({
+  //           title: 'Verification Code Sent',
+  //           description: message
+  //         });
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     const errorMessage =
+  //       error?.response?.data?.message || 'An unknown error occurred';
+  //     toast({
+  //       title: 'Error',
+  //       description: errorMessage,
+  //       variant: 'destructive'
+  //     });
+  //   } finally {
+  //     setIsVerifyingEmail(false);
+  //   }
+  // };
 
-  const handleVerifyOtp = async (otp: string) => {
-    setEmailVerificationCode(otp);
-    setIsVerifyingEmail(true);
+  // const handleVerifyOtp = async (otp: string) => {
+  //   setEmailVerificationCode(otp);
+  //   setIsVerifyingEmail(true);
 
-    try {
-      // First validate the OTP
-      const validateResponse = await handleValidateVerifyEmailOtp(
-        profile.email,
-        otp
-      );
+  //   try {
+  //     // First validate the OTP
+  //     const validateResponse = await handleValidateVerifyEmailOtp(
+  //       profile.email,
+  //       otp
+  //     );
 
-      if (
-        validateResponse !== undefined &&
-        typeof validateResponse === 'object' &&
-        'data' in validateResponse
-      ) {
-        const { success } = validateResponse as { data: {}; success: boolean };
+  //     if (
+  //       validateResponse !== undefined &&
+  //       typeof validateResponse === 'object' &&
+  //       'data' in validateResponse
+  //     ) {
+  //       const { success } = validateResponse as { data: {}; success: boolean };
 
-        if (success) {
-          // Then verify the email
-          const verifyResponse = await handleVerifyEmail(profile.email, otp);
+  //       if (success) {
+  //         // Then verify the email
+  //         const verifyResponse = await handleVerifyEmail(profile.email, otp);
 
-          if (
-            verifyResponse !== undefined &&
-            typeof verifyResponse === 'object' &&
-            'data' in verifyResponse
-          ) {
-            const { success: verifySuccess } = verifyResponse as {
-              data: {};
-              success: boolean;
-            };
+  //         if (
+  //           verifyResponse !== undefined &&
+  //           typeof verifyResponse === 'object' &&
+  //           'data' in verifyResponse
+  //         ) {
+  //           const { success: verifySuccess } = verifyResponse as {
+  //             data: {};
+  //             success: boolean;
+  //           };
 
-            if (verifySuccess) {
-              setIsEmailVerified(true);
-              setIsEmailVerificationModalOpen(false);
+  //           if (verifySuccess) {
+  //             setIsEmailVerified(true);
+  //             setIsEmailVerificationModalOpen(false);
 
-              toast({
-                title: 'Email Verified',
-                description: 'Your email has been successfully verified.'
-              });
-            }
-          }
-        }
-      }
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || 'An unknown error occurred';
-      toast({
-        title: 'Verification Failed',
-        description: errorMessage,
-        variant: 'destructive'
-      });
-    } finally {
-      setIsVerifyingEmail(false);
-    }
-  };
+  //             toast({
+  //               title: 'Email Verified',
+  //               description: 'Your email has been successfully verified.'
+  //             });
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     const errorMessage =
+  //       error?.response?.data?.message || 'An unknown error occurred';
+  //     toast({
+  //       title: 'Verification Failed',
+  //       description: errorMessage,
+  //       variant: 'destructive'
+  //     });
+  //   } finally {
+  //     setIsVerifyingEmail(false);
+  //   }
+  // };
 
   const UpdateUserProfile = async () => {
     setIsUploading(true);
@@ -367,8 +367,8 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
       if (!profile.profileImage.trim())
         newErrors.profileImage = 'Profile image is required';
       if (!profile.email.trim()) newErrors.email = 'Email is required';
-      else if (!isEmailVerified)
-        newErrors.email = 'Email must be verified before proceeding';
+      // else if (!isEmailVerified)
+      //   newErrors.email = 'Email must be verified before proceeding';
       if (!profile.professionalTitle.trim())
         newErrors.professionalTitle = 'Professional title is required';
       if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
@@ -590,13 +590,12 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           className={
                             errors.email ? 'border-red-500 pr-10' : 'pr-10'
                           }
-                          disabled={isEmailVerified}
-                        />
-                        {isEmailVerified && (
+                         />
+                        {/* {isEmailVerified && (
                           <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600" />
-                        )}
+                        )} */}
                       </div>
-                      {!isEmailVerified && (
+                      {/* {!isEmailVerified && (
                         <Button
                           type="button"
                           onClick={requestEmailVerification}
@@ -610,19 +609,19 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           )}
                           Verify Email
                         </Button>
-                      )}
+                      )} */}
                     </div>
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.email}
                       </p>
                     )}
-                    {isEmailVerified && (
+                    {/* {isEmailVerified && (
                       <p className="text-blue-600 text-sm mt-1 flex items-center">
                         <CheckCircle className="h-4 w-4 mr-1" /> Email verified
                         successfully
                       </p>
-                    )}
+                    )} */}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
@@ -914,13 +913,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
         </div>
       </div>
       {/* Email Verification Modal */}
-      <EmailVerificationModal
+      {/* <EmailVerificationModal
         isOpen={isEmailVerificationModalOpen}
         onClose={() => setIsEmailVerificationModalOpen(false)}
         email={profile.email}
         onVerify={handleVerifyOtp}
         isLoading={isVerifyingEmail}
-      />
+      /> */}
     </div>
   );
 }

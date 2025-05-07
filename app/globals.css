@@ -96,13 +96,12 @@ body {
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    background: black;
-    overflow:scroll;
-    position: relative;
+    background: radial-gradient(circle at 30% 30%, rgba(0, 123, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(0, 162, 255, 0.1), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 92, 255, 0.08), transparent 60%);
   }
 
-  body::before {
+  /* body::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -114,13 +113,13 @@ body {
                 radial-gradient(circle at 50% 50%, rgba(0, 92, 255, 0.08), transparent 60%);
     animation: moveGradient 60s linear infinite;
     z-index: -1;
-  }
+  } */
 
-  @keyframes moveGradient {
+  /* @keyframes moveGradient {
     0% {
       transform: rotate(0deg) translate(0, 0);
     }
     100% {
       transform: rotate(360deg) translate(0, 0);
     }
-  }
+  } */
