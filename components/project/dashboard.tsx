@@ -48,7 +48,7 @@ import {
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
-import { BackButton } from '../back-button';
+import { BackButton } from '../back-button2';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
 import { useChatStore } from '@/Store/chat';
@@ -294,7 +294,7 @@ export function Dashboard( ) {
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <BackButton path="/employer" />
+        <BackButton  />
       </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
