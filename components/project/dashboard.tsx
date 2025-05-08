@@ -307,7 +307,7 @@ export function Dashboard({ userType }: DashboardProps) {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {project_details?.status !== 'completed' &&
+          {/* {project_details?.status !== 'completed' &&
             userType === 'employer' && (
               <Dialog>
                 <DialogTrigger asChild>
@@ -334,7 +334,7 @@ export function Dashboard({ userType }: DashboardProps) {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            )}
+            )} */}
           {getStatusBadge(project_details?.status)}
         </div>
       </div>

@@ -1163,7 +1163,7 @@ export function ProjectManagement() {
                           className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
                           onClick={() =>
                             router.replace(
-                              `employer/project-dashboard/${project._id}`
+                              `project-dashboard/${project._id}`
                             )
                           }
                         >

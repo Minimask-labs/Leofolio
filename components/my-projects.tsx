@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useRouter } from 'next/navigation';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -51,6 +52,8 @@ export function MyProjects() {
     fetchFreelancerProjects,
     freelancer_projects
   } = useProjectStore();
+    const router = useRouter();
+  
   // Mock active projects data
   const activeProjects = [
     {
@@ -442,7 +445,10 @@ export function MyProjects() {
                   <div className="flex items-center gap-2 mb-3">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback className="text-xs">
-                        {project?.clientContact?.split(' ')?.map((n: string) => n[0])?.join('')}
+                        {project?.clientContact
+                          ?.split(' ')
+                          ?.map((n: string) => n[0])
+                          ?.join('')}
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm">{project?.clientContact}</span>
@@ -460,7 +466,7 @@ export function MyProjects() {
                       </div>
 
                       <div>
-                         <div className="space-y-2">
+                        <div className="space-y-2">
                           {expandedProject === project?.id && (
                             <div className="mt-6 space-y-4">
                               <div>
@@ -550,10 +556,9 @@ export function MyProjects() {
 
                   <Button
                     className="bg-blue-600 text-white hover:bg-blue-700"
-                    onClick={() => {
-                      setSelectedProject(project);
-                      setShowDashboard(true);
-                    }}
+                    onClick={() =>
+                      router.replace(`project-dashboard/${project._id}`)
+                    }
                   >
                     Project Dashboard
                   </Button>
