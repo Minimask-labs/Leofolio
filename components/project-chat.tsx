@@ -10,8 +10,23 @@ import { Input } from "@/components/ui/input"
 import { Avatar } from "@/components/ui/avatar"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {useChatStore} from "@/Store/chat";
 import { MessageSquare, Send, Paperclip, Search, ChevronLeft, User, Users } from "lucide-react"
+import { formatDateTime } from "./utils/utils"
+import { useStore } from "@/Store/user"
 
+
+interface Conversation {
+  id: string;
+  name: string;
+  content: string;
+  updatedAt: string;
+  unreadCounts: number;
+  type: string;
+ lastMessage?: { content: string; sender: { _id: string }; createdAt: string }
+  isOwn: boolean;
+  sender: string;
+}
 // Mock data for conversations
 const mockConversations = [
   {
@@ -90,13 +105,27 @@ const mockMessages = [
 
 function ProjectChat() {
   const router = useRouter()
+   const {
+    fetchMychat,
+    chat,
+      handleGetSingleConversation,
+      handleViewMessages,
+        handleSendMessage
+      } = useChatStore();
+
+      const {userData } = useStore();
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState("clients")
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [message, setMessage] = useState("")
-  const [conversations, setConversations] = useState(mockConversations)
-  const [messages, setMessages] = useState(mockMessages)
+  const [conversations, setConversations] = useState([])
+  const [chatData, setChatData] = useState([])
+  const [messages, setMessages] = useState<Conversation[]>([]);
   const [searchQuery, setSearchQuery] = useState("")
+  const tabParam = searchParams.get('tab');
+  const [conversationId, setConversationId] = useState("")
+  const currentUserId = userData?.data?.user._id
+  let recipientId;
 
   useEffect(() => {
     const conversationId = searchParams.get("id")
@@ -105,15 +134,98 @@ function ProjectChat() {
     }
   }, [searchParams])
 
-  const filteredConversations = conversations.filter(
-    (conversation) =>
-      (activeTab === "clients" ? conversation.type === "client" : conversation.type === "employee") &&
-      conversation.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  useEffect(()=> {
+    if(selectedConversation){
+    setConversationId(selectedConversation)
+    }
+    if(conversations){
+        
+    }
+  }, [selectedConversation])
 
-  const handleSendMessage = () => {
+  useEffect(()=> {
+    const fetchChats = async ()=> {
+        try {
+        fetchMychat()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    fetchChats()
+  }, [tabParam === "chat"])
+
+
+  useEffect(()=> {
+    if(chat?.data)
+    setChatData(chat?.data)
+    setConversations(chat?.data)
+  }, [chat?.data])
+
+
+  useEffect(() => {
+    const viewMessages = async () => {
+      try {
+       handleViewMessages(conversationId)
+       console.log(chat, " messages data")
+        
+      } catch (error) {
+        console.error("Error fetching chat data:", error);
+      }
+    };
+
+    viewMessages();
+  }, [conversationId]); 
+  useEffect(() => {
+    const getSingleConvo = async () => {
+      try {
+        handleGetSingleConversation(conversationId)
+        console.log(chat, " single convo")
+        setMessages(chat?.data)
+      } catch (error) {
+        console.error("Error fetching chat data:", error);
+      }
+    };
+
+    getSingleConvo();
+  }, [conversationId]); 
+ 
+
+
+//   console.log(recipientId, " recipient id")
+  console.log(chat?.data?.participants, " chat id")
+
+
+   const formattedConversations = chatData.map((conversation: { 
+    _id: string; 
+    participants: { _id: string; walletAddress: string; role: string }[]; 
+    unreadCounts: Record<string, number>; 
+    createdAt: string; 
+    lastMessage?: { content: string; sender: { _id: string }; createdAt: string } 
+  }) => {
+    const otherParticipant = conversation.participants.find(p => p._id !== currentUserId)
+    
+    return {
+      id: conversation._id,
+      name: otherParticipant ? 
+        `${otherParticipant.walletAddress.substring(0, 8)}...` : 
+        "Unknown User",
+
+      lastMessage: conversation.lastMessage?.content || "No messages yet",
+      timestamp: new Date(conversation.lastMessage?.createdAt || conversation.createdAt)
+        .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      unreadCounts: conversation.unreadCounts[currentUserId] || 0,
+      type: otherParticipant?.role === "freelancer" ? "employee" : "client"
+    }
+  })
+
+  const filteredConversations = formattedConversations?.filter(
+    (conversation: { id: string; name: string; lastMessage: string; timestamp: string; unreadCounts: number; type: string }) =>
+      conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  const sendMessage = () => {
     if (!message.trim()) return
 
+    handleSendMessage("6813938b133f29d4d618df05", message)
     const newMessage = {
       id: `m${messages.length + 1}`,
       sender: "You",
@@ -123,14 +235,23 @@ function ProjectChat() {
       isOwn: true,
     }
 
-    setMessages([...messages, newMessage])
+    setMessages([
+      ...messages,
+      {
+        ...newMessage,
+        name: "Unknown", // Provide default or appropriate values
+        updatedAt: new Date().toISOString(),
+        unreadCounts: 0,
+        type: "client",
+      } as Conversation,
+    ])
     setMessage("")
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
-      handleSendMessage()
+      sendMessage()
     }
   }
 
@@ -151,8 +272,9 @@ function ProjectChat() {
           </div>
 
           <ScrollArea className="flex-1">
-            <div className="space-y-1 p-2">
-              {filteredConversations.map((conversation) => (
+
+            {/* <div className="space-y-1 p-2">
+              {filteredConversations?.map((conversation: { id: string; name: string; lastMessage: string; timestamp: string; unread: number; type: string }) => (
                 <div
                   key={conversation.id}
                   className={`flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-800 ${
@@ -161,7 +283,7 @@ function ProjectChat() {
                   onClick={() => setSelectedConversation(conversation.id)}
                 >
                   <Avatar className="h-10 w-10 mr-3">
-                    <img src={conversation.avatar || "/placeholder.svg"} alt={conversation.name} />
+                    <img src={"/placeholder.svg"} alt={conversation.name} />
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center">
@@ -177,7 +299,37 @@ function ProjectChat() {
                   )}
                 </div>
               ))}
+            </div> */}
+
+         <div className="flex-1 overflow-y-auto">
+            <div className="space-y-1 p-2">
+              {filteredConversations?.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  className={`flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-800 ${
+                    selectedConversation === conversation.id ? "bg-gray-800" : ""
+                  }`}
+                  onClick={() => setSelectedConversation(conversation.id)}
+                >
+                  <div className="h-10 w-10 mr-3 rounded-full bg-gray-700 flex items-center justify-center">
+                    {/* <img src={conversation.avatar} alt="" className="rounded-full" /> */}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <p className="font-medium truncate text-sm">{conversation.name}</p>
+                      <span className="text-xs text-gray-400">{conversation.timestamp}</span>
+                    </div>
+                    <p className="text-xs text-gray-400 truncate">{conversation.lastMessage}</p>
+                  </div>
+                  {Object.keys(conversation.unreadCounts).length > 0 &&
+                    <div className="ml-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {Object.keys(conversation.unreadCounts).length}
+                    </div>
+                  }
+                </div>
+              ))}
             </div>
+          </div>
           </ScrollArea>
         </div>
 
@@ -185,7 +337,6 @@ function ProjectChat() {
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
             <>
-        
               <div className="p-4 border-b border-gray-800 flex items-center">
                 <Button
                   variant="ghost"
@@ -198,7 +349,7 @@ function ProjectChat() {
                 <Avatar className="h-10 w-10 mr-3">
                   <img
                     src={
-                      conversations.find((c) => c.id === selectedConversation)?.avatar ||
+                    //   conversations.find((c) => c.id === selectedConversation)?.avatar ||
                       "/placeholder.svg?height=40&width=40"
                     }
                     alt="Avatar"
@@ -206,36 +357,30 @@ function ProjectChat() {
                 </Avatar>
                 <div>
                   <h2 className="font-medium">
-                    {conversations.find((c) => c.id === selectedConversation)?.name || "Conversation"}
+                    {/* {conversations.find((c) => c.id === selectedConversation)?.name || "Conversation"} */}
                   </h2>
                   <p className="text-xs text-gray-400">Online</p>
                 </div>
               </div>
-
-        
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-4">
-                  {messages.map((msg) => (
+                  {messages?.map((msg) => (
                     <div key={msg.id} className={`flex ${msg.isOwn ? "justify-end" : "justify-start"}`}>
                       <div
                         className={`max-w-[80%] rounded-lg p-3 ${
                           msg.isOwn ? "bg-blue-600 text-white" : "bg-gray-800 text-white"
                         }`}
                       >
-                        <p>{msg.content}</p>
-                        <p className="text-xs mt-1 opacity-70">{msg.timestamp}</p>
+                        <p className={`flex ${msg.isOwn ? "justify-end" : "justify-start"}`}>{!msg.isOwn ? msg.lastMessage?.content : msg?.content}</p>
+                        <p className="text-xs mt-1 opacity-70 text-right italic">{formatDateTime(msg.updatedAt)}</p>
                       </div>
                     </div>
+                
                   ))}
                 </div>
               </ScrollArea>
-
-           
               <div className="p-4 border-t border-gray-800">
                 <div className="flex items-center bg-gray-800 rounded-lg p-2">
-                  <Button variant="ghost" size="icon" className="text-gray-400">
-                    <Paperclip size={20} />
-                  </Button>
                   <Input
                     placeholder="Type a message..."
                     className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -246,8 +391,8 @@ function ProjectChat() {
                   <Button
                     size="icon"
                     className="bg-blue-600 hover:bg-blue-700 ml-2"
-                    onClick={handleSendMessage}
-                    disabled={!message.trim()}
+                    onClick={sendMessage}
+                    disabled={!message?.trim()}
                   >
                     <Send size={18} />
                   </Button>
