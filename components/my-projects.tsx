@@ -504,17 +504,14 @@ export function MyProjects() {
                                               <SelectItem value="planning">
                                                 Planning
                                               </SelectItem>
-                                              <SelectItem value="in_progress">
+                                              {/* <SelectItem value="in_progress">
                                                 In Progress
                                               </SelectItem>
                                               <SelectItem value="on_hold">
                                                 on hold
-                                              </SelectItem>
+                                              </SelectItem> */}
                                               <SelectItem value="completed">
                                                 Completed
-                                              </SelectItem>
-                                              <SelectItem value="cancelled">
-                                                cancelled
                                               </SelectItem>
                                             </SelectContent>
                                           </Select>

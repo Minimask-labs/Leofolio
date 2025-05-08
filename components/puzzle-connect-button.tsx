@@ -165,8 +165,8 @@ export function PuzzleConnectButton() {
         <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
           Connected Account
         </div>
-        <DropdownMenuSeparator />
-        <div className="px-2 py-1.5 text-xs break-all">{account?.address}</div>
+        {/* <DropdownMenuSeparator /> */}
+        {/* <div className="px-2 py-1.5 text-xs break-all">{account?.address}</div> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => copyToClipboard(account?.address || '')}
@@ -174,6 +174,8 @@ export function PuzzleConnectButton() {
           <Copy className="mr-2 h-4 w-4" />
           {addressCopied ? 'Copied!' : 'Copy Address'}
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem
           onClick={() => viewOnExplorer(account?.address || '')}
         >
