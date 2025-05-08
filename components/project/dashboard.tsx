@@ -294,7 +294,7 @@ export function Dashboard( ) {
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <BackButton  />
+        <BackButton />
       </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -353,7 +353,7 @@ export function Dashboard( ) {
           ) : (
             <></>
           )}
-          <TabsTrigger value="chat">Communication</TabsTrigger>
+          <TabsTrigger value="chat">Chat</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
         {/* Overview Tab */}
@@ -716,7 +716,7 @@ export function Dashboard( ) {
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
                         <span>
-                          Maintained excellent communication throughout
+                          Maintained excellent Chat throughout
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
@@ -855,7 +855,7 @@ export function Dashboard( ) {
                     <div className="flex items-center text-sm text-slate-500 mb-2">
                       <Calendar className="h-4 w-4 mr-1" />
                       <span>
-                        Due: {new Date(milestone.dueDate).toLocaleDateString()}
+                        Due: {new Date(milestone.deadline).toLocaleDateString()}
                       </span>
                     </div>
                   </CardContent>
@@ -872,9 +872,9 @@ export function Dashboard( ) {
                             <SelectValue placeholder="Update status" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="not-started">
+                            {/* <SelectItem value="not-started">
                               Not Started
-                            </SelectItem>
+                            </SelectItem> */}
                             <SelectItem value="in-progress">
                               In Progress
                             </SelectItem>
@@ -1017,9 +1017,9 @@ export function Dashboard( ) {
           )} */}
         </TabsContent>
 
-        {/* Communication Tab */}
+        {/* Chat Tab */}
         <TabsContent value="chat" className="space-y-6 mt-6">
-          <h2 className="text-lg font-medium">Project Communication</h2>
+          <h2 className="text-lg font-medium"> Project Chat</h2>
 
           {/* <ProjectUpdates project={project} /> */}
           <ProjectChat />

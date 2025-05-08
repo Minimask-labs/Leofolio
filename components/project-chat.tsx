@@ -137,7 +137,7 @@ function ProjectChat() {
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-max border-r border-gray-800 flex flex-col">
+        <div className="w-max pt-4 border-r border-gray-800 flex flex-col">
           <div className="px-4 mb-4">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />

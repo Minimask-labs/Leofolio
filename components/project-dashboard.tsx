@@ -283,7 +283,7 @@ export function ProjectDashboard({
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="milestones">Milestones</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
-          <TabsTrigger value="communication">Communication</TabsTrigger>
+          <TabsTrigger value="Chat">Chat</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
 
@@ -466,7 +466,7 @@ export function ProjectDashboard({
                   variant="outline"
                   size="sm"
                   className="w-full mt-4 text-xs"
-                  onClick={() => setActiveTab('communication')}
+                  onClick={() => setActiveTab('Chat')}
                 >
                   View All Updates
                 </Button>
@@ -636,9 +636,7 @@ export function ProjectDashboard({
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>
-                          Maintained excellent communication throughout
-                        </span>
+                        <span>Maintained excellent Chat throughout</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
@@ -929,9 +927,9 @@ export function ProjectDashboard({
           )}
         </TabsContent>
 
-        {/* Communication Tab */}
-        <TabsContent value="communication" className="space-y-6 mt-6">
-          <h2 className="text-lg font-medium">Project Communication</h2>
+        {/* Chat Tab */}
+        <TabsContent value="Chat" className="space-y-6 mt-6">
+          <h2 className="text-lg font-medium"> Project Chat</h2>
           <ProjectUpdates project={project} />
         </TabsContent>
 
