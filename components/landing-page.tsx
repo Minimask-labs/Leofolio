@@ -69,7 +69,7 @@ export function LandingPage( ) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <header className="border-b sticky top-0 bg-emerald-600 z-30 ">
+      <header className="border-b sticky top-0 bg-blue-800 z-30 ">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Shield className="h-8 w-8 text-[#121212]" />
@@ -95,7 +95,7 @@ export function LandingPage( ) {
             </nav>
             <Button
               onClick={handleGetStarted}
-              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
+              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
             >
               Get Started
             </Button>
@@ -104,7 +104,7 @@ export function LandingPage( ) {
       </header>
 
       {/* Hero Section */}
-      <section className="dark:bg-gradient-to-b dark:from-emerald-600 to-white py-20">
+      <section className="dark:bg-gradient-to-b dark:from-blue-800 to-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Privacy-Preserving{' '}
@@ -118,7 +118,7 @@ export function LandingPage( ) {
             <Button
               onClick={handleGetStarted}
               size="lg"
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               Join as Freelancer
             </Button>
@@ -126,7 +126,7 @@ export function LandingPage( ) {
               onClick={handleGetStarted}
               size="lg"
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
+              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
             >
               Hire Talent
             </Button>
@@ -134,15 +134,15 @@ export function LandingPage( ) {
         </div>
       </section>
       {/* Features Section */}
-      <section id="features" className="py-20 bg-background">
+      <section id="features" className="py-20 ">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Why Choose Leofolio?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6">
-              <div className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="h-8 w-8 text-emerald-600" />
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Privacy-First</h3>
               <p className="text-slate-600">
@@ -151,8 +151,8 @@ export function LandingPage( ) {
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Code className="h-8 w-8 text-emerald-600" />
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Code className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-3">
                 Developer Portfolios
@@ -163,8 +163,8 @@ export function LandingPage( ) {
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Globe className="h-8 w-8 text-emerald-600" />
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Globe className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-3">
                 Global Opportunities
@@ -195,7 +195,7 @@ export function LandingPage( ) {
                 <CardContent className="p-6">
                   <div className="flex flex-col items-center text-center mb-4">
                     <Avatar className="h-24 w-24 mb-4">
-                      <AvatarFallback className="text-2xl bg-emerald-100 text-emerald-800">
+                      <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">
                         {freelancer.name
                           .split(' ')
                           .map((n) => n[0])
@@ -222,7 +222,7 @@ export function LandingPage( ) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
+                      className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
                     >
                       View Profile
                     </Button>
@@ -236,7 +236,7 @@ export function LandingPage( ) {
             <Button
               onClick={handleGetStarted}
               variant="outline"
-              className="border-emerald-600 text-emerald-700 hover:text-[#121212] bg-[#121212] hover:bg-emerald-100"
+              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
             >
               Explore All Freelancers <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -302,7 +302,7 @@ export function LandingPage( ) {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-slate-900 text-white">
+      <section id="about" className="py-20   text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">About Leofolio</h2>
@@ -319,7 +319,7 @@ export function LandingPage( ) {
             </p>
             <Button
               onClick={handleGetStarted}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               Join the Community
             </Button>
@@ -333,7 +333,7 @@ export function LandingPage( ) {
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">
               <div className="flex items-center gap-2 mb-4">
-                <Shield className="h-6 w-6 text-emerald-400" />
+                <Shield className="h-6 w-6 text-blue-400" />
                 <h3 className="text-xl font-bold text-white">Leofolio</h3>
               </div>
               <p className="max-w-xs text-slate-400">
@@ -346,17 +346,17 @@ export function LandingPage( ) {
                 <h4 className="text-white font-medium mb-4">Platform</h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       How it Works
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Pricing
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       FAQ
                     </a>
                   </li>
@@ -366,17 +366,17 @@ export function LandingPage( ) {
                 <h4 className="text-white font-medium mb-4">Resources</h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Documentation
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Blog
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Tutorials
                     </a>
                   </li>
@@ -386,17 +386,17 @@ export function LandingPage( ) {
                 <h4 className="text-white font-medium mb-4">Connect</h4>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Twitter
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       Discord
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-emerald-400">
+                    <a href="#" className="hover:text-blue-400">
                       GitHub
                     </a>
                   </li>

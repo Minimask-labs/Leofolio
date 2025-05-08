@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { UserTypeSelection } from "@/components/user-type-selection"
+import { UserTypeSelection } from "@/components/puzzle-user-type-selection"
 import { FreelancerDashboard } from "@/components/freelancer-dashboard"
 import { EmployeeDashboard } from "@/components/employee-dashboard"
 import { LandingPage } from "@/components/landing-page"

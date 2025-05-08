@@ -8,7 +8,8 @@ import {
   projectInviteResponse,
   completeMilestone,
   approveMilestone,
-  projectDetail
+  projectDetail,
+  myFreelancerProjects
 } from '@/service/projects';
 
 export interface Medias {
@@ -63,6 +64,7 @@ export type UserState = {
   projects: DataResponse | null;
   projects_invites: any | null;
   project_details: any | null;
+  freelancer_projects: DataResponse | null;
 };
 
 export type UserActions = {
@@ -79,9 +81,16 @@ export type UserActions = {
     message: string
   ) => Promise<void>;
   handleViewProjectInvitationsList: (params?: any) => Promise<void>;
-  handleCompleteMilestone: (projectId: string, milestoneId: string) => Promise<void>;
-  handleApproveMilestone: (projectId: string, milestoneId: string) => Promise<void>;
+  handleCompleteMilestone: (
+    projectId: string,
+    milestoneId: string
+  ) => Promise<void>;
+  handleApproveMilestone: (
+    projectId: string,
+    milestoneId: string
+  ) => Promise<void>;
   handleViewProjectDetail: (projectId: string) => Promise<void>;
+  fetchFreelancerProjects: (params?: any) => Promise<void>;
   // Add more actions as needed
 };
 
@@ -91,6 +100,7 @@ export const useProjectStore = create<UserStore>((set) => ({
   projects: null,
   project_details: null,
   projects_invites: null,
+  freelancer_projects: null,
   status: 'idle',
   error: null,
   loading: false,
@@ -104,6 +114,20 @@ export const useProjectStore = create<UserStore>((set) => ({
       set({
         loading: false,
         projects: response.data,
+        status: 'succeeded'
+      });
+    } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+  fetchFreelancerProjects: async (params?: any) => {
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await myFreelancerProjects(params);
+      set({
+        loading: false,
+        freelancer_projects: response.data,
         status: 'succeeded'
       });
     } catch (error: any) {

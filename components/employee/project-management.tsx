@@ -50,7 +50,18 @@ import {
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import React, { FC, useCallback } from 'react';
 const ESCROW_PROGRAM_ID = 'escrow_contract_v2.aleo';
-import { mongoIdToAleoField } from '@/libs/util';
+import { mongoIdToAleoU64, mongoIdToAleoU64Hash } from '@/libs/util';
+import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import {
+  useConnect,
+  connect,
+  useAccount,
+  ConnectResponse,
+  useDisconnect,
+  useRequestSignature,
+  Network
+} from '@puzzlehq/sdk';
+
 export function ProjectManagement() {
   const router = useRouter();
   const [isCreatingProject, setIsCreatingProject] = useState(false);
@@ -96,6 +107,8 @@ export function ProjectManagement() {
     ],
     price: 5000 // aleo token
   });
+  const [jobId, setJobId] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const uploadedImage = async (image: any) => {
     setIsUploading(true);
     const formData = new FormData();
@@ -111,9 +124,9 @@ export function ProjectManagement() {
           description: 'Your profile image has been updated.',
           variant: 'default'
         });
-        console.log('Image uploaded successfully:', media);
+        // console.log('Image uploaded successfully:', media);
         setPreviewImage(media[0]);
-        console.log('Image uploaded successfully:', response);
+        // console.log('Image uploaded successfully:', response);
       }
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -127,151 +140,72 @@ export function ProjectManagement() {
       setIsUploading(false);
     }
   };
-  const { publicKey, wallet, requestTransaction } = useWallet();
+  // const { publicKey, wallet, requestTransaction } = useWallet();
+  const { account, error, loading } = useAccount();
 
+  const { createEvent, eventId } = useRequestCreateEvent({
+    type: EventType.Execute,
+    programId: 'escrow_contract11.aleo',
+    functionId: 'create_job',
+    fee: 1.23,
+    inputs: [
+      jobId, // This will now be the hashed jobId
+      paymentAmount
+        ? paymentAmount + 'u64'
+        : projectPayload.price.toString() + 'u64',
+      account?.address ?? ''
+    ]
+  });
+  // console.log('test func1', mongoIdToAleoU64Hash('681aab930f0b994312e685a5'));
+  // console.log('test func2', mongoIdToAleoU64('681aab930f0b994312e685a5'));
   const onCreateJob = async ({
-    jobId,
-    paymentAmount
+    jobid,
+    paymentamount
   }: {
-    jobId: string;
-    paymentAmount: number;
+    jobid: string;
+    paymentamount: number;
   }) => {
-    if (!publicKey) throw new Error('Wallet not connected');
+    // Validate inputs
+    if (!jobid) {
+      toast({
+        title: 'Validation Error',
+        description: 'Job ID is required',
+        variant: 'destructive'
+      });
+      return;
+    }
 
-    // Format inputs as required by the Leo contract
-    const inputs = [
-      mongoIdToAleoField(jobId), // job_id as u64
-      paymentAmount + 'u64' // payment_amount as u64
-    ];
-    console.log('Inputs:', inputs);
+    if (!paymentamount || paymentamount <= 0) {
+      toast({
+        title: 'Validation Error',
+        description: 'Payment amount must be greater than 0',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     const fee = 50_000; // Set an appropriate fee
 
-    // Create the transaction
-    const aleoTransaction = Transaction.createTransaction(
-      publicKey,
-      WalletAdapterNetwork.TestnetBeta,
-      'escrow_contract_v2.aleo',
-      'create_job',
-      inputs,
-      fee
-    );
+    // Hash the jobId properly using mongoIdToAleoU64Hash
+    const hashedJobId = mongoIdToAleoU64(jobid);
+    setJobId(hashedJobId);
+    setPaymentAmount(paymentamount);
 
-    // Send the transaction
-    if (requestTransaction) {
-      await requestTransaction(aleoTransaction);
-    }
-  };
-  const handleFundAccount = async ({
-    jobId,
-    paymentAmount
-  }: {
-    jobId: string;
-    paymentAmount: number;
-  }) => {
-    if (!publicKey || !wallet) {
+    // console.log('Job ID (hashed):', hashedJobId);
+    // console.log('Payment Amount:', paymentAmount);
+    if (!jobid) {
       toast({
-        title: 'Wallet Not Connected',
-        description: 'Please connect your wallet to fund your account.',
-        variant: 'destructive'
-      });
-      return;
-    }
-    if (!requestTransaction) {
-      toast({
-        title: 'Wallet Error',
-        description: 'Request Transaction function not available.',
+        title: 'Validation Error',
+        description: 'Job ID is required',
         variant: 'destructive'
       });
       return;
     }
 
-    // const amountMicrocredits = parseInt(fundingAmount, 10);
-    // if (isNaN(amountMicrocredits) || amountMicrocredits <= 0) {
-    //   toast({
-    //     title: "Invalid Amount",
-    //     description:
-    //       "Please enter a valid positive amount to fund (microcredits).",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
-
-    // setIsFunding(true);
-    try {
-      // IMPORTANT: Adjust fee as needed. This is a placeholder.
-      // You might need a fee record or a dynamic fee estimation strategy.
-      const inputs = [
-        BigInt(`0x${jobId}`).toString() + 'u64', // job_id as u64
-        paymentAmount.toString() + 'u64' // payment_amount as u64
-      ];
-      console.log('Inputs:', inputs);
-      const fee = 50_000; // Set an appropriate fee
-
-      const feeInMicrocredits = 1000000;
-
-      const aleoTransaction = Transaction.createTransaction(
-        publicKey,
-        WalletAdapterNetwork.TestnetBeta, // Ensure this matches your contract deployment network
-        ESCROW_PROGRAM_ID,
-        'create_job',
-        inputs, // Input argument(s) as strings
-        feeInMicrocredits
-        // undefined, // feeRecord - Pass undefined if not providing a specific record
-      );
-
-      console.log('Requesting funding transaction:', aleoTransaction);
-      const txId = await requestTransaction(aleoTransaction);
-      console.log('Transaction ID:', txId);
-
-      if (txId) {
-        // toast({
-        //   title: "Funding Transaction Sent",
-        //   description: `Transaction ID: ${txId.substring(
-        //     0,
-        //     20
-        //   )}... Monitor your wallet or explorer for confirmation.`,
-        //   action: (
-        //     <a
-        //       href={`https://explorer.aleo.org/transaction/${txId}`} // Adjust explorer URL if needed (e.g., testnet3.aleo.network)
-        //       target="_blank"
-        //       rel="noopener noreferrer"
-        //       className="ml-2 underline"
-        //     >
-        //       View on Explorer
-        //     </a>
-        //   ),
-        // });
-        // setFundingAmount(""); // Clear input on success
-        // Optionally, trigger a simulated balance refresh after a delay
-        // Note: This won't show the *actual* new balance yet.
-        // setTimeout(fetchBalance, 7000); // Refresh balance simulation after 7s
-      } else {
-        toast({
-          title: 'Transaction Not Broadcast',
-          description: 'The transaction was likely cancelled in the wallet.',
-          variant: 'destructive'
-        });
-      }
-    } catch (e) {
-      console.error('Funding error:', e);
-      let description = 'An unknown error occurred during funding.';
-      if (e instanceof WalletNotConnectedError) {
-        description = 'Wallet disconnected. Please reconnect.';
-      } else if (e instanceof Error) {
-        // Attempt to provide a more specific error if possible
-        description = e.message.includes('rejected')
-          ? 'Transaction rejected by user in wallet.'
-          : e.message;
-      }
-      toast({
-        title: 'Funding Failed',
-        description: description,
-        variant: 'destructive'
-      });
-    } finally {
-      // setIsFunding(false);
-    }
+    await createEvent();
+    // console.log('eventId:', eventId);
   };
+
   const createProject = async () => {
     // Reset previous errors
     setErrors({});
@@ -333,24 +267,24 @@ export function ProjectManagement() {
           data: { _id: string };
           success: boolean;
         };
-        if (success) {
+        if (success && data && data._id) {
           onCreateJob({
-            jobId: data._id,
-            paymentAmount: projectPayload.price
+            jobid: data._id,
+            paymentamount: projectPayload.price
           });
           fetchProjects();
           // If validation passes, log the payload
-          console.log('Project payload:', projectPayload);
+          // console.log('Project payload:', projectPayload);
           setIsCreatingProject(false);
-          setProjectPayload({
-            name: '',
-            description: '',
-            deadline: '',
-            medias: [],
-            status: 'planning',
-            milestones: [],
-            price: 0
-          });
+          // setProjectPayload({
+          //   name: '',
+          //   description: '',
+          //   deadline: '',
+          //   medias: [],
+          //   status: 'planning',
+          //   milestones: [],
+          //   price: 0
+          // });
           toast({
             title: 'Project Created',
             description: 'Your new project has been created successfully.'
@@ -388,7 +322,7 @@ export function ProjectManagement() {
         return (
           <Badge
             variant="outline"
-            className="bg-emerald-50 text-emerald-700 border-emerald-200"
+            className="bg-blue-50 text-blue-700 border-blue-200"
           >
             Completed
           </Badge>
@@ -426,7 +360,6 @@ export function ProjectManagement() {
   };
   useEffect(() => {
     fetchProjects();
-    console.log('Projects:', projects);
   }, [fetchProjects]);
 
   // If showing the project dashboard
@@ -475,7 +408,7 @@ export function ProjectManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex lg:flex-row flex-col justify-between items-center">
         <div>
           <h2 className="text-xl font-semibold mb-2">Manage Projects</h2>
           <p className="text-slate-600">
@@ -1156,7 +1089,7 @@ export function ProjectManagement() {
                                     >
                                       <div className="flex items-center gap-2">
                                         {milestone.status === 'completed' ? (
-                                          <CheckCircle className="h-4 w-4 text-emerald-500" />
+                                          <CheckCircle className="h-4 w-4 text-blue-500" />
                                         ) : milestone.status ===
                                           'in_progress' ? (
                                           <Clock className="h-4 w-4 text-blue-500" />
@@ -1230,7 +1163,7 @@ export function ProjectManagement() {
                           className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
                           onClick={() =>
                             router.replace(
-                              `employer/project-dashboard/${project._id}`
+                              `project-dashboard/${project._id}`
                             )
                           }
                         >
@@ -1256,9 +1189,7 @@ export function ProjectManagement() {
                     <Card
                       key={project.id}
                       className={
-                        expandedProject === project.id
-                          ? 'border-emerald-300'
-                          : ''
+                        expandedProject === project.id ? 'border-blue-300' : ''
                       }
                     >
                       <CardHeader className="pb-2">
@@ -1266,7 +1197,7 @@ export function ProjectManagement() {
                           <CardTitle>{project.name}</CardTitle>
                           <Badge
                             variant="outline"
-                            className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                            className="bg-blue-50 text-blue-700 border-blue-200"
                           >
                             Completed
                           </Badge>
@@ -1347,7 +1278,7 @@ export function ProjectManagement() {
                           )}
                         </Button>
                         <Button
-                          className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
+                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
                           onClick={() => {
                             setSelectedProject(project);
                             setShowReport(true);

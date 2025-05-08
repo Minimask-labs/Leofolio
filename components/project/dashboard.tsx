@@ -48,16 +48,16 @@ import {
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
-interface DashboardProps {
-  userType: 'freelancer' | 'employer';
-}
- import { BackButton } from "../back-button";
- import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { useProjectStore } from "@/Store/projects";
-import {useChatStore} from "@/Store/chat";
-import ProjectChat from "../project-chat";
+import { BackButton } from '../back-button2';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { useProjectStore } from '@/Store/projects';
+import { useChatStore } from '@/Store/chat';
+import ProjectChat from '../project-chat';
+import { useStore } from '@/Store/user';
 
-export function Dashboard({ userType }: DashboardProps) {
+export function Dashboard( ) {
+    const { userType, loadUserType, userData } = useStore();
+  
   const {
     handleCreateProject,
     fetchProjects,
@@ -76,12 +76,13 @@ export function Dashboard({ userType }: DashboardProps) {
   //   } = useChatStore();
 
   const [project, setProject] = useState<any>(null);
-  
+
   // const [activeTab, setActiveTab] = useState('overview');
-    const searchParams = useSearchParams();
-   const validTabs = ['overview', 'milestones', 'team', 'chat', 'files'];
+  const searchParams = useSearchParams();
+  const validTabs = ['overview', 'milestones', 'team', 'chat', 'files'];
   const tabParam = searchParams.get('tab');
-  const activeTab = tabParam && validTabs.includes(tabParam) ? tabParam : 'overview';
+  const activeTab =
+    tabParam && validTabs.includes(tabParam) ? tabParam : 'overview';
 
   const updateUrlTab = (tab: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -279,7 +280,7 @@ export function Dashboard({ userType }: DashboardProps) {
     switch (status) {
       case 'completed':
         return (
-          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
             Completed
           </Badge>
         );
@@ -319,7 +320,7 @@ export function Dashboard({ userType }: DashboardProps) {
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <BackButton path="/employer" />
+        <BackButton  />
       </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -332,47 +333,55 @@ export function Dashboard({ userType }: DashboardProps) {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {project_details?.status !== 'completed' && userType === 'employer' && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="gap-2">
-                  <Edit className="h-4 w-4" />
-                  Edit Project
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Project</DialogTitle>
-                  <DialogDescription>
-                    Update project details, deadlines, and settings.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <p>Project editing form would go here...</p>
-                </div>
-                <DialogFooter>
-                  <Button type="button" variant="outline">
-                    Cancel
+          {/* {project_details?.status !== 'completed' &&
+            userType === 'employer' && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <Edit className="h-4 w-4" />
+                    Edit Project
                   </Button>
-                  <Button type="submit">Save Changes</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Project</DialogTitle>
+                    <DialogDescription>
+                      Update project details, deadlines, and settings.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <p>Project editing form would go here...</p>
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save Changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )} */}
           {getStatusBadge(project_details?.status)}
         </div>
       </div>
 
       {/* Project Tabs */}
       <Tabs value={activeTab} onValueChange={(tab) => updateUrlTab(tab)}>
-        <TabsList className="grid grid-cols-5 w-full">
+        <TabsList
+          className={`${
+            userType !== 'freelancer' ? 'grid-cols-5' : 'grid-cols-4'
+          } grid  w-full`}
+        >
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="milestones">Milestones</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
+          {userType !== 'freelancer' ? (
+            <TabsTrigger value="team">Team</TabsTrigger>
+          ) : (
+            <></>
+          )}
           <TabsTrigger value="chat">Communication</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
-
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -387,7 +396,9 @@ export function Dashboard({ userType }: DashboardProps) {
                     <span className="text-sm font-medium">
                       Overall Progress
                     </span>
-                    <span className="text-sm">{project_details?.progress}%</span>
+                    <span className="text-sm">
+                      {project_details?.progress}%
+                    </span>
                   </div>
                   <Progress value={project_details?.progress} className="h-2" />
                 </div>
@@ -396,7 +407,9 @@ export function Dashboard({ userType }: DashboardProps) {
                   <div>
                     <p className="text-sm text-slate-500">Start Date</p>
                     <p className="font-medium">
-                      {new Date(project_details?.startDate).toLocaleDateString()}
+                      {new Date(
+                        project_details?.startDate
+                      ).toLocaleDateString()}
                     </p>
                   </div>
                   <div>
@@ -438,7 +451,7 @@ export function Dashboard({ userType }: DashboardProps) {
                       {/* {stats.totalMilestones -
                         stats.completedMilestones -
                         stats.inProgressMilestones} */}
-                        {Number(stats.totalMilestones || 0) -
+                      {Number(stats.totalMilestones || 0) -
                         Number(stats.completedMilestones || 0) -
                         Number(stats.inProgressMilestones || 0)}
                     </p>
@@ -447,24 +460,26 @@ export function Dashboard({ userType }: DashboardProps) {
                 </div>
 
                 <div className="space-y-2">
-                  {project_details?.milestones?.slice(0, 3)?.map((milestone: any) => (
-                    <div
-                      key={milestone.id}
-                      className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
-                    >
-                      <div className="flex items-center gap-2">
-                        {milestone.status === 'completed' ? (
-                          <CheckCircle className="h-4 w-4 text-emerald-500" />
-                        ) : milestone.status === 'in-progress' ? (
-                          <Clock className="h-4 w-4 text-blue-500" />
-                        ) : (
-                          <AlertCircle className="h-4 w-4 text-slate-400" />
-                        )}
-                        <span className="text-sm">{milestone.title}</span>
+                  {project_details?.milestones
+                    ?.slice(0, 3)
+                    ?.map((milestone: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          {milestone.status === 'completed' ? (
+                            <CheckCircle className="h-4 w-4 text-blue-500" />
+                          ) : milestone.status === 'in-progress' ? (
+                            <Clock className="h-4 w-4 text-blue-500" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4 text-slate-400" />
+                          )}
+                          <span className="text-sm">{milestone.title}</span>
+                        </div>
+                        {getStatusBadge(milestone.status)}
                       </div>
-                      {getStatusBadge(milestone.status)}
-                    </div>
-                  ))}
+                    ))}
                 </div>
 
                 <Button
@@ -523,7 +538,6 @@ export function Dashboard({ userType }: DashboardProps) {
                     >
                       Manage Team
                     </Button>
-
                   )}
                 </div>
               </CardContent>
@@ -567,13 +581,15 @@ export function Dashboard({ userType }: DashboardProps) {
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <CheckCircle className="h-3 w-3 text-emerald-600" />
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                      <CheckCircle className="h-3 w-3 text-blue-600" />
                     </div>
                     <div>
                       <p className="text-xs font-medium">Project Started</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(project_details?.startDate).toLocaleDateString()}
+                        {new Date(
+                          project_details?.startDate
+                        ).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -599,15 +615,17 @@ export function Dashboard({ userType }: DashboardProps) {
                     <div>
                       <p className="text-xs font-medium">Deadline</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(project_details?.deadline).toLocaleDateString()}
+                        {new Date(
+                          project_details?.deadline
+                        ).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
 
                   {project_details?.status === 'completed' && (
                     <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <CheckCircle className="h-3 w-3 text-emerald-600" />
+                      <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <CheckCircle className="h-3 w-3 text-blue-600" />
                       </div>
                       <div>
                         <p className="text-xs font-medium">Completed</p>
@@ -635,7 +653,7 @@ export function Dashboard({ userType }: DashboardProps) {
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-emerald-600">
+                    <p className="text-3xl font-bold text-blue-600">
                       {project_details?.progress}%
                     </p>
                     <p className="text-sm text-slate-500">Completion Rate</p>
@@ -710,25 +728,25 @@ export function Dashboard({ userType }: DashboardProps) {
                     </h3>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
                         <span>
                           Delivered project on schedule and within budget
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
                         <span>
                           Implemented all requested features with high quality
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
                         <span>
                           Maintained excellent communication throughout
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
                         <span>Provided comprehensive documentation</span>
                       </li>
                     </ul>
@@ -750,148 +768,156 @@ export function Dashboard({ userType }: DashboardProps) {
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
-            {userType === 'employer' && project_details?.status !== 'completed' && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Milestone
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Milestone</DialogTitle>
-                    <DialogDescription>
-                      Add a new milestone to track project progress
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="milestone-title">Milestone Title</Label>
-                      <Input
-                        id="milestone-title"
-                        placeholder="e.g. Design Completion"
-                        value={newMilestone.title}
-                        onChange={(e) =>
-                          setNewMilestone({
-                            ...newMilestone,
-                            title: e.target.value
-                          })
-                        }
-                      />
+            {userType === 'employer' &&
+              project_details?.status !== 'completed' && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add Milestone
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Milestone</DialogTitle>
+                      <DialogDescription>
+                        Add a new milestone to track project progress
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="milestone-title">Milestone Title</Label>
+                        <Input
+                          id="milestone-title"
+                          placeholder="e.g. Design Completion"
+                          value={newMilestone.title}
+                          onChange={(e) =>
+                            setNewMilestone({
+                              ...newMilestone,
+                              title: e.target.value
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="milestone-date">Due Date</Label>
+                        <Input
+                          id="milestone-date"
+                          type="date"
+                          value={newMilestone.dueDate}
+                          onChange={(e) =>
+                            setNewMilestone({
+                              ...newMilestone,
+                              dueDate: e.target.value
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="milestone-status">Status</Label>
+                        <Select
+                          defaultValue={newMilestone.status}
+                          onValueChange={(value) =>
+                            setNewMilestone({ ...newMilestone, status: value })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="not-started">
+                              Not Started
+                            </SelectItem>
+                            <SelectItem value="in-progress">
+                              In Progress
+                            </SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="milestone-date">Due Date</Label>
-                      <Input
-                        id="milestone-date"
-                        type="date"
-                        value={newMilestone.dueDate}
-                        onChange={(e) =>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
                           setNewMilestone({
-                            ...newMilestone,
-                            dueDate: e.target.value
+                            title: '',
+                            dueDate: '',
+                            status: 'not-started'
                           })
-                        }
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="milestone-status">Status</Label>
-                      <Select
-                        defaultValue={newMilestone.status}
-                        onValueChange={(value) =>
-                          setNewMilestone({ ...newMilestone, status: value })
                         }
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="not-started">
-                            Not Started
-                          </SelectItem>
-                          <SelectItem value="in-progress">
-                            In Progress
-                          </SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        setNewMilestone({
-                          title: '',
-                          dueDate: '',
-                          status: 'not-started'
-                        })
-                      }
-                    >
-                      Cancel
-                    </Button>
-                    <Button onClick={addMilestone}>Add Milestone</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            )}
+                        Cancel
+                      </Button>
+                      <Button onClick={addMilestone}>Add Milestone</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
           </div>
 
           <div className="space-y-4">
-            {project_details?.milestones?.map((milestone: any) => (
-              <Card key={milestone.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-2">
-                      {milestone.status === 'completed' ? (
-                        <CheckCircle className="h-5 w-5 text-emerald-500" />
-                      ) : milestone.status === 'in-progress' ? (
-                        <Clock className="h-5 w-5 text-blue-500" />
-                      ) : (
-                        <AlertCircle className="h-5 w-5 text-slate-400" />
-                      )}
-                      <CardTitle className="text-base">
-                        {milestone.title}
-                      </CardTitle>
+            {project_details?.milestones?.map(
+              (milestone: any, index: number) => (
+                <Card key={index}>
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-2">
+                        {milestone.status === 'completed' ? (
+                          <CheckCircle className="h-5 w-5 text-blue-500" />
+                        ) : milestone.status === 'in-progress' ? (
+                          <Clock className="h-5 w-5 text-blue-500" />
+                        ) : (
+                          <AlertCircle className="h-5 w-5 text-slate-400" />
+                        )}
+                        <CardTitle className="text-base">
+                          {milestone.title}
+                        </CardTitle>
+                      </div>
+                      {getStatusBadge(milestone.status)}
                     </div>
-                    {getStatusBadge(milestone.status)}
-                  </div>
-                </CardHeader>
-                <CardContent className="pb-2">
-                  <div className="flex items-center text-sm text-slate-500 mb-2">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    <span>
-                      Due: {new Date(milestone.dueDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                </CardContent>
-                {userType === 'employer' && project_details?.status !== 'completed' && (
-                  <CardFooter>
-                    <Select
-                      defaultValue={milestone.status}
-                      onValueChange={(value) =>
-                        updateMilestoneStatus(milestone.id, value)
-                      }
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Update status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="not-started">Not Started</SelectItem>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </CardFooter>
-                )}
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="flex items-center text-sm text-slate-500 mb-2">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>
+                        Due: {new Date(milestone.dueDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </CardContent>
+                  {userType === 'employer' &&
+                    project_details?.status !== 'completed' && (
+                      <CardFooter>
+                        <Select
+                          defaultValue={milestone.status}
+                          onValueChange={(value) =>
+                            updateMilestoneStatus(milestone.id, value)
+                          }
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Update status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="not-started">
+                              Not Started
+                            </SelectItem>
+                            <SelectItem value="in-progress">
+                              In Progress
+                            </SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </CardFooter>
+                    )}
+                </Card>
+              )
+            )}
           </div>
         </TabsContent>
 
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6 mt-6">
-          <ProjectTeam projectDetails={project} />
+          <ProjectTeam projectDetails={project_details} />
           {/* <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Team</h2>
             {userType === 'employer' && project_details?.status !== 'completed' && (
@@ -1020,9 +1046,9 @@ export function Dashboard({ userType }: DashboardProps) {
         {/* Communication Tab */}
         <TabsContent value="chat" className="space-y-6 mt-6">
           <h2 className="text-lg font-medium">Project Communication</h2>
-       
+
           {/* <ProjectUpdates project={project} /> */}
-          <ProjectChat/>
+          <ProjectChat />
         </TabsContent>
 
         {/* Files Tab */}
@@ -1109,7 +1135,7 @@ export function Dashboard({ userType }: DashboardProps) {
                     className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-emerald-100 rounded-md flex items-center justify-center text-emerald-700">
+                      <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
                         {file.type}
                       </div>
                       <div>

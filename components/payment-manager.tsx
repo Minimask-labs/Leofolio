@@ -1,62 +1,81 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { AlertCircle, ArrowDownRight, ArrowUpRight, DollarSign, Plus } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import {
+  AlertCircle,
+  ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
+  Plus
+} from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function PaymentManager() {
   const [transactions, setTransactions] = useState([
     {
       id: 1,
-      type: "received",
+      type: 'received',
       amount: 2500,
-      client: "Client A",
-      date: "2023-06-15",
-      currency: "ALEO",
-      status: "completed",
+      client: 'Client A',
+      date: '2023-06-15',
+      currency: 'ALEO',
+      status: 'completed'
     },
     {
       id: 2,
-      type: "received",
+      type: 'received',
       amount: 1800,
-      client: "Client B",
-      date: "2023-05-22",
-      currency: "ALEO",
-      status: "completed",
+      client: 'Client B',
+      date: '2023-05-22',
+      currency: 'ALEO',
+      status: 'completed'
     },
     {
       id: 3,
-      type: "sent",
+      type: 'sent',
       amount: 500,
-      recipient: "Contractor X",
-      date: "2023-06-01",
-      currency: "ALEO",
-      status: "completed",
-    },
-  ])
+      recipient: 'Contractor X',
+      date: '2023-06-01',
+      currency: 'ALEO',
+      status: 'completed'
+    }
+  ]);
 
-  const [isCreatingInvoice, setIsCreatingInvoice] = useState(false)
+  const [isCreatingInvoice, setIsCreatingInvoice] = useState(false);
 
   const createInvoice = () => {
     toast({
-      title: "Invoice Created",
-      description: "Your private invoice has been created and sent",
-    })
-    setIsCreatingInvoice(false)
-  }
+      title: 'Invoice Created',
+      description: 'Your private invoice has been created and sent'
+    });
+    setIsCreatingInvoice(false);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Private Payments</h2>
-        {/* <Button onClick={() => setIsCreatingInvoice(true)} className="bg-emerald-600 hover:bg-emerald-700">
+        {/* <Button onClick={() => setIsCreatingInvoice(true)} className="bg-blue-600 hover:bg-blue-700">
           <Plus className="mr-2 h-4 w-4" />
           Create Invoice
         </Button> */}
@@ -66,7 +85,8 @@ export function PaymentManager() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Privacy-Preserving Payments</AlertTitle>
         <AlertDescription>
-          All payment information is stored privately on Aleo. Only you can see the full details of your transactions.
+          All payment information is stored privately on Aleo. Only you can see
+          the full details of your transactions.
         </AlertDescription>
       </Alert>
 
@@ -78,7 +98,7 @@ export function PaymentManager() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <DollarSign className="h-5 w-5 text-emerald-600 mr-1" />
+              <DollarSign className="h-5 w-5 text-blue-600 mr-1" />
               <span className="text-2xl font-bold">4,300</span>
               <span className="ml-1 text-slate-500">ALEO</span>
             </div>
@@ -160,49 +180,61 @@ export function PaymentManager() {
             <Button variant="outline" onClick={() => setIsCreatingInvoice(false)}>
               Cancel
             </Button>
-            <Button onClick={createInvoice} className="bg-emerald-600 hover:bg-emerald-700">
+            <Button onClick={createInvoice} className="bg-blue-600 hover:bg-blue-700">
               Create Private Invoice
             </Button>
           </CardFooter>
         </Card>
       ) : ( */}
-        <div className="space-y-4">
-          <h3 className="font-medium">Transaction History</h3>
-          <div className="space-y-3">
-            {transactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg border">
-                <div className="flex items-center gap-3">
-                  {transaction.type === "received" ? (
-                    <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <ArrowDownRight className="h-5 w-5 text-emerald-600" />
-                    </div>
-                  ) : (
-                    <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                      <ArrowUpRight className="h-5 w-5 text-red-600" />
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium">
-                      {transaction.type === "received" ? `From ${transaction.client}` : `To ${transaction.recipient}`}
-                    </p>
-                    <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString()}</p>
+      <div className="space-y-4">
+        <h3 className="font-medium">Transaction History</h3>
+        <div className="space-y-3">
+          {transactions.map((transaction) => (
+            <div
+              key={transaction.id}
+              className="flex items-center justify-between p-3 bg-white/10 rounded-lg border"
+            >
+              <div className="flex items-center gap-3">
+                {transaction.type === 'received' ? (
+                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <ArrowDownRight className="h-5 w-5 text-blue-600" />
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className={`font-medium ${transaction.type === "received" ? "text-emerald-600" : "text-red-600"}`}>
-                    {transaction.type === "received" ? "+" : "-"}
-                    {transaction.amount} {transaction.currency}
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                    <ArrowUpRight className="h-5 w-5 text-red-600" />
+                  </div>
+                )}
+                <div>
+                  <p className="font-medium">
+                    {transaction.type === 'received'
+                      ? `From ${transaction.client}`
+                      : `To ${transaction.recipient}`}
                   </p>
-                  <Badge variant="outline" className="text-xs">
-                    {transaction.status}
-                  </Badge>
+                  <p className="text-sm text-slate-500">
+                    {new Date(transaction.date).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="text-right">
+                <p
+                  className={`font-medium ${
+                    transaction.type === 'received'
+                      ? 'text-blue-600'
+                      : 'text-red-600'
+                  }`}
+                >
+                  {transaction.type === 'received' ? '+' : '-'}
+                  {transaction.amount} {transaction.currency}
+                </p>
+                <Badge variant="outline" className="text-xs">
+                  {transaction.status}
+                </Badge>
+              </div>
+            </div>
+          ))}
         </div>
-       {/* )} */}
+      </div>
+      {/* )} */}
     </div>
-  )
+  );
 }
-

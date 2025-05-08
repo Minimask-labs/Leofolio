@@ -37,11 +37,11 @@ export function ProjectTeam({
   projectDetails,
   userType = 'employer'
 }: {
-  projectDetails: Project;
+  projectDetails: any;
   userType?: string;
 }) {
   const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
-  const [project, setProject] = useState(projectDetails);
+  // const [project, setProject] = useState(projectDetails);
   const {
     handleFindUsers,
     users,
@@ -67,7 +67,7 @@ export function ProjectTeam({
     try {
       setSendingInvite(true);
       const response = await handleSendProjectInvite(
-        project._id,
+        projectDetails._id,
         freelancerId,
         message
       );
@@ -134,9 +134,10 @@ export function ProjectTeam({
       <Tabs defaultValue="freelancers" className="w-full">
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            {userType === 'employer' && project?.status !== 'completed' && (
-              <TabsTrigger value="freelancers">Find Freelancers</TabsTrigger>
-            )}
+            {userType === 'employer' &&
+              projectDetails?.status !== 'completed' && (
+                <TabsTrigger value="freelancers">Find Freelancers</TabsTrigger>
+              )}
             <TabsTrigger value="team">Team Members</TabsTrigger>
             <TabsTrigger value="invites">Sent Invites</TabsTrigger>
           </TabsList>
@@ -213,7 +214,7 @@ export function ProjectTeam({
                   {filteredFreelancers
                     ?.filter(
                       (freelancer: any) =>
-                        !project?.freelancers?.some(
+                        !projectDetails?.freelancers?.some(
                           (pf: any) => pf.name === freelancer.name
                         )
                     )
@@ -283,7 +284,7 @@ export function ProjectTeam({
                               variant="outline"
                               className={
                                 freelancer?.availability === 'Available'
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
                                   : 'bg-amber-50 text-amber-700 border-amber-200'
                               }
                             >
@@ -322,8 +323,8 @@ export function ProjectTeam({
 
         <TabsContent value="team" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {project?.freelancers?.length > 0 ? (
-              project.freelancers.map((freelancer: any, idx: number) => (
+            {projectDetails?.freelancers?.length > 0 ? (
+              projectDetails.freelancers.map((freelancer: any, idx: number) => (
                 <Card key={idx}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4 mb-4">
@@ -593,7 +594,7 @@ export function ProjectTeam({
                   variant="outline"
                   className={
                     selectedFreelancer?.availability === 'Available'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
                       : 'bg-amber-50 text-amber-700 border-amber-200'
                   }
                 >

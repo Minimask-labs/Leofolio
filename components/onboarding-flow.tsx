@@ -210,106 +210,106 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
     // }
   };
   // Email verification functions
-  const requestEmailVerification = async () => {
-    if (!profile.email) {
-      toast({
-        title: 'Email Required',
-        description: 'Please enter an email address to verify.',
-        variant: 'destructive'
-      });
-      return;
-    }
+  // const requestEmailVerification = async () => {
+  //   if (!profile.email) {
+  //     toast({
+  //       title: 'Email Required',
+  //       description: 'Please enter an email address to verify.',
+  //       variant: 'destructive'
+  //     });
+  //     return;
+  //   }
 
-    setIsVerifyingEmail(true);
-    try {
-      const response = await handleRequestVerifyEmailOtp(profile.email);
-      console.log('Email verification response:', response);
-      if (response !== undefined && typeof response === 'object') {
-        console.log('Email verification response2:', response);
-        const { success, message } = response as {
-          data: {};
-          success: boolean;
-          message: string;
-        };
-        console.log('Email verification success:', success);
-        console.log('Email verification message:', message);
-        if (success) {
-          setIsEmailVerificationModalOpen(true);
-          toast({
-            title: 'Verification Code Sent',
-            description: message
-          });
-        }
-      }
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || 'An unknown error occurred';
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive'
-      });
-    } finally {
-      setIsVerifyingEmail(false);
-    }
-  };
+  //   setIsVerifyingEmail(true);
+  //   try {
+  //     const response = await handleRequestVerifyEmailOtp(profile.email);
+  //     console.log('Email verification response:', response);
+  //     if (response !== undefined && typeof response === 'object') {
+  //       console.log('Email verification response2:', response);
+  //       const { success, message } = response as {
+  //         data: {};
+  //         success: boolean;
+  //         message: string;
+  //       };
+  //       console.log('Email verification success:', success);
+  //       console.log('Email verification message:', message);
+  //       if (success) {
+  //         setIsEmailVerificationModalOpen(true);
+  //         toast({
+  //           title: 'Verification Code Sent',
+  //           description: message
+  //         });
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     const errorMessage =
+  //       error?.response?.data?.message || 'An unknown error occurred';
+  //     toast({
+  //       title: 'Error',
+  //       description: errorMessage,
+  //       variant: 'destructive'
+  //     });
+  //   } finally {
+  //     setIsVerifyingEmail(false);
+  //   }
+  // };
 
-  const handleVerifyOtp = async (otp: string) => {
-    setEmailVerificationCode(otp);
-    setIsVerifyingEmail(true);
+  // const handleVerifyOtp = async (otp: string) => {
+  //   setEmailVerificationCode(otp);
+  //   setIsVerifyingEmail(true);
 
-    try {
-      // First validate the OTP
-      const validateResponse = await handleValidateVerifyEmailOtp(
-        profile.email,
-        otp
-      );
+  //   try {
+  //     // First validate the OTP
+  //     const validateResponse = await handleValidateVerifyEmailOtp(
+  //       profile.email,
+  //       otp
+  //     );
 
-      if (
-        validateResponse !== undefined &&
-        typeof validateResponse === 'object' &&
-        'data' in validateResponse
-      ) {
-        const { success } = validateResponse as { data: {}; success: boolean };
+  //     if (
+  //       validateResponse !== undefined &&
+  //       typeof validateResponse === 'object' &&
+  //       'data' in validateResponse
+  //     ) {
+  //       const { success } = validateResponse as { data: {}; success: boolean };
 
-        if (success) {
-          // Then verify the email
-          const verifyResponse = await handleVerifyEmail(profile.email, otp);
+  //       if (success) {
+  //         // Then verify the email
+  //         const verifyResponse = await handleVerifyEmail(profile.email, otp);
 
-          if (
-            verifyResponse !== undefined &&
-            typeof verifyResponse === 'object' &&
-            'data' in verifyResponse
-          ) {
-            const { success: verifySuccess } = verifyResponse as {
-              data: {};
-              success: boolean;
-            };
+  //         if (
+  //           verifyResponse !== undefined &&
+  //           typeof verifyResponse === 'object' &&
+  //           'data' in verifyResponse
+  //         ) {
+  //           const { success: verifySuccess } = verifyResponse as {
+  //             data: {};
+  //             success: boolean;
+  //           };
 
-            if (verifySuccess) {
-              setIsEmailVerified(true);
-              setIsEmailVerificationModalOpen(false);
+  //           if (verifySuccess) {
+  //             setIsEmailVerified(true);
+  //             setIsEmailVerificationModalOpen(false);
 
-              toast({
-                title: 'Email Verified',
-                description: 'Your email has been successfully verified.'
-              });
-            }
-          }
-        }
-      }
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || 'An unknown error occurred';
-      toast({
-        title: 'Verification Failed',
-        description: errorMessage,
-        variant: 'destructive'
-      });
-    } finally {
-      setIsVerifyingEmail(false);
-    }
-  };
+  //             toast({
+  //               title: 'Email Verified',
+  //               description: 'Your email has been successfully verified.'
+  //             });
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     const errorMessage =
+  //       error?.response?.data?.message || 'An unknown error occurred';
+  //     toast({
+  //       title: 'Verification Failed',
+  //       description: errorMessage,
+  //       variant: 'destructive'
+  //     });
+  //   } finally {
+  //     setIsVerifyingEmail(false);
+  //   }
+  // };
 
   const UpdateUserProfile = async () => {
     setIsUploading(true);
@@ -367,8 +367,8 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
       if (!profile.profileImage.trim())
         newErrors.profileImage = 'Profile image is required';
       if (!profile.email.trim()) newErrors.email = 'Email is required';
-      else if (!isEmailVerified)
-        newErrors.email = 'Email must be verified before proceeding';
+      // else if (!isEmailVerified)
+      //   newErrors.email = 'Email must be verified before proceeding';
       if (!profile.professionalTitle.trim())
         newErrors.professionalTitle = 'Professional title is required';
       if (!profile.bio.trim()) newErrors.bio = 'Bio is required';
@@ -429,7 +429,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </Button>
                 <Button
                   disabled={isUploading}
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                   onClick={UpdateUserProfile}
                 >
                   {isUploading ? (
@@ -455,7 +455,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-center ">
-            <Shield className="h-8 w-8 text-emerald-600 mr-2" />
+            <Shield className="h-8 w-8 text-blue-600 mr-2" />
             <h1 className="lg:text-2xl text-lg font-bold">
               Leofolio Onboarding
             </h1>
@@ -467,7 +467,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 1
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -475,13 +475,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </div>
                 <div
                   className={`h-1 w-16 ${
-                    step >= 2 ? 'bg-emerald-600' : 'bg-slate-200'
+                    step >= 2 ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 ></div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 2
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -489,13 +489,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 </div>
                 <div
                   className={`h-1 w-16 ${
-                    step >= 3 ? 'bg-emerald-600' : 'bg-slate-200'
+                    step >= 3 ? 'bg-blue-600' : 'bg-slate-200'
                   }`}
                 ></div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step >= 3
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -528,7 +528,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   <div className="flex flex-col justify-center items-center mb-6">
                     <div className="flex flex-col relative w-fit items-center">
                       <Avatar className="h-24 w-24">
-                        <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xl">
+                        <AvatarFallback className="bg-blue-100 text-blue-800 text-xl">
                           {profile.fullName
                             ? profile.fullName
                                 .split(' ')
@@ -560,7 +560,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                         )}
                       </Button>
                       <input
-                      title="uploads"
+                        title="uploads"
                         type="file"
                         id="fileInput"
                         accept="image/*"
@@ -590,13 +590,12 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           className={
                             errors.email ? 'border-red-500 pr-10' : 'pr-10'
                           }
-                          disabled={isEmailVerified}
-                        />
-                        {isEmailVerified && (
-                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-emerald-600" />
-                        )}
+                         />
+                        {/* {isEmailVerified && (
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600" />
+                        )} */}
                       </div>
-                      {!isEmailVerified && (
+                      {/* {!isEmailVerified && (
                         <Button
                           type="button"
                           onClick={requestEmailVerification}
@@ -610,19 +609,19 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           )}
                           Verify Email
                         </Button>
-                      )}
+                      )} */}
                     </div>
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.email}
                       </p>
                     )}
-                    {isEmailVerified && (
-                      <p className="text-emerald-600 text-sm mt-1 flex items-center">
+                    {/* {isEmailVerified && (
+                      <p className="text-blue-600 text-sm mt-1 flex items-center">
                         <CheckCircle className="h-4 w-4 mr-1" /> Email verified
                         successfully
                       </p>
-                    )}
+                    )} */}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
@@ -772,7 +771,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                     <Button
                       type="button"
                       onClick={addSkill}
-                      className="bg-emerald-600 hover:bg-emerald-700"
+                      className="bg-blue-600 hover:bg-blue-700"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -904,7 +903,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                 Back
               </Button>
               <Button
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                className="bg-blue-600 text-white hover:bg-blue-700"
                 onClick={nextStep}
               >
                 {step < 3 ? 'Next' : 'Preview Profile'}
@@ -914,13 +913,13 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
         </div>
       </div>
       {/* Email Verification Modal */}
-      <EmailVerificationModal
+      {/* <EmailVerificationModal
         isOpen={isEmailVerificationModalOpen}
         onClose={() => setIsEmailVerificationModalOpen(false)}
         email={profile.email}
         onVerify={handleVerifyOtp}
         isLoading={isVerifyingEmail}
-      />
+      /> */}
     </div>
   );
 }

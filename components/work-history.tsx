@@ -1,40 +1,47 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Briefcase, Calendar, Plus } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Briefcase, Calendar, Plus } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 export function WorkHistory({ className }: { className?: string }) {
   const [projects, setProjects] = useState([
     {
       id: 1,
-      title: "E-commerce Platform Redesign",
-      client: "Major Retail Company",
-      startDate: "2023-01-10",
-      endDate: "2023-04-15",
-      skills: ["React", "Node.js", "GraphQL"],
-      private: false,
+      title: 'E-commerce Platform Redesign',
+      client: 'Major Retail Company',
+      startDate: '2023-01-10',
+      endDate: '2023-04-15',
+      skills: ['React', 'Node.js', 'GraphQL'],
+      private: false
     },
     {
       id: 2,
-      title: "Financial Dashboard Development",
-      client: "Investment Firm",
-      startDate: "2022-08-05",
-      endDate: "2022-12-20",
-      skills: ["TypeScript", "D3.js", "Firebase"],
-      private: true,
-    },
-  ])
+      title: 'Financial Dashboard Development',
+      client: 'Investment Firm',
+      startDate: '2022-08-05',
+      endDate: '2022-12-20',
+      skills: ['TypeScript', 'D3.js', 'Firebase'],
+      private: true
+    }
+  ]);
 
-  const [isAdding, setIsAdding] = useState(false)
+  const [isAdding, setIsAdding] = useState(false);
 
-  const addProject = ( ) => {
+  const addProject = () => {
     // In a real implementation, this would create an Aleo transaction
     // to store the work history privately on-chain
     toast({
@@ -47,10 +54,10 @@ export function WorkHistory({ className }: { className?: string }) {
   return (
     <div className={`${className} space-y-6`}>
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Your  Work History</h2>
+        <h2 className="text-xl font-semibold">Your Work History</h2>
         <Button
           onClick={() => setIsAdding(true)}
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Project
@@ -109,7 +116,7 @@ export function WorkHistory({ className }: { className?: string }) {
             </Button>
             <Button
               onClick={addProject}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-600 hover:bg-blue-700"
             >
               Store Privately on Aleo
             </Button>
@@ -123,14 +130,14 @@ export function WorkHistory({ className }: { className?: string }) {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Briefcase className="h-5 w-5 text-emerald-600" />
+                      <Briefcase className="h-5 w-5 text-blue-600" />
                       <CardTitle>{project.title}</CardTitle>
                     </div>
                     <CardDescription>{project.client}</CardDescription>
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                    className="bg-blue-50 text-blue-700 border-blue-200"
                   >
                     {project.private ? 'Private' : 'Public'}
                   </Badge>
@@ -164,4 +171,3 @@ export function WorkHistory({ className }: { className?: string }) {
     </div>
   );
 }
-

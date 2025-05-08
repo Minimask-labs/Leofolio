@@ -88,20 +88,20 @@ export function DevfolioView() {
   const [emailVerificationCode, setEmailVerificationCode] = useState('');
   const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
     useState(false);
-  const [emailToVerify, setEmailToVerify] = useState('');
-  const [previousEmail, setPreviousEmail] = useState('');
+  // const [emailToVerify, setEmailToVerify] = useState('');
+  // const [previousEmail, setPreviousEmail] = useState('');
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
     // Check if email is being changed
-    if (name === 'email' && value !== user?.email) {
-      if (!previousEmail) {
-        setPreviousEmail(user?.email || '');
-      }
-      setEmailToVerify(value);
-    }
+    // if (name === 'email' && value !== user?.email) {
+    //   if (!previousEmail) {
+    //     setPreviousEmail(user?.email || '');
+    //   }
+    //   setEmailToVerify(value);
+    // }
 
     setEditedProfile((prev: any) => ({ ...prev, [name]: value }));
   };
@@ -173,7 +173,9 @@ export function DevfolioView() {
   const requestEmailverifyOtp = async () => {
     setIsUploading(true);
     try {
-      const response = await handleRequestVerifyEmailOtp(emailToVerify);
+      const response = await handleRequestVerifyEmailOtp(
+        editedProfile?.email ? editedProfile?.email : user?.email
+      );
       if (
         response !== undefined &&
         typeof response === 'object' &&
@@ -199,12 +201,12 @@ export function DevfolioView() {
       setIsUploading(false);
     }
   };
-  const validateEmailOtp = async () => {
+  const validateEmailOtp = async (otp: string) => {
     setIsUploading(true);
     try {
       const response = await handleValidateVerifyEmailOtp(
-        editedProfile?.email,
-        emailVerificationCode
+        editedProfile?.email ? editedProfile?.email : user?.email,
+        otp
       );
       if (
         response !== undefined &&
@@ -232,12 +234,12 @@ export function DevfolioView() {
     }
   };
 
-  const verifyEmail = async () => {
+  const verifyEmail = async (otp: string) => {
     setIsUploading(true);
     try {
       const response = await handleVerifyEmail(
-        editedProfile?.email,
-        emailVerificationCode
+        editedProfile?.email ? editedProfile?.email : user?.email,
+        otp
       );
       if (
         response !== undefined &&
@@ -265,7 +267,7 @@ export function DevfolioView() {
     }
   };
   const handleEmailChange = async () => {
-    if (emailToVerify && emailToVerify !== user?.email) {
+    if (user?.isEmailVerified === false && user?.email) {
       await requestEmailverifyOtp();
       setIsEmailVerificationModalOpen(true);
     }
@@ -275,14 +277,14 @@ export function DevfolioView() {
     setEmailVerificationCode(otp);
     try {
       // First validate the OTP
-      await validateEmailOtp();
+      await validateEmailOtp(otp);
 
       // Then verify the email
-      await verifyEmail();
+      await verifyEmail(otp);
 
       // Close the modal after successful verification
       setIsEmailVerificationModalOpen(false);
-      setPreviousEmail('');
+      // setPreviousEmail('');
 
       toast({
         title: 'Email Updated',
@@ -290,6 +292,8 @@ export function DevfolioView() {
       });
     } catch (error) {
       // Error handling is already in the validateEmailOtp and verifyEmail functions
+    }finally {
+    fetchUser();
     }
   };
 
@@ -302,8 +306,8 @@ export function DevfolioView() {
     if (user) {
       setEditedProfile(user);
       // Reset email verification state when user data changes
-      setEmailToVerify('');
-      setPreviousEmail('');
+      // setEmailToVerify('');
+      // setPreviousEmail('');
     }
   }, [user]);
   if (isEditing) {
@@ -317,7 +321,7 @@ export function DevfolioView() {
             </Button>
             <Button
               disabled={isUploading}
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-blue-600 text-white hover:bg-blue-700"
               onClick={saveChanges}
             >
               {isUploading ? (
@@ -354,8 +358,9 @@ export function DevfolioView() {
                   name="email"
                   value={editedProfile?.email}
                   onChange={handleChange}
+                  disabled={user?.email}
                 />
-                {emailToVerify && emailToVerify !== user?.email && (
+                {user?.isEmailVerified === false &&  user?.email && (
                   <Button
                     type="button"
                     onClick={handleEmailChange}
@@ -470,7 +475,7 @@ export function DevfolioView() {
               <Button
                 type="button"
                 onClick={addSkill}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                className="bg-blue-600 text-white hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -545,20 +550,20 @@ export function DevfolioView() {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          {/* <CardFooter>
             <Button
-              className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+              className="w-full bg-blue-600 text-white hover:bg-blue-700"
               onClick={saveChanges}
             >
               Save All Changes
             </Button>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
         {/* Email Verification Modal */}
         <EmailVerificationModal
           isOpen={isEmailVerificationModalOpen}
           onClose={() => setIsEmailVerificationModalOpen(false)}
-          email={emailToVerify}
+          email={editedProfile?.email ? editedProfile?.email : user?.email}
           onVerify={handleVerifyOtp}
           isLoading={isUploading}
         />
@@ -571,7 +576,7 @@ export function DevfolioView() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Your Devfolio</h2>
         <Button
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
+          className="bg-blue-600 text-white hover:bg-blue-700"
           onClick={() => setIsEditing(true)}
         >
           Edit Devfolio
