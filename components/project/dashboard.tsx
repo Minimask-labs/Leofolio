@@ -48,16 +48,16 @@ import {
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
-interface DashboardProps {
-  userType: 'freelancer' | 'employer';
-}
 import { BackButton } from '../back-button';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
 import { useChatStore } from '@/Store/chat';
 import ProjectChat from '../project-chat';
+import { useStore } from '@/Store/user';
 
-export function Dashboard({ userType }: DashboardProps) {
+export function Dashboard( ) {
+    const { userType, loadUserType, userData } = useStore();
+  
   const {
     handleCreateProject,
     fetchProjects,
@@ -341,14 +341,21 @@ export function Dashboard({ userType }: DashboardProps) {
 
       {/* Project Tabs */}
       <Tabs value={activeTab} onValueChange={(tab) => updateUrlTab(tab)}>
-        <TabsList className="grid grid-cols-5 w-full">
+        <TabsList
+          className={`${
+            userType !== 'freelancer' ? 'grid-cols-5' : 'grid-cols-4'
+          } grid  w-full`}
+        >
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="milestones">Milestones</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
+          {userType !== 'freelancer' ? (
+            <TabsTrigger value="team">Team</TabsTrigger>
+          ) : (
+            <></>
+          )}
           <TabsTrigger value="chat">Communication</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
-
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -824,59 +831,61 @@ export function Dashboard({ userType }: DashboardProps) {
           </div>
 
           <div className="space-y-4">
-            {project_details?.milestones?.map((milestone: any) => (
-              <Card key={milestone.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-2">
-                      {milestone.status === 'completed' ? (
-                        <CheckCircle className="h-5 w-5 text-blue-500" />
-                      ) : milestone.status === 'in-progress' ? (
-                        <Clock className="h-5 w-5 text-blue-500" />
-                      ) : (
-                        <AlertCircle className="h-5 w-5 text-slate-400" />
-                      )}
-                      <CardTitle className="text-base">
-                        {milestone.title}
-                      </CardTitle>
+            {project_details?.milestones?.map(
+              (milestone: any, index: number) => (
+                <Card key={index}>
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-2">
+                        {milestone.status === 'completed' ? (
+                          <CheckCircle className="h-5 w-5 text-blue-500" />
+                        ) : milestone.status === 'in-progress' ? (
+                          <Clock className="h-5 w-5 text-blue-500" />
+                        ) : (
+                          <AlertCircle className="h-5 w-5 text-slate-400" />
+                        )}
+                        <CardTitle className="text-base">
+                          {milestone.title}
+                        </CardTitle>
+                      </div>
+                      {getStatusBadge(milestone.status)}
                     </div>
-                    {getStatusBadge(milestone.status)}
-                  </div>
-                </CardHeader>
-                <CardContent className="pb-2">
-                  <div className="flex items-center text-sm text-slate-500 mb-2">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    <span>
-                      Due: {new Date(milestone.dueDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                </CardContent>
-                {userType === 'employer' &&
-                  project_details?.status !== 'completed' && (
-                    <CardFooter>
-                      <Select
-                        defaultValue={milestone.status}
-                        onValueChange={(value) =>
-                          updateMilestoneStatus(milestone.id, value)
-                        }
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Update status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="not-started">
-                            Not Started
-                          </SelectItem>
-                          <SelectItem value="in-progress">
-                            In Progress
-                          </SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </CardFooter>
-                  )}
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="flex items-center text-sm text-slate-500 mb-2">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>
+                        Due: {new Date(milestone.dueDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </CardContent>
+                  {userType === 'employer' &&
+                    project_details?.status !== 'completed' && (
+                      <CardFooter>
+                        <Select
+                          defaultValue={milestone.status}
+                          onValueChange={(value) =>
+                            updateMilestoneStatus(milestone.id, value)
+                          }
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Update status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="not-started">
+                              Not Started
+                            </SelectItem>
+                            <SelectItem value="in-progress">
+                              In Progress
+                            </SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </CardFooter>
+                    )}
+                </Card>
+              )
+            )}
           </div>
         </TabsContent>
 
