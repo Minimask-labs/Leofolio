@@ -66,14 +66,14 @@ export function Dashboard({ userType }: DashboardProps) {
     project_details
   } = useProjectStore();
 
-  const {
-  fetchMychat,
-  chat,
-    handleCreateConversations,
-    handleGetSingleConversation,
-    handleSendMessage,
-    handleViewMessages
-    } = useChatStore();
+  // const {
+  // fetchMychat,
+  // chat,
+  //   handleCreateConversations,
+  //   handleGetSingleConversation,
+  //   handleSendMessage,
+  //   handleViewMessages
+  //   } = useChatStore();
 
   const [project, setProject] = useState<any>(null);
   
@@ -137,18 +137,43 @@ export function Dashboard({ userType }: DashboardProps) {
     });
   };
 
-  useEffect(() => {
-    const fetchChat = async () => {
-      try {
-        fetchMychat()
-        console.log(chat, " chat")
-      } catch (error) {
-        console.error("Error fetching chat data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchChat = async () => {
+  //     try {
+  //       fetchMychat()
+  //       console.log(chat, " chat")
+  //     } catch (error) {
+  //       console.error("Error fetching chat data:", error);
+  //     }
+  //   };
 
-    fetchChat();
-  }, []); 
+  //   fetchChat();
+  // }, [tabParam==="chat"]); 
+
+  // useEffect(() => {
+  //   const viewMessages = async () => {
+  //     try {
+  //       handleViewMessages("681a92e112ade5671af216c6")
+  //       console.log(chat, " chat")
+  //     } catch (error) {
+  //       console.error("Error fetching chat data:", error);
+  //     }
+  //   };
+
+  //   viewMessages();
+  // }, []); 
+  // useEffect(() => {
+  //   const getSingleConvo = async () => {
+  //     try {
+  //       handleGetSingleConversation("681a92e112ade5671af216c6")
+  //       // console.log(, " chat")
+  //     } catch (error) {
+  //       console.error("Error fetching chat data:", error);
+  //     }
+  //   };
+
+  //   getSingleConvo();
+  // }, []); 
  
 
   // Function to add a new milestone
