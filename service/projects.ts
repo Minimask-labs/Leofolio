@@ -12,6 +12,16 @@ export const myProjects = async (params:any) => {
     throw error;
   }
 };
+ export const myFreelancerProjects = async (params:any) => {
+  try {
+    const response = await AxiosService.get('project/freelancer', {
+      params: params
+    });
+    return response?.data; // Assuming you want to return the updated user data
+  } catch (error) {
+    throw error;
+  }
+};
 export const createProject = async (payload: any ) => {
   try {
     const response = await AxiosService.post(`project/employer`, payload);
