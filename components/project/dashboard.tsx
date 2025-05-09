@@ -45,7 +45,7 @@ import {
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
-import { BackButton } from '../back-button2';
+import { BackButton } from '../back-button';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
 import ProjectChat from '../project-chat';
@@ -385,7 +385,7 @@ return response;
   return (
     <div className="space-y-6">
       <div className="mb-2">
-        <BackButton />
+        <BackButton path={`/${userType}`} />
       </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -988,7 +988,10 @@ return response;
                         onValueChange={(value: any) =>
                           updateMilestoneStatus(milestone._id, value)
                         }
-                        disabled={isCompletingMilestone === milestone?._id || milestone.status === 'completed'}
+                        disabled={
+                          isCompletingMilestone === milestone?._id ||
+                          milestone.status === 'completed'
+                        }
                       >
                         <SelectTrigger className="w-[180px]">
                           {isCompletingMilestone === milestone?._id ? (
