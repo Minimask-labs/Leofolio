@@ -83,7 +83,7 @@ export function MyProjects() {
 
   // Monitor blockchain status changes
   useEffect(() => {
-    if (blockchainStatus === 'settled' && eventId) {
+    if (blockchainStatus === 'Settled' && eventId) {
       console.log('Blockchain transaction settled successfully:', eventId);
 
       // Update loading state to completed
@@ -112,7 +112,7 @@ export function MyProjects() {
         });
         setBlockchainProjectId('');
       }, 2000);
-    } else if (blockchainStatus === 'failed' && eventId) {
+    } else if (blockchainStatus === 'Failed' && eventId) {
       console.error('Blockchain transaction failed:', eventId);
 
       // Update loading state to failed
