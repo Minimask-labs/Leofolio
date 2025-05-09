@@ -102,7 +102,10 @@ export function Dashboard() {
     ? mongoIdToAleoU64Hash(String(projectId))
     : null;
     const [hashProjectIdInput, setHashProjectIdInput] = useState(hashProjectId);
-  const assignedFreelancer = project_details?.assignedFreelancer?.walletAddress;
+    const [assignedFreelancer, setassignedFreelancer] = useState(
+      project_details?.assignedFreelancer?.walletAddress
+    );
+  // const assignedFreelancer = project_details?.assignedFreelancer?.walletAddress;
   const price = project_details?.price;
 
   // Log blockchain data for debugging
@@ -113,6 +116,12 @@ export function Dashboard() {
         assignedFreelancer,
         price
       });
+      setassignedFreelancer(
+        project_details?.assignedFreelancer?.walletAddress        
+      );
+      setHashProjectIdInput(hashProjectId);
+      console.log('Hash Project ID:', hashProjectId);
+      console.log('Assigned Freelancer:', assignedFreelancer);
     }
   }, [project_details, hashProjectId, assignedFreelancer, price]);
 
@@ -132,11 +141,11 @@ export function Dashboard() {
     createEvent: handleOnchainEmployerAproveProject,
     loading: approvingOnchain
   } = useRequestCreateEvent({
-    type: EventType.Execute,
+          type: EventType.Execute,
     programId: 'escrow_contract11.aleo',
     functionId: 'release_payment',
     fee: 1.23,
-    inputs: [hashProjectId, assignedFreelancer, price ? price + 'u64' : '0u64']
+    inputs: [hashProjectIdInput ? hashProjectIdInput : '0u64',assignedFreelancer ? assignedFreelancer : '0u64',price ? price + 'u64' : '0u64']
   });
   // Function to update milestone status
   const approveMilestone = async (milestoneId: string) => {
@@ -151,6 +160,8 @@ export function Dashboard() {
         title: 'Milestone Approved',
         description: `The milestone has been approved successfully.`
       });
+      handleViewProjectDetail(String(projectId));
+      return response;
     } catch {
       toast({
         title: 'Error',
@@ -186,6 +197,8 @@ export function Dashboard() {
               title: 'Project Approved',
               description: `The project has been approved successfully and payment released on blockchain.`
             });
+            handleViewProjectDetail(String(projectId));
+            
           } else {
             toast({
               title: 'Project Approved',
@@ -200,6 +213,8 @@ export function Dashboard() {
           description: `The project has been approved successfully.`
         });
       }
+      return response;
+
     } catch (error) {
       console.error('Error approving project:', error);
       toast({
@@ -236,6 +251,8 @@ export function Dashboard() {
               title: 'Project Completed',
               description: `The project has been completed successfully and recorded on blockchain.`
             });
+            handleViewProjectDetail(String(projectId));
+             
           } else {
             toast({
               title: 'Project Completed',
@@ -250,6 +267,7 @@ export function Dashboard() {
           description: `The project has been completed successfully.`
         });
       }
+      return response;
     } catch (error) {
       console.error('Error completing project:', error);
       toast({
@@ -273,6 +291,8 @@ export function Dashboard() {
         title: 'Milestone Completed',
         description: `The milestone has been completed successfully.`
       });
+      handleViewProjectDetail(String(projectId));
+return response;
     } catch {
       toast({
         title: 'Error',
@@ -968,7 +988,7 @@ export function Dashboard() {
                         onValueChange={(value: any) =>
                           updateMilestoneStatus(milestone._id, value)
                         }
-                        disabled={isCompletingMilestone === milestone?._id}
+                        disabled={isCompletingMilestone === milestone?._id || milestone.status === 'completed'}
                       >
                         <SelectTrigger className="w-[180px]">
                           {isCompletingMilestone === milestone?._id ? (

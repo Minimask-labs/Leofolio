@@ -360,70 +360,69 @@ export function MyProjects() {
       </div>
     );
   }
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [rejectLoading, setRrejectLoading] = useState(false);
-    const hashProjectId = projectId
-      ? mongoIdToAleoU64Hash(String(projectId))
-      : null;
   
-      const { createEvent: handleOnchainAcceptProject } =
-        useRequestCreateEvent({
+      const { createEvent: handleOnchainAcceptProject } = useRequestCreateEvent(
+        {
           type: EventType.Execute,
           programId: 'escrow_contract11.aleo',
           functionId: 'accept_job',
           fee: 1.23,
-          inputs: [hashProjectId? hashProjectId : '0x']
-        });
-   const handleAccept = async (id: string, projectId: string) => {
+          inputs: [projectId ? projectId : '0x']
+        }
+      );
+   const handleAccept = async (id: string, project_Id: string) => {
      setLoading(true);
-     setProjectId(projectId);
-     console.log('Project ID:', projectId);
-      console.log('Invitation ID:', id);
-                   await handleOnchainAcceptProject();
-
+     setProjectId(mongoIdToAleoU64Hash(String(project_Id)));
+     console.log('Project ID:', project_Id);
+     console.log('Invitation ID:', id);
+     console.log('Hash Project ID:', projectId);
+      // job id 3307053752u64
      try {
-      //  let response = await handleProjectInviteResponse(id, 'accept');
-      //  console.log(response);
-      //  // Only trigger blockchain operation if API call was successful
-      //  if (
-      //    response !== undefined &&
-      //    typeof response === 'object' &&
-      //    'data' in response
-      //  ) {
-      //    const { data, success } = response as {
-      //      data: { _id: string };
-      //      success: boolean;
-      //    };
+        let response = await handleProjectInviteResponse(id, 'accept');
+        console.log(response);
+        // Only trigger blockchain operation if API call was successful
+        if (
+          response !== undefined &&
+          typeof response === 'object' &&
+          'data' in response
+        ) {
+          const { data, success } = response as {
+            data: { _id: string };
+            success: boolean;
+          };
 
-      //    if (success && data && data._id) {
-           // Make sure we have all required data before calling blockchain function
-           if (projectId) {
-             await handleOnchainAcceptProject();
-             toast({
-               title: 'Invite Accepted',
-               description: `The invite has been accepted successfully and payment released on blockchain.`
-             });
-           } else {
-             toast({
-               title: 'Invite Accepted',
-               description: `The invite has been accepted successfully.`,
-               variant: 'destructive'
-             });
-           }
-        //  }
-      //  } else {
-      //    toast({
-      //      title: 'Project Approved',
-      //      description: `The project has been approved successfully.`
-      //    });
-      //  }
+          if (success && data && data._id) {
+       // Make sure we have all required data before calling blockchain function
+       if (projectId) {
+          await handleOnchainAcceptProject();
+         toast({
+           title: 'Invite Accepted',
+           description: `The invite has been accepted successfully and payment released on blockchain.`
+         });
+       } else {
+         toast({
+           title: 'Invite Accepted',
+           description: `The invite has been accepted successfully.`,
+           variant: 'destructive'
+         });
+       }
+        }
+        } else {
+          toast({
+            title: 'Project Approved',
+            description: `The project has been approved successfully.`
+          });
+        }
      } catch (error) {
        console.log(error);
      } finally {
        setLoading(false);
        fetchProjects();
        fetchFreelancerProjects();
+       setProjectId(' ');
      }
    };
 
