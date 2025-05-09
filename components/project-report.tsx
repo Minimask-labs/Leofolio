@@ -620,10 +620,9 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   <div className="divide-y">
                     {[
                       {
-                        category: 'Communication',
+                        category: 'Chat',
                         rating: 5,
-                        comment:
-                          'Excellent communication throughout the project'
+                        comment: 'Excellent Chat throughout the project'
                       },
                       {
                         category: 'Quality of Work',
@@ -696,9 +695,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>
-                          Effective team collaboration and communication
-                        </span>
+                        <span>Effective team collaboration and Chat</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
@@ -759,7 +756,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                     <li className="flex items-start gap-2">
                       <Award className="h-4 w-4 text-blue-600 mt-0.5" />
                       <span>
-                        Establish clear communication protocols at project start
+                        Establish clear Chat protocols at project start
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
