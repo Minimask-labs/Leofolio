@@ -9,7 +9,9 @@ import {
   completeMilestone,
   approveMilestone,
   projectDetail,
-  myFreelancerProjects
+  myFreelancerProjects,
+  completeProject,
+  approveProject
 } from '@/service/projects';
 
 export interface Medias {
@@ -91,6 +93,8 @@ export type UserActions = {
   ) => Promise<void>;
   handleViewProjectDetail: (projectId: string) => Promise<void>;
   fetchFreelancerProjects: (params?: any) => Promise<void>;
+  handleCompleteProject: (projectId: string) => Promise<void>;
+  handleApproveProject: (projectId: string) => Promise<void>;
   // Add more actions as needed
 };
 
@@ -244,6 +248,28 @@ export const useProjectStore = create<UserStore>((set) => ({
       const response = await projectDetail({ projectId });
       set({ loading: false, project_details: response.data, status: 'succeeded' });
      } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+  handleCompleteProject: async (projectId: string) => {
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await completeProject({ projectId });
+      set({ loading: false, status: 'succeeded' });
+      return response;
+    } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+  handleApproveProject: async (projectId: string) => {
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await approveProject({ projectId });
+      set({ loading: false, status: 'succeeded' });
+      return response;
+    } catch (error: any) {
       set({ loading: false, status: 'failed', error: error.message });
       throw error;
     }

@@ -111,6 +111,34 @@ export const sendProjectInvite = async (payload: {
       throw error;
     } 
   };
+  // http://localhost:4005/api/v1/project/complete
+  export const completeProject = async (payload: {
+    projectId: string;
+  }) => {
+    try {
+      const response = await AxiosService.post(
+        `project/complete`,
+        payload
+      );
+      return response.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    } 
+  };
+  // http://localhost:4005/api/v1/project/approve
+  export const approveProject = async (payload: {
+    projectId: string;
+  }) => {
+    try {
+      const response = await AxiosService.post(
+        `project/approve`,
+        payload
+      );
+      return response.data; // Assuming you want to return the updated user data
+    } catch (error) {
+      throw error;
+    } 
+  };
   // http://localhost:4005/api/v1/project/detail?projectId=6812816d336faaed3397f30a
   export const projectDetail = async (params: { projectId: string }) => {
     try {

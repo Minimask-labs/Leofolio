@@ -14,7 +14,6 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { ProjectUpdates } from '@/components/project-updates';
 import {
   Select,
   SelectContent,
@@ -38,46 +37,37 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  Edit,
   Plus,
   ArrowRight,
   FileBarChart,
   Download,
-  Gift,
-  ArrowLeft
+  Gift
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { ProjectTeam } from './projectTeam';
 import { BackButton } from '../back-button2';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
-import { useChatStore } from '@/Store/chat';
 import ProjectChat from '../project-chat';
 import { useStore } from '@/Store/user';
+import { mongoIdToAleoU64Hash } from '@/libs/util';
+import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import { useAccount } from '@puzzlehq/sdk';
 
-export function Dashboard( ) {
-    const { userType, loadUserType, userData } = useStore();
-  
+export function Dashboard() {
+  const { userType, loadUserType, userData } = useStore();
+
   const {
     handleCreateProject,
     fetchProjects,
     projects,
     handleViewProjectDetail,
-    project_details
+    project_details,
+    handleCompleteProject,
+    handleApproveProject,
+    handleCompleteMilestone,
+    handleApproveMilestone
   } = useProjectStore();
-
-  // const {
-  // fetchMychat,
-  // chat,
-  //   handleCreateConversations,
-  //   handleGetSingleConversation,
-  //   handleSendMessage,
-  //   handleViewMessages
-  //   } = useChatStore();
-
-  const [project, setProject] = useState<any>(null);
-
-  // const [activeTab, setActiveTab] = useState('overview');
   const searchParams = useSearchParams();
   const validTabs = ['overview', 'milestones', 'team', 'chat', 'files'];
   const tabParam = searchParams.get('tab');
@@ -90,10 +80,6 @@ export function Dashboard( ) {
     router.replace(`?${newSearchParams.toString()}`);
   };
 
-  const [isAssigningFreelancer, setIsAssigningFreelancer] = useState(false);
-  const [isEditingMilestone, setIsEditingMilestone] = useState<number | null>(
-    null
-  );
   const [newMilestone, setNewMilestone] = useState({
     title: '',
     dueDate: '',
@@ -102,146 +88,209 @@ export function Dashboard( ) {
   const router = useRouter();
   const params = useParams();
   const projectId = params.id;
+  const [isApprovingMilestone, setIsApprovingMilestone] = useState<
+    string | null
+  >(null);
+  const [isApprovingProject, setIsApprovingProject] = useState(false);
+  const [isCompletingProject, setIsCompletingProject] = useState(false);
+  const [isCompletingMilestone, setIsCompletingMilestone] = useState<
+    string | null
+  >(null);
+  const { account, error, loading } = useAccount();
+  // Validate blockchain data
+  const hashProjectId = projectId
+    ? mongoIdToAleoU64Hash(String(projectId))
+    : null;
+    const [hashProjectIdInput, setHashProjectIdInput] = useState(hashProjectId);
+  const assignedFreelancer = project_details?.assignedFreelancer?.walletAddress;
+  const price = project_details?.price;
 
-  // Mock available freelancers for assignment
-  const availableFreelancers = [
-    { id: 1, name: 'Alex Morgan', role: 'Full Stack Developer' },
-    { id: 2, name: 'Jamie Chen', role: 'UI/UX Designer' },
-    { id: 3, name: 'Sam Wilson', role: 'DevOps Engineer' },
-    { id: 4, name: 'Taylor Reed', role: 'Mobile Developer' },
-    { id: 5, name: 'Jordan Lee', role: 'Data Scientist' },
-    { id: 6, name: 'Casey Kim', role: 'Blockchain Developer' }
-  ];
+  // Log blockchain data for debugging
+  useEffect(() => {
+    if (project_details) {
+      console.log('Blockchain data:', {
+        hashProjectId,
+        assignedFreelancer,
+        price
+      });
+    }
+  }, [project_details, hashProjectId, assignedFreelancer, price]);
 
+  // Configure blockchain event handlers
+  const {
+    createEvent: handleOnchainFreelancerCompletProject,
+    loading: completingOnchain
+  } = useRequestCreateEvent({
+    type: EventType.Execute,
+    programId: 'escrow_contract11.aleo',
+    functionId: 'complete_job',
+    fee: 1.23,
+    inputs: [hashProjectIdInput? hashProjectIdInput : '0u64']
+  });
+
+  const {
+    createEvent: handleOnchainEmployerAproveProject,
+    loading: approvingOnchain
+  } = useRequestCreateEvent({
+    type: EventType.Execute,
+    programId: 'escrow_contract11.aleo',
+    functionId: 'release_payment',
+    fee: 1.23,
+    inputs: [hashProjectId, assignedFreelancer, price ? price + 'u64' : '0u64']
+  });
   // Function to update milestone status
+  const approveMilestone = async (milestoneId: string) => {
+    setIsApprovingMilestone(milestoneId);
+    try {
+      const response = await handleApproveMilestone(
+        String(projectId),
+        milestoneId
+      );
+      console.log(response, 'response');
+      toast({
+        title: 'Milestone Approved',
+        description: `The milestone has been approved successfully.`
+      });
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to approve milestone.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsApprovingMilestone(null);
+    }
+  };
+  const approveProject = async () => {
+    setIsApprovingProject(true);
+    try {
+      const response = await handleApproveProject(String(projectId));
+      console.log(response, 'response');
+
+      // Only trigger blockchain operation if API call was successful
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as {
+          data: { _id: string };
+          success: boolean;
+        };
+
+        if (success && data && data._id) {
+          // Make sure we have all required data before calling blockchain function
+          if (assignedFreelancer && price) {
+            await handleOnchainEmployerAproveProject();
+            toast({
+              title: 'Project Approved',
+              description: `The project has been approved successfully and payment released on blockchain.`
+            });
+          } else {
+            toast({
+              title: 'Project Approved',
+              description: `The project has been approved successfully, but blockchain operation failed due to missing data.`,
+              variant: 'destructive'
+            });
+          }
+        }
+      } else {
+        toast({
+          title: 'Project Approved',
+          description: `The project has been approved successfully.`
+        });
+      }
+    } catch (error) {
+      console.error('Error approving project:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to approve project.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsApprovingProject(false);
+    }
+  };
+  const completeProject = async () => {
+    setIsCompletingProject(true);
+    try {
+      const response = await handleCompleteProject(String(projectId));
+      console.log(response, 'response');
+
+      // Only trigger blockchain operation if API call was successful
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as {
+          data: { _id: string };
+          success: boolean;
+        };
+
+        if (success && data && data._id) {
+          // Make sure we have valid project hash before calling blockchain function
+          if (hashProjectId) {
+            await handleOnchainFreelancerCompletProject();
+            toast({
+              title: 'Project Completed',
+              description: `The project has been completed successfully and recorded on blockchain.`
+            });
+          } else {
+            toast({
+              title: 'Project Completed',
+              description: `The project has been completed successfully, but blockchain operation failed due to invalid project ID.`,
+              variant: 'destructive'
+            });
+          }
+        }
+      } else {
+        toast({
+          title: 'Project Completed',
+          description: `The project has been completed successfully.`
+        });
+      }
+    } catch (error) {
+      console.error('Error completing project:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to complete project.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsCompletingProject(false);
+    }
+  };
+  const completedMilestone = async (milestoneId: string) => {
+    setIsCompletingMilestone(milestoneId);
+    try {
+      const response = await handleCompleteMilestone(
+        String(projectId),
+        milestoneId
+      );
+      console.log(response, 'response');
+      toast({
+        title: 'Milestone Completed',
+        description: `The milestone has been completed successfully.`
+      });
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to complete milestone.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsCompletingMilestone(null);
+    }
+  };
   const updateMilestoneStatus = (milestoneId: number, newStatus: string) => {
-    const updatedMilestones = project.milestones.map((milestone: any) =>
-      milestone.id === milestoneId
-        ? { ...milestone, status: newStatus }
-        : milestone
-    );
-
-    setProject({
-      ...project,
-      milestones: updatedMilestones,
-      // Recalculate progress based on completed milestones
-      progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
-          updatedMilestones.length) *
-          100
-      )
-    });
-
-    toast({
-      title: 'Milestone Updated',
-      description: `The milestone status has been updated to ${newStatus}.`
-    });
-  };
-
-  // useEffect(() => {
-  //   const fetchChat = async () => {
-  //     try {
-  //       fetchMychat()
-  //       console.log(chat, " chat")
-  //     } catch (error) {
-  //       console.error("Error fetching chat data:", error);
-  //     }
-  //   };
-
-  //   fetchChat();
-  // }, [tabParam==="chat"]); 
-
-  // useEffect(() => {
-  //   const viewMessages = async () => {
-  //     try {
-  //       handleViewMessages("681a92e112ade5671af216c6")
-  //       console.log(chat, " chat")
-  //     } catch (error) {
-  //       console.error("Error fetching chat data:", error);
-  //     }
-  //   };
-
-  //   viewMessages();
-  // }, []); 
-  // useEffect(() => {
-  //   const getSingleConvo = async () => {
-  //     try {
-  //       handleGetSingleConversation("681a92e112ade5671af216c6")
-  //       // console.log(, " chat")
-  //     } catch (error) {
-  //       console.error("Error fetching chat data:", error);
-  //     }
-  //   };
-
-  //   getSingleConvo();
-  // }, []); 
- 
-
-  // Function to add a new milestone
-  const addMilestone = () => {
-    if (!newMilestone.title || !newMilestone.dueDate) {
+    if (newStatus === 'completed') {
+      completedMilestone(String(milestoneId));
       toast({
-        title: 'Missing Information',
-        description: 'Please provide a title and due date for the milestone.',
-        variant: 'destructive'
+        title: 'Milestone Updated',
+        description: `The milestone status has been updated to ${newStatus}.`
       });
-      return;
     }
-
-    const newMilestoneObj = {
-      id: Math.max(0, ...project.milestones.map((m: any) => m.id)) + 1,
-      title: newMilestone.title,
-      status: newMilestone.status,
-      dueDate: newMilestone.dueDate
-    };
-
-    const updatedMilestones = [...project.milestones, newMilestoneObj];
-
-    setProject({
-      ...project,
-      milestones: updatedMilestones,
-      progress: Math.round(
-        (updatedMilestones.filter((m: any) => m.status === 'completed').length /
-          updatedMilestones.length) *
-          100
-      )
-    });
-
-    setNewMilestone({ title: '', dueDate: '', status: 'not-started' });
-
-    toast({
-      title: 'Milestone Added',
-      description: `The new milestone "${newMilestone.title}" has been added to the project.`
-    });
-  };
-
-  // Function to add a freelancer to the project
-  const addFreelancer = (freelancerId: number) => {
-    const freelancer = availableFreelancers.find((f) => f.id === freelancerId);
-
-    if (!freelancer) return;
-
-    // Check if freelancer is already assigned
-    if (project.freelancers.some((f: any) => f.name === freelancer.name)) {
-      toast({
-        title: 'Freelancer Already Assigned',
-        description: `${freelancer.name} is already assigned to this project.`,
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    setProject({
-      ...project,
-      freelancers: [...project.freelancers, freelancer]
-    });
-
-    setIsAssigningFreelancer(false);
-
-    toast({
-      title: 'Freelancer Assigned',
-      description: `${freelancer.name} has been assigned to the project.`
-    });
   };
 
   // Function to calculate project stats
@@ -311,10 +360,6 @@ export function Dashboard( ) {
       handleViewProjectDetail(String(projectId));
     }
     console.log('project_details:', project_details);
-    // if (project_details?.data) {
-    //   setProject(project_details?.data);
-    //   console.log('project_details:', project_details);
-    // }
   }, [fetchProjects]);
 
   return (
@@ -333,34 +378,49 @@ export function Dashboard( ) {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {/* {project_details?.status !== 'completed' &&
-            userType === 'employer' && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="gap-2">
-                    <Edit className="h-4 w-4" />
-                    Edit Project
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Edit Project</DialogTitle>
-                    <DialogDescription>
-                      Update project details, deadlines, and settings.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <p>Project editing form would go here...</p>
-                  </div>
-                  <DialogFooter>
-                    <Button type="button" variant="outline">
-                      Cancel
-                    </Button>
-                    <Button type="submit">Save Changes</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            )} */}
+          <div>
+            {userType === 'employer' ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={approveProject}
+                disabled={isApprovingProject || approvingOnchain}
+              >
+                {isApprovingProject || approvingOnchain ? (
+                  <>
+                    <span className="mr-2">
+                      {approvingOnchain
+                        ? 'Confirming on blockchain...'
+                        : 'Approving...'}
+                    </span>
+                    <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                  </>
+                ) : (
+                  'Approve Project'
+                )}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={completeProject}
+                disabled={isCompletingProject || completingOnchain}
+              >
+                {isCompletingProject || completingOnchain ? (
+                  <>
+                    <span className="mr-2">
+                      {completingOnchain
+                        ? 'Confirming on blockchain...'
+                        : 'Submitting...'}
+                    </span>
+                    <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                  </>
+                ) : (
+                  'Submit Project'
+                )}
+              </Button>
+            )}
+          </div>
           {getStatusBadge(project_details?.status)}
         </div>
       </div>
@@ -550,7 +610,7 @@ export function Dashboard( ) {
               <CardContent>
                 <div className="space-y-2 max-h-[150px] overflow-y-auto">
                   {project_details?.updates?.slice(0, 3).map((update: any) => (
-                    <div key={update.id} className="text-sm">
+                    <div key={update._id} className="text-sm">
                       <div className="flex justify-between items-center">
                         <p className="font-medium">{update.author}</p>
                         <p className="text-xs text-slate-500">
@@ -660,13 +720,13 @@ export function Dashboard( ) {
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-blue-600">
-                      {stats.totalDays}
+                      {stats?.totalDays}
                     </p>
                     <p className="text-sm text-slate-500">Days to Complete</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-purple-600">
-                      {project_details?.freelancers.length}
+                      {project_details?.freelancers?.length}
                     </p>
                     <p className="text-sm text-slate-500">Team Members</p>
                   </div>
@@ -741,9 +801,7 @@ export function Dashboard( ) {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>
-                          Maintained excellent Chat throughout
-                        </span>
+                        <span>Maintained excellent Chat throughout</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
@@ -769,7 +827,7 @@ export function Dashboard( ) {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Project Milestones</h2>
             {userType === 'employer' &&
-              project_details?.status !== 'completed' && (
+              project_details?.status === 'completed' && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button size="sm" className="gap-2">
@@ -817,7 +875,7 @@ export function Dashboard( ) {
                         <Label htmlFor="milestone-status">Status</Label>
                         <Select
                           defaultValue={newMilestone.status}
-                          onValueChange={(value) =>
+                          onValueChange={(value: any) =>
                             setNewMilestone({ ...newMilestone, status: value })
                           }
                         >
@@ -849,7 +907,7 @@ export function Dashboard( ) {
                       >
                         Cancel
                       </Button>
-                      <Button onClick={addMilestone}>Add Milestone</Button>
+                      {/* <Button onClick={addMilestone}>Add Milestone</Button> */}
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -885,30 +943,52 @@ export function Dashboard( ) {
                       </span>
                     </div>
                   </CardContent>
-                  {userType === 'employer' &&
-                    project_details?.status !== 'completed' && (
-                      <CardFooter>
-                        <Select
-                          defaultValue={milestone.status}
-                          onValueChange={(value) =>
-                            updateMilestoneStatus(milestone.id, value)
-                          }
-                        >
-                          <SelectTrigger className="w-[180px]">
+                  {/* // project_details?.status !== 'completed' && ( */}
+
+                  <CardFooter>
+                    {userType === 'employer' ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => approveMilestone(milestone?._id)}
+                        disabled={isApprovingMilestone === milestone?._id}
+                      >
+                        {isApprovingMilestone === milestone?._id ? (
+                          <>
+                            <span className="mr-2">Approving...</span>
+                            <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                          </>
+                        ) : (
+                          'Approve Milestone'
+                        )}
+                      </Button>
+                    ) : (
+                      <Select
+                        defaultValue={milestone.status}
+                        onValueChange={(value: any) =>
+                          updateMilestoneStatus(milestone._id, value)
+                        }
+                        disabled={isCompletingMilestone === milestone?._id}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          {isCompletingMilestone === milestone?._id ? (
+                            <div className="flex items-center">
+                              <span className="mr-2">Updating...</span>
+                              <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                            </div>
+                          ) : (
                             <SelectValue placeholder="Update status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {/* <SelectItem value="not-started">
-                              Not Started
-                            </SelectItem> */}
-                            <SelectItem value="in-progress">
-                              In Progress
-                            </SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </CardFooter>
+                          )}
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="in-progress">
+                            In Progress
+                          </SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                        </SelectContent>
+                      </Select>
                     )}
+                  </CardFooter>
                 </Card>
               )
             )}
@@ -1001,9 +1081,9 @@ export function Dashboard( ) {
                     )
                     ?.map((freelancer) => (
                       <div
-                        key={freelancer.id}
+                        key={freelancer._id}
                         className="flex items-center justify-between p-3 border rounded-md hover:bg-slate-50 cursor-pointer"
-                        onClick={() => addFreelancer(freelancer.id)}
+                        onClick={() => addFreelancer(freelancer._id)}
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">

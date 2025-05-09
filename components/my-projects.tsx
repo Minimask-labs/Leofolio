@@ -29,6 +29,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -38,6 +39,18 @@ import { ProjectReport } from './project-report';
 import { useProjectStore } from '@/Store/projects';
 // import projects-Invitation-card from "./projects-Invitation-card"
 import { InvitationCard } from '@/components/cards/projects-Invitation-card';
+import { mongoIdToAleoU64, mongoIdToAleoU64Hash } from '@/libs/util';
+import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import {
+  useConnect,
+  connect,
+  useAccount,
+  ConnectResponse,
+  useDisconnect,
+  useRequestSignature,
+  Network
+} from '@puzzlehq/sdk';
+
 export function MyProjects() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
@@ -347,22 +360,72 @@ export function MyProjects() {
       </div>
     );
   }
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [rejectLoading, setRrejectLoading] = useState(false);
-  const handleAccept = async (id: string) => {
+    const hashProjectId = projectId
+      ? mongoIdToAleoU64Hash(String(projectId))
+      : null;
+  
+      const { createEvent: handleOnchainAcceptProject } =
+        useRequestCreateEvent({
+          type: EventType.Execute,
+          programId: 'escrow_contract11.aleo',
+          functionId: 'accept_job',
+          fee: 1.23,
+          inputs: [hashProjectId? hashProjectId : '0x']
+        });
+   const handleAccept = async (id: string, projectId: string) => {
      setLoading(true);
-    try {
-      let res = await handleProjectInviteResponse(id, 'accept');
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }finally {
-      setLoading(false);
-          fetchProjects();
-    fetchFreelancerProjects();
+     setProjectId(projectId);
+     console.log('Project ID:', projectId);
+      console.log('Invitation ID:', id);
+                   await handleOnchainAcceptProject();
 
-    }
-  };
+     try {
+      //  let response = await handleProjectInviteResponse(id, 'accept');
+      //  console.log(response);
+      //  // Only trigger blockchain operation if API call was successful
+      //  if (
+      //    response !== undefined &&
+      //    typeof response === 'object' &&
+      //    'data' in response
+      //  ) {
+      //    const { data, success } = response as {
+      //      data: { _id: string };
+      //      success: boolean;
+      //    };
+
+      //    if (success && data && data._id) {
+           // Make sure we have all required data before calling blockchain function
+           if (projectId) {
+             await handleOnchainAcceptProject();
+             toast({
+               title: 'Invite Accepted',
+               description: `The invite has been accepted successfully and payment released on blockchain.`
+             });
+           } else {
+             toast({
+               title: 'Invite Accepted',
+               description: `The invite has been accepted successfully.`,
+               variant: 'destructive'
+             });
+           }
+        //  }
+      //  } else {
+      //    toast({
+      //      title: 'Project Approved',
+      //      description: `The project has been approved successfully.`
+      //    });
+      //  }
+     } catch (error) {
+       console.log(error);
+     } finally {
+       setLoading(false);
+       fetchProjects();
+       fetchFreelancerProjects();
+     }
+   };
 
   const handleReject = async (id: string) => {
      setRrejectLoading(true);

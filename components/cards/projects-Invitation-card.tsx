@@ -90,7 +90,7 @@ export type Invitation = {
 
 export interface InvitationCardProps {
   invitation: Invitation;
-  onAccept?: (id: string) => void;
+  onAccept?: (id: string,projectId: string) => void;
   onReject?: (id: string) => void;
   className?: string;
   isLoading?: boolean;
@@ -142,7 +142,7 @@ export function InvitationCard({
   // Handle accept and reject actions
   const handleAccept = () => {
     if (onAccept && isActionable) {
-      onAccept(invitation?._id);
+      onAccept(invitation?._id, invitation?.project?._id);
     }
   };
 
