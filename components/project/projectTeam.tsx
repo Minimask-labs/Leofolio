@@ -20,7 +20,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
-import { Briefcase, Filter, Loader, Search, Shield, Star } from 'lucide-react';
+import { Briefcase, Filter, Loader, MessageSquareMore, Search, Shield, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -62,6 +62,10 @@ export function ProjectTeam({
   const router = useRouter();
   const params = useParams();
   const projectId = params.id;
+
+  const goToMessageTab = () => {
+    router.push(`/project-dashboard/${projectId}?tab=chat`);
+  }
 
   const handleSendInvite = async (freelancerId: string) => {
     try {
@@ -261,7 +265,9 @@ export function ProjectTeam({
                               </Badge>
                             ))}
                           </div>
-                          <div className="flex items-center gap-2 mb-3">
+                          <div className="w-full flex items-center gap-2 mb-3">
+                            <div className='w-1/2 flex items-center gap-2'>
+
                             <Briefcase className="h-4 w-4 text-slate-500" />
                             <span className="text-sm text-slate-600">
                               {freelancer?.experience}
@@ -270,6 +276,13 @@ export function ProjectTeam({
                             <span className="text-sm text-blue-600">
                               Verified
                             </span>
+                            </div>
+                            <div className='w-1/2 flex justify-end'>
+
+                            <button title='message' className='text-white' onClick={goToMessageTab}>
+                            <MessageSquareMore />
+                            </button>
+                            </div>
                           </div>
                           <div className="flex justify-between items-center">
                             <div>
