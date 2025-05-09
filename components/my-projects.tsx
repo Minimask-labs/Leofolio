@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,7 +19,8 @@ import {
   CheckCircle,
   AlertCircle,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Loader2
 } from 'lucide-react';
 import {
   Select,
@@ -37,19 +38,10 @@ import { ProjectUpdates } from './project-updates';
 import { ProjectDashboard } from './project-dashboard';
 import { ProjectReport } from './project-report';
 import { useProjectStore } from '@/Store/projects';
-// import projects-Invitation-card from "./projects-Invitation-card"
 import { InvitationCard } from '@/components/cards/projects-Invitation-card';
-import { mongoIdToAleoU64, mongoIdToAleoU64Hash } from '@/libs/util';
+import { mongoIdToAleoU64 } from '@/libs/util';
 import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
-import {
-  useConnect,
-  connect,
-  useAccount,
-  ConnectResponse,
-  useDisconnect,
-  useRequestSignature,
-  Network
-} from '@puzzlehq/sdk';
+import { useAccount } from '@puzzlehq/sdk';
 
 export function MyProjects() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
@@ -65,160 +57,117 @@ export function MyProjects() {
     fetchFreelancerProjects,
     freelancer_projects
   } = useProjectStore();
-    const router = useRouter();
-  
-  // Mock active projects data
-  const activeProjects = [
-    {
-      id: 1,
-      title: 'E-commerce Platform Redesign',
-      client: 'Retail Innovations Inc.',
-      clientContact: 'Sarah Johnson',
-      description:
-        'Complete overhaul of the e-commerce platform with focus on user experience and conversion optimization.',
-      startDate: '2023-07-01',
-      deadline: '2023-09-30',
-      status: 'in-progress',
-      progress: 65,
-      milestones: [
-        {
-          id: 1,
-          title: 'Requirements Gathering',
-          status: 'completed',
-          dueDate: '2023-07-10'
-        },
-        {
-          id: 2,
-          title: 'UI/UX Design',
-          status: 'completed',
-          dueDate: '2023-07-31'
-        },
-        {
-          id: 3,
-          title: 'Frontend Development',
-          status: 'in-progress',
-          dueDate: '2023-08-31'
-        },
-        {
-          id: 4,
-          title: 'Backend Integration',
-          status: 'not-started',
-          dueDate: '2023-09-15'
-        },
-        {
-          id: 5,
-          title: 'Testing & Launch',
-          status: 'not-started',
-          dueDate: '2023-09-30'
-        }
-      ],
-      updates: [
-        {
-          id: 1,
-          author: 'Sarah Johnson',
-          role: 'Client',
-          date: '2023-08-15',
-          content:
-            "The designs look great! I've shared some feedback on the checkout flow in the attached document.",
-          isClient: true
-        },
-        {
-          id: 2,
-          author: 'Alex Morgan',
-          role: 'Freelancer',
-          date: '2023-08-16',
-          content:
-            "Thanks for the feedback! I've updated the checkout flow based on your suggestions. Please take a look at the latest designs.",
-          isClient: false
-        },
-        {
-          id: 3,
-          author: 'Sarah Johnson',
-          role: 'Client',
-          date: '2023-08-18',
-          content:
-            'The updated checkout flow looks perfect. Please proceed with the implementation.',
-          isClient: true
-        }
-      ],
-      freelancers: [
-        { name: 'Alex Morgan', role: 'Full Stack Developer' },
-        { name: 'Jamie Chen', role: 'UI/UX Designer' }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Mobile App Development',
-      client: 'HealthTrack',
-      clientContact: 'Jessica Williams',
-      description:
-        'Developing a cross-platform mobile application for health tracking with integration to wearable devices.',
-      startDate: '2023-06-15',
-      deadline: '2023-10-30',
-      status: 'in-progress',
-      progress: 40,
-      milestones: [
-        {
-          id: 1,
-          title: 'Requirements Analysis',
-          status: 'completed',
-          dueDate: '2023-06-30'
-        },
-        {
-          id: 2,
-          title: 'UI/UX Design',
-          status: 'completed',
-          dueDate: '2023-07-31'
-        },
-        {
-          id: 3,
-          title: 'Core Functionality',
-          status: 'in-progress',
-          dueDate: '2023-09-15'
-        },
-        {
-          id: 4,
-          title: 'Wearable Integration',
-          status: 'not-started',
-          dueDate: '2023-10-15'
-        },
-        {
-          id: 5,
-          title: 'Testing & Deployment',
-          status: 'not-started',
-          dueDate: '2023-10-30'
-        }
-      ],
-      updates: [
-        {
-          id: 1,
-          author: 'Jessica Williams',
-          role: 'Client',
-          date: '2023-08-10',
-          content: 'Can we add a feature to track water intake in the app?',
-          isClient: true
-        },
-        {
-          id: 2,
-          author: 'Alex Morgan',
-          role: 'Freelancer',
-          date: '2023-08-11',
-          content:
-            "Yes, I can add that feature. It will require an additional screen in the nutrition section. I'll update the designs and share them with you by tomorrow.",
-          isClient: false
-        },
-        {
-          id: 3,
-          author: 'Jessica Williams',
-          role: 'Client',
-          date: '2023-08-13',
-          content: 'The designs look good. Please proceed with implementation.',
-          isClient: true
-        }
-      ],
-      freelancers: [{ name: 'Taylor Reed', role: 'Mobile Developer' }]
+  const router = useRouter();
+  const { account } = useAccount();
+
+  // Loading state with more detailed information
+  const [loadingState, setLoadingState] = useState({
+    isLoading: false,
+    stage: 'idle', // 'idle', 'accepting-backend', 'creating-blockchain', 'completed', 'failed'
+    message: '',
+    currentProjectId: '',
+    currentInvitationId: ''
+  });
+
+  // State to store the current project ID for blockchain operation
+  const [blockchainProjectId, setBlockchainProjectId] = useState('');
+
+  // Initialize the useRequestCreateEvent hook at the component level
+  const {
+    createEvent,
+    eventId,
+    loading: blockchainLoading,
+    error: blockchainError,
+    settlementStatus: blockchainStatus
+  } = useRequestCreateEvent();
+
+  // Monitor blockchain status changes
+  useEffect(() => {
+    if (blockchainStatus === 'settled' && eventId) {
+      console.log('Blockchain transaction settled successfully:', eventId);
+
+      // Update loading state to completed
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'completed',
+        message:
+          'Invitation accepted and blockchain record created successfully!'
+      }));
+
+      // Show success message
+      toast({
+        title: 'Invite Accepted',
+        description:
+          'The invite has been accepted successfully and payment released on blockchain.'
+      });
+
+      // Reset after a delay
+      setTimeout(() => {
+        setLoadingState({
+          isLoading: false,
+          stage: 'idle',
+          message: '',
+          currentProjectId: '',
+          currentInvitationId: ''
+        });
+        setBlockchainProjectId('');
+      }, 2000);
+    } else if (blockchainStatus === 'failed' && eventId) {
+      console.error('Blockchain transaction failed:', eventId);
+
+      // Update loading state to failed
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'failed',
+        message: 'Blockchain transaction failed. Please try again.'
+      }));
+
+      // Show error message
+      toast({
+        title: 'Blockchain Error',
+        description:
+          'The blockchain transaction failed. The invitation was accepted in the database, but the blockchain record could not be created.',
+        variant: 'destructive'
+      });
+
+      // Reset after a delay
+      setTimeout(() => {
+        setLoadingState({
+          isLoading: false,
+          stage: 'idle',
+          message: '',
+          currentProjectId: '',
+          currentInvitationId: ''
+        });
+        setBlockchainProjectId('');
+      }, 3000);
     }
-  ];
+  }, [blockchainStatus, eventId]);
+
+  // Monitor blockchain errors
+  useEffect(() => {
+    if (blockchainError && loadingState.stage === 'creating-blockchain') {
+      console.error('Blockchain error:', blockchainError);
+
+      // Update loading state to failed
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'failed',
+        message: `Blockchain error: ${
+          blockchainError || 'Unknown error'
+        }`
+      }));
+
+      // Show error message
+      toast({
+        title: 'Blockchain Error',
+        description:
+          blockchainError ||
+          'An error occurred during the blockchain operation',
+        variant: 'destructive'
+      });
+    }
+  }, [blockchainError, loadingState.stage]);
 
   // Mock completed projects data
   const completedProjects = [
@@ -360,97 +309,292 @@ export function MyProjects() {
       </div>
     );
   }
-  const [projectId, setProjectId] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const [rejectLoading, setRrejectLoading] = useState(false);
-  
-      const { createEvent: handleOnchainAcceptProject } = useRequestCreateEvent(
-        {
-          type: EventType.Execute,
-          programId: 'escrow_contract11.aleo',
-          functionId: 'accept_job',
-          fee: 1.23,
-          inputs: [projectId ? projectId : '0x']
-        }
-      );
-   const handleAccept = async (id: string, project_Id: string) => {
-     setLoading(true);
-     setProjectId(mongoIdToAleoU64Hash(String(project_Id)));
-     console.log('Project ID:', project_Id);
-     console.log('Invitation ID:', id);
-     console.log('Hash Project ID:', projectId);
-      // job id 3307053752u64
-     try {
-        let response = await handleProjectInviteResponse(id, 'accept');
-        console.log(response);
-        // Only trigger blockchain operation if API call was successful
-        if (
-          response !== undefined &&
-          typeof response === 'object' &&
-          'data' in response
-        ) {
-          const { data, success } = response as {
-            data: { _id: string };
-            success: boolean;
-          };
 
-          if (success && data && data._id) {
-       // Make sure we have all required data before calling blockchain function
-       if (projectId) {
-          await handleOnchainAcceptProject();
-         toast({
-           title: 'Invite Accepted',
-           description: `The invite has been accepted successfully and payment released on blockchain.`
-         });
-       } else {
-         toast({
-           title: 'Invite Accepted',
-           description: `The invite has been accepted successfully.`,
-           variant: 'destructive'
-         });
-       }
-        }
+  // Combined function to handle both backend and blockchain operations
+  const handleAcceptInner = async (invitationId: string, projectId: string) => {
+    // Reset loading state and set initial values
+    setLoadingState({
+      isLoading: true,
+      stage: 'accepting-backend',
+      message: 'Accepting invitation...',
+      currentProjectId: projectId,
+      currentInvitationId: invitationId
+    });
+
+    try {
+      // Log the input values
+      console.log('Invitation ID:', invitationId);
+      console.log('Project ID:', projectId);
+
+      // Check if wallet is connected
+      if (!account?.address) {
+        throw new Error(
+          'Wallet not connected. Please connect your wallet first.'
+        );
+      }
+
+      // Step 1: Accept the invitation in the backend
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'accepting-backend',
+        message: 'Accepting invitation in the database...'
+      }));
+
+      const response = await handleProjectInviteResponse(
+        invitationId,
+        'accept'
+      );
+      console.log('Backend response:', response);
+
+      // Check if the backend operation was successful
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
+        const { data, success } = response as {
+          data: { _id: string };
+          success: boolean;
+        };
+
+        if (success && data && data._id) {
+          // Step 2: Create the blockchain record
+
+          // Hash the project ID for blockchain
+          const hashedProjectId = mongoIdToAleoU64(projectId);
+          console.log('Project ID:', projectId);
+          console.log('Hashed Project ID for blockchain:', hashedProjectId);
+
+          // Store the hashed project ID
+          setBlockchainProjectId(hashedProjectId);
+
+          // Update loading state
+          setLoadingState((prev) => ({
+            ...prev,
+            stage: 'creating-blockchain',
+            message: 'Creating blockchain record...'
+          }));
+
+          try {
+            // Execute the blockchain transaction with the correct parameters
+            await createEvent({
+              type: EventType.Execute,
+              programId: 'escrow_contract11.aleo',
+              functionId: 'accept_job',
+              fee: 1.23,
+              inputs: [hashedProjectId]
+            });
+
+            console.log(
+              'Blockchain transaction initiated with event ID:',
+              eventId
+            );
+
+            // Note: The success/failure handling is done in the useEffect hooks that monitor blockchainStatus
+          } catch (blockchainError: any) {
+            console.error(
+              'Error executing blockchain transaction:',
+              blockchainError
+            );
+
+            // Update loading state to failed
+            setLoadingState((prev) => ({
+              ...prev,
+              stage: 'failed',
+              message:
+                blockchainError.message || 'Failed to create blockchain record'
+            }));
+
+            // Show error message
+            toast({
+              title: 'Blockchain Error',
+              description:
+                blockchainError.message || 'Failed to create blockchain record',
+              variant: 'destructive'
+            });
+
+            // Show partial success message since the backend operation succeeded
+            toast({
+              title: 'Partial Success',
+              description:
+                'The invitation was accepted in the database, but the blockchain operation failed.',
+              variant: 'default'
+            });
+
+            // Reset after a delay
+            setTimeout(() => {
+              setLoadingState({
+                isLoading: false,
+                stage: 'idle',
+                message: '',
+                currentProjectId: '',
+                currentInvitationId: ''
+              });
+              setBlockchainProjectId('');
+            }, 3000);
+          }
         } else {
-          toast({
-            title: 'Project Approved',
-            description: `The project has been approved successfully.`
-          });
+          throw new Error('Invalid response from backend');
         }
-     } catch (error) {
-       console.log(error);
-     } finally {
-       setLoading(false);
-       fetchProjects();
-       fetchFreelancerProjects();
-       setProjectId(' ');
-     }
-   };
+      } else {
+        throw new Error('Failed to accept invitation in backend');
+      }
+    } catch (error: any) {
+      console.error('Error accepting invitation:', error);
+
+      // Update loading state to failed
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'failed',
+        message: error.message || 'Failed to accept invitation'
+      }));
+
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to accept invitation',
+        variant: 'destructive'
+      });
+
+      // Reset after a delay
+      setTimeout(() => {
+        setLoadingState({
+          isLoading: false,
+          stage: 'idle',
+          message: '',
+          currentProjectId: '',
+          currentInvitationId: ''
+        });
+        setBlockchainProjectId('');
+      }, 2000);
+    } finally {
+      // Refresh data regardless of outcome
+      fetchProjects();
+      fetchFreelancerProjects();
+    }
+  };
+
+  const handleAccept = useCallback(handleAcceptInner, [
+    account?.address,
+    handleProjectInviteResponse,
+    createEvent,
+    eventId,
+    fetchProjects,
+    fetchFreelancerProjects
+  ]);
 
   const handleReject = async (id: string) => {
-     setRrejectLoading(true);
-    try {
-      let res = await handleProjectInviteResponse(id, 'reject');
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }finally {
-      setRrejectLoading(false);
-          fetchProjects();
-          fetchFreelancerProjects();
+    setLoadingState({
+      isLoading: true,
+      stage: 'accepting-backend',
+      message: 'Rejecting invitation...',
+      currentProjectId: '',
+      currentInvitationId: id
+    });
 
+    try {
+      const res = await handleProjectInviteResponse(id, 'reject');
+      console.log(res);
+
+      toast({
+        title: 'Invite Rejected',
+        description: 'The invitation has been rejected successfully.'
+      });
+    } catch (error) {
+      console.error('Error rejecting invitation:', error);
+
+      toast({
+        title: 'Error',
+        description: 'Failed to reject invitation',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoadingState({
+        isLoading: false,
+        stage: 'idle',
+        message: '',
+        currentProjectId: '',
+        currentInvitationId: ''
+      });
+
+      fetchProjects();
+      fetchFreelancerProjects();
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await handleViewProjectInvitationsList();
-          fetchFreelancerProjects();
-
+      fetchFreelancerProjects();
     };
     fetchData();
-  }, [handleViewProjectInvitationsList]);
+  }, [handleViewProjectInvitationsList, fetchFreelancerProjects]);
+
+  // Loading overlay component
+  const LoadingOverlay = () => {
+    if (!loadingState.isLoading) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+          <div className="flex flex-col items-center text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-4" />
+            <h3 className="text-lg font-medium mb-2">
+              {loadingState.stage === 'accepting-backend'
+                ? 'Processing Invitation'
+                : loadingState.stage === 'creating-blockchain'
+                ? 'Creating Blockchain Record'
+                : loadingState.stage === 'completed'
+                ? 'Operation Complete'
+                : loadingState.stage === 'failed'
+                ? 'Operation Failed'
+                : 'Processing...'}
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">{loadingState.message}</p>
+
+            {loadingState.stage === 'creating-blockchain' && (
+              <div className="w-full mb-4">
+                <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-600 rounded-full animate-pulse"
+                    style={{ width: '60%' }}
+                  ></div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Please wait while the blockchain transaction is being
+                  processed. Do not close this window.
+                </p>
+              </div>
+            )}
+
+            {(loadingState.stage === 'completed' ||
+              loadingState.stage === 'failed') && (
+              <Button
+                onClick={() => {
+                  setLoadingState({
+                    isLoading: false,
+                    stage: 'idle',
+                    message: '',
+                    currentProjectId: '',
+                    currentInvitationId: ''
+                  });
+                  setBlockchainProjectId('');
+                }}
+                className="mt-2"
+              >
+                Close
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
+      {/* Loading overlay */}
+      <LoadingOverlay />
+
       <div>
         <h2 className="text-xl font-semibold mb-2">My Projects</h2>
         <p className="text-slate-600">
@@ -729,8 +873,15 @@ export function MyProjects() {
               invitation={project}
               onAccept={handleAccept}
               onReject={handleReject}
-              isLoading={loading}
-              rejectLoading={rejectLoading}
+              isLoading={
+                loadingState.isLoading &&
+                loadingState.currentInvitationId === project._id
+              }
+              rejectLoading={
+                loadingState.isLoading &&
+                loadingState.currentInvitationId === project._id &&
+                loadingState.stage === 'accepting-backend'
+              }
             />
           ))}
         </TabsContent>
