@@ -10,7 +10,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatStore } from "@/Store/chat";
-import { MessageSquare, Send, Search, ChevronLeft } from "lucide-react";
+import { MessageSquare, Send, Search, ChevronLeft, Loader } from "lucide-react";
 import { formatDateTime } from "./utils/utils";
 import { useStore } from "@/Store/user";
 
@@ -183,10 +183,10 @@ function ProjectChat() {
   // Poll messages for open conversation every 2 seconds
   useEffect(() => {
     if (!conversationId) return;
-    const interval = setInterval(() => {
+    // const interval = setInterval(() => {
       fetchMessagesForConversation(conversationId);
-    }, 2000);
-    return () => clearInterval(interval);
+    // });
+    // return () => clearInterval(interval);
   }, [conversationId, handleViewMessages, currentUserId]);
 
   // Get conversation details (e.g., for recipientId) when conversation ID changes
@@ -330,8 +330,8 @@ function ProjectChat() {
       setMessages((prevMessages) => [...prevMessages, optimisticMessage]);
       const messageCopy = message;
       setMessage("");
-
       await handleSendMessage(recipientId, messageCopy);
+      setIsSending(false);
 
       // Remove explicit refetch and let polling handle updating messages
       // The polling will naturally update the messages within 2 seconds
@@ -484,18 +484,23 @@ function ProjectChat() {
                           msg.isOwn ? "justify-end" : "justify-start"
                         }`}
                       >
+                        <div className="max-w-[80%] flex flex-col items-start gap-y-1">
                         <div
-                          className={`max-w-[80%] rounded-lg p-3 ${
+                          className={`rounded-lg p-3 ${
                             msg.isOwn
                               ? "bg-blue-600 text-white"
                               : "bg-gray-800 text-white"
                           }`}
                         >
                           <p>{msg.content}</p>
-                          <p className="text-xs mt-1 opacity-70 text-right italic">
+                          {/* <p className="text-xs mt-1 opacity-70 text-right italic">
                             {formatDateTime(msg.createdAt)}
-                          </p>
+                          </p> */}
                         </div>
+                          <span className="text-xs text-gray-400 italic">{`sent ${formatDateTime(msg.createdAt)}`}</span>
+
+                      </div>
+
                       </div>
                     ))
                   ) : (
@@ -532,7 +537,7 @@ function ProjectChat() {
                     {isSending ? (
                       <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
                     ) : (
-                      <Send size={18} />
+                      <Send size={18} className="text-white" />
                     )}
                   </Button>
                 </div>

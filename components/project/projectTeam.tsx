@@ -25,6 +25,7 @@ import {
   Filter,
   Loader,
   MessageSquare,
+  MessageSquareMore,
   Search,
   Shield,
   Star,
@@ -335,9 +336,11 @@ export function ProjectTeam({
                           </div>
                             <div className='w-1/2 flex justify-end'>
 
-                            {/* <button title='message' className='text-white' onClick={goToMessageTab}>
+                            <button title='message' className='text-white'  onClick={() =>
+                            handleStartConversation(freelancer._id)
+                          }>
                             <MessageSquareMore />
-                            </button> */}
+                            </button>
                             </div>
                           </div>
                           <div className="flex justify-between items-center">
