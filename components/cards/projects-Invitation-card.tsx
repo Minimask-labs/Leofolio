@@ -137,7 +137,7 @@ export function InvitationCard({
   };
 
   // Check if invitation is actionable
-  const isActionable = invitation?.status === 'pending';
+  const isActionable = invitation?.status !== 'pending';
 
   // Handle accept and reject actions
   const handleAccept = () => {
