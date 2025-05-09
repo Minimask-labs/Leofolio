@@ -1,32 +1,41 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
-import { toast } from '@/components/ui/use-toast';
-import { Briefcase, Filter, Loader, Search, Shield, Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter, useParams } from 'next/navigation';
-import { useUserProfileStore } from '@/Store/userProfile';
-import { useProjectStore } from '@/Store/projects';
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "@/components/ui/use-toast";
+import {
+  Briefcase,
+  Filter,
+  Loader,
+  MessageSquare,
+  Search,
+  Shield,
+  Star,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter, useParams } from "next/navigation";
+import { useUserProfileStore } from "@/Store/userProfile";
+import { useProjectStore } from "@/Store/projects";
+import { useChatStore } from "@/Store/chat";
 interface Project {
   freelancers: { name: string; role: string }[];
   status?: string;
@@ -35,7 +44,7 @@ interface Project {
 
 export function ProjectTeam({
   projectDetails,
-  userType = 'employer'
+  userType = "employer",
 }: {
   projectDetails: any;
   userType?: string;
@@ -45,23 +54,74 @@ export function ProjectTeam({
   const {
     handleFindUsers,
     users,
-    loading: usersLoading
+    loading: usersLoading,
   } = useUserProfileStore();
   const {
     handleSendProjectInvite,
     handleViewProjectInvitationsList,
     projects_invites,
-    loading: projectsLoading
+    loading: projectsLoading,
   } = useProjectStore();
 
-  const [message, setMessage] = useState('');
+  const { handleCreateConversations, loading: chatLoading } = useChatStore();
+
+  const [message, setMessage] = useState("");
   const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
   const [sendingInvite, setSendingInvite] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
   const router = useRouter();
   const params = useParams();
   const projectId = params.id;
+
+  // Function to start or navigate to a conversation with a freelancer
+  const handleStartConversation = async (freelancerId: string) => {
+    if (!freelancerId) {
+      toast({
+        title: "Error Starting Conversation",
+        description: "Invalid freelancer ID.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setSendingMessage(true);
+      // Create a new conversation with the freelancer
+      const response = await handleCreateConversations(freelancerId);
+
+      // Check if response exists and has data
+      if (response && response.data && response.data._id) {
+        // Navigate to the chat page with the conversation ID
+        const conversationId = response.data._id;
+
+        // If we're in the project dashboard, switch to the chat tab
+        if (window.location.pathname.includes("project-dashboard")) {
+          router.push(`?tab=chat&conversationId=${conversationId}`);
+        } else {
+          // Otherwise navigate to the dedicated chat page
+          router.push(`/chat?id=${conversationId}`);
+        }
+
+        toast({
+          title: "Conversation Started",
+          description: "You can now message this freelancer directly.",
+        });
+      } else {
+        throw new Error("Failed to create conversation");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not start the conversation. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Error starting conversation:", error);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
   const handleSendInvite = async (freelancerId: string) => {
     try {
@@ -73,26 +133,26 @@ export function ProjectTeam({
       );
       if (response !== undefined) {
         toast({
-          title: 'Project Invite Sent',
-          description: 'The freelancer has been invited to join the project.'
+          title: "Project Invite Sent",
+          description: "The freelancer has been invited to join the project.",
         });
         // Close all dialogs and reset state
         setIsAssigningFreelancer(false);
         setSelectedFreelancer(null);
-        setMessage('');
+        setMessage("");
         setShowInviteModal(false);
       } else {
         toast({
-          title: 'Error Sending Invite',
+          title: "Error Sending Invite",
           description:
-            'There was an error sending the invite. Please try again later.'
+            "There was an error sending the invite. Please try again later.",
         });
       }
     } catch (error) {
       toast({
-        title: 'Error Sending Invite',
+        title: "Error Sending Invite",
         description:
-          'There was an error sending the invite. Please try again later.'
+          "There was an error sending the invite. Please try again later.",
       });
     } finally {
       setSendingInvite(false);
@@ -106,7 +166,7 @@ export function ProjectTeam({
   };
 
   useEffect(() => {
-    handleFindUsers({ role: 'freelancer' });
+    handleFindUsers({ role: "freelancer" });
   }, [handleFindUsers]);
 
   useEffect(() => {
@@ -119,9 +179,9 @@ export function ProjectTeam({
   const filteredFreelancers = users?.data?.filter((freelancer: any) => {
     if (!searchQuery) return true;
 
-    const fullName = freelancer.fullName?.toLowerCase() || '';
-    const role = freelancer.role?.toLowerCase() || '';
-    const skills = freelancer.skills?.join(' ').toLowerCase() || '';
+    const fullName = freelancer.fullName?.toLowerCase() || "";
+    const role = freelancer.role?.toLowerCase() || "";
+    const skills = freelancer.skills?.join(" ").toLowerCase() || "";
     const query = searchQuery.toLowerCase();
 
     return (
@@ -134,8 +194,8 @@ export function ProjectTeam({
       <Tabs defaultValue="freelancers" className="w-full">
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            {userType === 'employer' &&
-              projectDetails?.status !== 'completed' && (
+            {userType === "employer" &&
+              projectDetails?.status !== "completed" && (
                 <TabsTrigger value="freelancers">Find Freelancers</TabsTrigger>
               )}
             <TabsTrigger value="team">Team Members</TabsTrigger>
@@ -226,17 +286,17 @@ export function ProjectTeam({
                               <Avatar className="h-12 w-12">
                                 <AvatarFallback>
                                   {freelancer?.fullName
-                                    ?.split(' ')
+                                    ?.split(" ")
                                     ?.map((n: any) => n[0])
-                                    ?.join('')}
-                                </AvatarFallback>{' '}
+                                    ?.join("")}
+                                </AvatarFallback>{" "}
                                 <AvatarImage
                                   src={
                                     freelancer.profileImage ||
-                                    '/placeholder.svg'
+                                    "/placeholder.svg"
                                   }
                                   className="w-full h-full object-cover"
-                                />{' '}
+                                />{" "}
                               </Avatar>
                               <div>
                                 <CardTitle>{freelancer.fullName}</CardTitle>
@@ -283,9 +343,9 @@ export function ProjectTeam({
                             <Badge
                               variant="outline"
                               className={
-                                freelancer?.availability === 'Available'
-                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                  : 'bg-amber-50 text-amber-700 border-amber-200'
+                                freelancer?.availability === "Available"
+                                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                                  : "bg-amber-50 text-amber-700 border-amber-200"
                               }
                             >
                               {freelancer?.availability}
@@ -331,9 +391,9 @@ export function ProjectTeam({
                       <Avatar className="h-12 w-12">
                         <AvatarFallback className="text-lg">
                           {freelancer.name
-                            .split(' ')
+                            .split(" ")
                             .map((n: string) => n[0])
-                            .join('')}
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -363,10 +423,28 @@ export function ProjectTeam({
                       </div>
                     </div>
 
-                    <div className="mt-4 flex justify-end">
+                    <div className="mt-4 flex justify-end gap-2">
                       <Button variant="outline" size="sm">
                         View Profile
                       </Button>
+                      {userType === "employer" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-300 hover:from-blue-600 hover:to-blue-700 shadow-sm"
+                          onClick={() =>
+                            handleStartConversation(freelancer._id)
+                          }
+                          disabled={sendingMessage}
+                        >
+                          {sendingMessage ? (
+                            <Loader className="h-4 w-4 mr-1 animate-spin" />
+                          ) : (
+                            <MessageSquare className="h-4 w-4 mr-1" />
+                          )}
+                          Message
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -427,16 +505,16 @@ export function ProjectTeam({
                           <AvatarFallback className="text-lg">
                             {invite.freelancer?.fullName
                               ? invite.freelancer.fullName
-                                  .split(' ')
+                                  .split(" ")
                                   .map((n: string) => n[0])
-                                  .join('')
-                              : 'FL'}
+                                  .join("")
+                              : "FL"}
                           </AvatarFallback>
                           {invite.freelancer?.profileImage && (
                             <AvatarImage
                               src={
                                 invite.freelancer.profileImage ||
-                                '/placeholder.svg'
+                                "/placeholder.svg"
                               }
                               className="w-full h-full object-cover"
                             />
@@ -444,10 +522,10 @@ export function ProjectTeam({
                         </Avatar>
                         <div>
                           <p className="font-medium">
-                            {invite.freelancer?.fullName || 'Freelancer'}
+                            {invite.freelancer?.fullName || "Freelancer"}
                           </p>
                           <p className="text-sm text-slate-500">
-                            {invite.freelancer?.role || 'Unknown Role'}
+                            {invite.freelancer?.role || "Unknown Role"}
                           </p>
                         </div>
                       </div>
@@ -464,11 +542,11 @@ export function ProjectTeam({
                           <span className="text-slate-500">Status</span>
                           <Badge
                             variant={
-                              invite.status === 'pending'
-                                ? 'outline'
-                                : invite.status === 'accepted'
-                                ? 'default'
-                                : 'destructive'
+                              invite.status === "pending"
+                                ? "outline"
+                                : invite.status === "accepted"
+                                ? "default"
+                                : "destructive"
                             }
                           >
                             {invite.status.charAt(0).toUpperCase() +
@@ -480,7 +558,7 @@ export function ProjectTeam({
                       <div className="mt-4">
                         <p className="text-sm text-slate-600 mb-2">Message:</p>
                         <p className="text-sm italic">
-                          {invite.message || 'No message provided'}
+                          {invite.message || "No message provided"}
                         </p>
                       </div>
 
@@ -488,7 +566,7 @@ export function ProjectTeam({
                         <Button
                           variant="outline"
                           size="sm"
-                          disabled={invite.status !== 'pending'}
+                          disabled={invite.status !== "pending"}
                           className="text-red-500 border-red-200 hover:bg-red-50"
                         >
                           Cancel Invite
@@ -534,14 +612,14 @@ export function ProjectTeam({
                 <Avatar className="h-24 w-24 mx-auto">
                   <AvatarFallback className="text-xl">
                     {selectedFreelancer?.fullName
-                      ?.split(' ')
+                      ?.split(" ")
                       ?.map((n: string) => n[0])
-                      ?.join('')}
+                      ?.join("")}
                   </AvatarFallback>
                   <AvatarImage
-                    src={selectedFreelancer?.profileImage || '/placeholder.svg'}
+                    src={selectedFreelancer?.profileImage || "/placeholder.svg"}
                     className="w-full h-full object-cover"
-                  />{' '}
+                  />{" "}
                 </Avatar>
                 <div className="mt-4 text-center">
                   <div className="flex items-center justify-center gap-1 mb-2">
@@ -593,9 +671,9 @@ export function ProjectTeam({
                 <Badge
                   variant="outline"
                   className={
-                    selectedFreelancer?.availability === 'Available'
-                      ? 'bg-blue-50 text-blue-700 border-blue-200'
-                      : 'bg-amber-50 text-amber-700 border-amber-200'
+                    selectedFreelancer?.availability === "Available"
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : "bg-amber-50 text-amber-700 border-amber-200"
                   }
                 >
                   {selectedFreelancer?.availability}
@@ -617,14 +695,33 @@ export function ProjectTeam({
               >
                 Close
               </Button>
-              <Button
-                className="bg-blue-600 text-white hover:bg-blue-700"
-                onClick={() => {
-                  setShowInviteModal(true);
-                }}
-              >
-                Send Project Invitation
-              </Button>
+              {userType === "employer" && (
+                <>
+                  <Button
+                    variant="outline"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-300 hover:from-blue-600 hover:to-blue-700 shadow-sm"
+                    onClick={() =>
+                      handleStartConversation(selectedFreelancer._id)
+                    }
+                    disabled={sendingMessage}
+                  >
+                    {sendingMessage ? (
+                      <Loader className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <MessageSquare className="h-4 w-4 mr-1" />
+                    )}
+                    Message
+                  </Button>
+                  <Button
+                    className="bg-blue-600 text-white hover:bg-blue-700"
+                    onClick={() => {
+                      setShowInviteModal(true);
+                    }}
+                  >
+                    Send Project Invitation
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -680,7 +777,7 @@ export function ProjectTeam({
                   Sending...
                 </>
               ) : (
-                'Send Invitation'
+                "Send Invitation"
               )}
             </Button>
           </DialogFooter>
