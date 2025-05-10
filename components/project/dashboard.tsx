@@ -50,7 +50,7 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
 import ProjectChat from '../project-chat';
 import { useStore } from '@/Store/user';
-import { mongoIdToAleoU64Hash } from '@/libs/util';
+import { mongoIdToAleoU64 } from '@/libs/util';
 import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
 
@@ -99,7 +99,7 @@ export function Dashboard() {
   const { account, error, loading } = useAccount();
   // Validate blockchain data
   const hashProjectId = projectId
-    ? mongoIdToAleoU64Hash(String(projectId))
+    ? mongoIdToAleoU64(String(projectId))
     : null;
     const [hashProjectIdInput, setHashProjectIdInput] = useState(hashProjectId);
     const [assignedFreelancer, setassignedFreelancer] = useState(
@@ -175,6 +175,7 @@ export function Dashboard() {
   const approveProject = async () => {
     setIsApprovingProject(true);
     try {
+      if (project_details?.status !== 'completed') {
       const response = await handleApproveProject(String(projectId));
       console.log(response, 'response');
 
@@ -214,6 +215,23 @@ export function Dashboard() {
         });
       }
       return response;
+      } else {
+        // Make sure we have all required data before calling blockchain function
+        if (assignedFreelancer && price) {
+          await handleOnchainEmployerAproveProject();
+          toast({
+            title: 'Project Approved',
+            description: `The project has been approved successfully and payment released on blockchain.`
+          });
+          handleViewProjectDetail(String(projectId));
+        } else {
+          toast({
+            title: 'Project Approved',
+            description: `The project has been approved successfully, but blockchain operation failed due to missing data.`,
+            variant: 'destructive'
+          });
+        }
+      }
 
     } catch (error) {
       console.error('Error approving project:', error);
@@ -229,6 +247,8 @@ export function Dashboard() {
   const completeProject = async () => {
     setIsCompletingProject(true);
     try {
+      if (project_details?.status !== 'completed') {
+
       const response = await handleCompleteProject(String(projectId));
       console.log(response, 'response');
 
@@ -268,6 +288,23 @@ export function Dashboard() {
         });
       }
       return response;
+    }else {
+        if (hashProjectId) {
+          await handleOnchainFreelancerCompletProject();
+          toast({
+            title: 'Project Completed',
+            description: `The project has been completed successfully and recorded on blockchain.`
+          });
+          handleViewProjectDetail(String(projectId));
+           
+        } else {
+          toast({
+            title: 'Project Completed',
+            description: `The project has been completed successfully, but blockchain operation failed due to invalid project ID.`,
+            variant: 'destructive'
+          });
+        }
+      }
     } catch (error) {
       console.error('Error completing project:', error);
       toast({
@@ -381,7 +418,15 @@ return response;
     }
     console.log('project_details:', project_details);
   }, [fetchProjects]);
-
+useEffect(() => {
+  if (project_details?.status === 'completed') {
+    if (userType === 'freelancer') {
+      handleOnchainFreelancerCompletProject();
+    } else if (userType === 'employer') {
+      handleOnchainEmployerAproveProject();
+    }
+  }
+}, [userType]);
   return (
     <div className="space-y-6">
       <div className="mb-2">
