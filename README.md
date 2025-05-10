@@ -264,8 +264,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔗 Links
 
 * [Website](https://leofolio.minimasklabs.xyz/)
-* [Documentation](https://docs.Leofolio.io)
-* [Aleo Blockchain](https://aleo.org)
+ * [Aleo Blockchain](https://aleo.org)
 * [Community Forum](https://forum.Leofolio.io)
 
 ## 📧 Contact
