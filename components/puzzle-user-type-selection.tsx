@@ -103,56 +103,56 @@ export function UserTypeSelection() {
       setCurrentStep('idle');
     }
   }, [connectError, requestSignatureError]);
+  const handleSignatureResponse = async () => {
+    // Process signature if available, regardless of currentStep to handle auto-login cases
+    if (requestSignatureResponse?.signature && account?.address) {
+      try {
+        setCurrentStep('authenticating');
 
+        const body = {
+          walletAddress: account.address,
+          signature: requestSignatureResponse.signature,
+          role: selectedType,
+          nonce: 'nonce' // Consider generating a proper nonce
+        };
+
+        const response = await walletAuth(body);
+
+        if (response?.data) {
+          // Save user data and token
+          saveUserData(response);
+          saveUserToken(response.data.token);
+          saveUserType(response.data.user.role);
+
+          // Navigate based on user role and new user status
+          const isNewUser = response.data.isNewUser;
+          const userRole = response.data.user.role;
+
+          toast.success(response.message || 'Login successful');
+
+          if (userRole === 'freelancer') {
+            router.replace(
+              isNewUser ? '/onboarding/freelancer' : '/freelancer'
+            );
+          } else if (userRole === 'employer') {
+            router.replace(isNewUser ? '/onboarding/employer' : '/employer');
+          }
+        }
+      } catch (error) {
+        console.error('Authentication error:', error);
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'Authentication failed';
+        toast.error(errorMessage);
+      } finally {
+        setIsProcessing(false);
+        setCurrentStep('idle');
+      }
+    }else {
+      await requestSignature();
+    }
+  };
   // Handle signature response
   useEffect(() => {
-    const handleSignatureResponse = async () => {
-      // Process signature if available, regardless of currentStep to handle auto-login cases
-      if (requestSignatureResponse?.signature && account?.address) {
-        try {
-          setCurrentStep('authenticating');
-
-          const body = {
-            walletAddress: account.address,
-            signature: requestSignatureResponse.signature,
-            role: selectedType,
-            nonce: 'nonce' // Consider generating a proper nonce
-          };
-
-          const response = await walletAuth(body);
-
-          if (response?.data) {
-            // Save user data and token
-            saveUserData(response);
-            saveUserToken(response.data.token);
-            saveUserType(response.data.user.role);
-
-            // Navigate based on user role and new user status
-            const isNewUser = response.data.isNewUser;
-            const userRole = response.data.user.role;
-
-            toast.success(response.message || 'Login successful');
-
-            if (userRole === 'freelancer') {
-              router.replace(
-                isNewUser ? '/onboarding/freelancer' : '/freelancer'
-              );
-            } else if (userRole === 'employer') {
-              router.replace(isNewUser ? '/onboarding/employer' : '/employer');
-            }
-          }
-        } catch (error) {
-          console.error('Authentication error:', error);
-          const errorMessage =
-            (error as any)?.response?.data?.message || 'Authentication failed';
-          toast.error(errorMessage);
-        } finally {
-          setIsProcessing(false);
-          setCurrentStep('idle');
-        }
-      }
-    };
-
     handleSignatureResponse();
   }, [
     requestSignatureResponse,
@@ -181,7 +181,7 @@ export function UserTypeSelection() {
         setCurrentStep('connecting');
         await connect();
         // Wait a moment for the connection to be established
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // After connection, request signature
         if (account?.address) {
@@ -208,19 +208,20 @@ export function UserTypeSelection() {
   }, [loadUserData, account]);
 
   // Auto-login if wallet is already connected
-  useEffect(() => {
-    // Check if wallet is already connected but user is not logged in
-    const attemptAutoLogin = async () => {
-      // Only attempt auto-login if wallet is connected and we're not already processing
-      if (account?.address && !isProcessing && currentStep === 'idle') {
-        console.log('Wallet already connected, attempting auto-login');
-        // Don't set isProcessing here to avoid UI changes until user clicks the button
-        // This just prepares for a faster login when they do click
-      }
-    };
+  // useEffect(() => {
+  //   // Check if wallet is already connected but user is not logged in
+  //   const attemptAutoLogin = async () => {
+  //     // Only attempt auto-login if wallet is connected and we're not already processing
+  //     if (account?.address && !isProcessing && currentStep === 'idle') {
+  //       console.log('Wallet already connected, attempting auto-login');
+  //       // Don't set isProcessing here to avoid UI changes until user clicks the button
+  //       // This just prepares for a faster login when they do click
+  //       handleAuthentication();
+  //     }
+  //   };
 
-    attemptAutoLogin();
-  }, [account, isProcessing, currentStep]);
+  //   attemptAutoLogin();
+  // }, [account, isProcessing, currentStep]);
 
   // Button text based on current step
   const getButtonText = () => {

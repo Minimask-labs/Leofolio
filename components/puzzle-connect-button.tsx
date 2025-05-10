@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useConnect, useAccount, useDisconnect, Network } from '@puzzlehq/sdk';
 import { toast } from 'react-hot-toast';
 import {
@@ -76,7 +76,11 @@ export function PuzzleConnectButton() {
     error: disconnectError,
     loading: disconnectLoading
   } = useDisconnect();
-
+useEffect(() => {
+  if (account === undefined) {
+    handleLogout();
+  }
+}, [account]);
   useEffect(() => {
     setIsConnected(!!account);
   }, [account]);
