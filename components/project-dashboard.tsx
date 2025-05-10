@@ -235,6 +235,31 @@ export function ProjectDashboard({
 
   return (
     <div className="space-y-6">
+      {/* If the project is completed, show the certificate/reward section */}
+      {project?.status === 'completed' && (
+        <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="bg-amber-100 p-4 rounded-full">
+                <Gift className="h-8 w-8 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-medium text-amber-800">
+                  Project Completed Successfully!
+                </h3>
+                <p className="text-amber-700">
+                  This project has been completed and approved. A certificate of
+                  completion is available.
+                </p>
+              </div>
+              <Button className="bg-amber-600 hover:bg-amber-700">
+                View Certificate
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -1038,31 +1063,6 @@ export function ProjectDashboard({
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* If the project is completed, show the certificate/reward section */}
-      {project?.status === 'completed' && (
-        <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <div className="bg-amber-100 p-4 rounded-full">
-                <Gift className="h-8 w-8 text-amber-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-amber-800">
-                  Project Completed Successfully!
-                </h3>
-                <p className="text-amber-700">
-                  This project has been completed and approved. A certificate of
-                  completion is available.
-                </p>
-              </div>
-              <Button className="bg-amber-600 hover:bg-amber-700">
-                View Certificate
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
