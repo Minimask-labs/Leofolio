@@ -43,7 +43,7 @@ Leofolio is a privacy-first freelancer platform built on Aleo blockchain technol
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/Leofolio.git
+git clone https://github.com/Minimask-labs/Leofolio.git
 cd Leofolio
 ````
 
