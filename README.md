@@ -216,23 +216,6 @@ Leofolio enables a secure and transparent job process powered by Aleo smart cont
 * Payment confirmation displayed
 * Job marked as completed
 
-## 📸 Screenshots
-
-### Landing Page
-
-*Image here*
-
-### Freelancer Dashboard
-
-*Image here*
-
-### Credential Management
-
-*Image here*
-
-### Project Dashboard
-
-*Image here*
 
 ## 🔒 Privacy Features
 
@@ -269,7 +252,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-* **Project Lead**: Kufre-abasi Bassey - [@yourtwitter](https://x.com/KufreabasiBass1) - [kufreabasibassey3@gmail.com](kufreabasibassey3@gmail.com)
+* **Project Lead**: Kufre-abasi Bassey - [@KufreabasiBass1](https://x.com/KufreabasiBass1) - [kufreabasibassey3@gmail.com](kufreabasibassey3@gmail.com)
 * **Project Website**: [https://leofolio.minimasklabs.xyz/](https://leofolio.minimasklabs.xyz/)
 
 ---
