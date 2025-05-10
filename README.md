@@ -1,24 +1,7 @@
-
+ 
 ### Leofolio: Privacy-Preserving Freelancer Platform
 
-
-
-
-
 Leofolio is a privacy-first freelancer platform built on Aleo blockchain technology. It enables freelancers to store their credentials, work history, and payment information privately while allowing them to selectively share verifiable proofs with potential employers through zero-knowledge proofs.
-
-[
-
-](https://opensource.org/licenses/MIT)
-[
-
-](https://www.typescriptlang.org/)
-[
-
-](https://nextjs.org/)
-[
-
-](https://aleo.org/)
 
 ## 🌟 Features
 
@@ -31,7 +14,6 @@ Leofolio is a privacy-first freelancer platform built on Aleo blockchain technol
 - **Professional Devfolio**: Showcase your skills with privacy controls
 - **Project Management**: Track and manage client projects efficiently
 
-
 ### For Employers
 
 - **Verified Talent**: Find freelancers with cryptographically verified credentials
@@ -39,7 +21,6 @@ Leofolio is a privacy-first freelancer platform built on Aleo blockchain technol
 - **Secure Payments**: Process invoices with privacy-preserving technology
 - **Team Collaboration**: Communicate and collaborate securely
 - **Performance Analytics**: Generate detailed project reports and analytics
-
 
 ## 🚀 Technology Stack
 
@@ -51,53 +32,46 @@ Leofolio is a privacy-first freelancer platform built on Aleo blockchain technol
 - **State Management**: React Context API
 - **Styling**: Tailwind CSS with custom theming
 
-
 ## 📋 Prerequisites
 
 - Node.js 18.x or higher
 - npm or yarn
 - An Aleo-compatible wallet (e.g., [Leo Wallet](https://leo.app/))
 
-
 ## 🔧 Installation
 
 1. Clone the repository:
 
-```shellscript
+```bash
 git clone https://github.com/yourusername/Leofolio.git
 cd Leofolio
-```
-
+````
 
 2. Install dependencies:
 
-```shellscript
+```bash
 npm install
 # or
 yarn install
 ```
 
-
 3. Set up environment variables:
 
-```shellscript
+```bash
 cp .env.example .env.local
 ```
 
 Edit `.env.local` with your configuration values.
 
-
 4. Run the development server:
 
-```shellscript
+```bash
 npm run dev
 # or
 yarn dev
 ```
 
-
 5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
-
 
 ## 📁 Project Structure
 
@@ -137,7 +111,6 @@ Leofolio/
 5. **Find Projects**: Browse available projects and apply with your verified credentials
 6. **Manage Projects**: Track progress, communicate with clients, and receive payments
 
-
 ### For Employers
 
 1. **Sign Up**: Connect your wallet and create an employer account
@@ -147,43 +120,129 @@ Leofolio/
 5. **Manage Projects**: Track progress, communicate with team members, and process payments
 6. **Generate Reports**: Create detailed project reports and analytics
 
+## 💼 Job Lifecycle on Aleo
+
+Leofolio enables a secure and transparent job process powered by Aleo smart contracts.
+
+### 1. Creating a Job (Employer)
+
+**Function:** `create_job(job_id, payment_amount, escrow_address)`
+
+**Web Interface:**
+
+* Employer fills a form with:
+
+  * Job ID (`u64`)
+  * Payment amount in Aleo credits (`u64`)
+  * Escrow address (`address`)
+
+**What Happens:**
+
+* Validates that payment is positive
+* Creates a job record with status `Open`
+* Transfers funds to contract escrow
+* Stores job details on-chain
+
+**User Experience:**
+
+* Wallet prompts to approve transaction
+* Confirmation shown
+* Job appears in **Open Jobs**
+
+---
+
+### 2. Accepting a Job (Freelancer)
+
+**Function:** `accept_job(job_id)`
+
+**Web Interface:**
+
+* Freelancer clicks **Accept** on job listing
+* Confirms via wallet
+
+**What Happens:**
+
+* Contract verifies job is `Open`
+* Assigns freelancer's address
+* Updates status to `In Progress`
+
+**User Experience:**
+
+* Job appears under **My Jobs**
+* Communication tools enabled
+
+---
+
+### 3. Completing a Job (Freelancer)
+
+**Function:** `complete_job(job_id)`
+
+**Web Interface:**
+
+* Freelancer clicks **Mark as Complete**
+* Optionally uploads deliverables
+* Confirms via wallet
+
+**What Happens:**
+
+* Verifies caller is the assigned freelancer
+* Updates status to `Completed`
+
+**User Experience:**
+
+* Job moves to **Pending Payment**
+* Employer is notified
+
+---
+
+### 4. Releasing Payment (Employer)
+
+**Function:** `release_payment(job_id, freelancer, amount)`
+
+**Web Interface:**
+
+* Employer reviews job
+* Clicks **Release Payment**
+* Confirms recipient and amount
+* Approves in wallet
+
+**What Happens:**
+
+* Funds transferred from escrow to freelancer
+* Updates status to `Paid`
+
+**User Experience:**
+
+* Payment confirmation displayed
+* Job marked as completed
 
 ## 📸 Screenshots
 
 ### Landing Page
 
-
-
-
+*Image here*
 
 ### Freelancer Dashboard
 
-
-
-
+*Image here*
 
 ### Credential Management
 
-
-
-
+*Image here*
 
 ### Project Dashboard
 
-
-
-
+*Image here*
 
 ## 🔒 Privacy Features
 
 Leofolio leverages Aleo's blockchain technology to provide:
 
-- **Zero-Knowledge Proofs**: Verify credentials without revealing the underlying data
-- **Private Transactions**: Process payments with privacy-preserving technology
-- **Encrypted Storage**: Secure storage of sensitive information
-- **Selective Disclosure**: Control what information is shared and with whom
-- **Verifiable Credentials**: Cryptographically verify the authenticity of credentials
-
+* **Zero-Knowledge Proofs**: Verify credentials without revealing the underlying data
+* **Private Transactions**: Process payments with privacy-preserving technology
+* **Encrypted Storage**: Secure storage of sensitive information
+* **Selective Disclosure**: Control what information is shared and with whom
+* **Verifiable Credentials**: Cryptographically verify the authenticity of credentials
 
 ## 🤝 Contributing
 
@@ -196,7 +255,6 @@ We welcome contributions to Leofolio! Please follow these steps:
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
 
-
 Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
 ## 📝 License
@@ -205,18 +263,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [Website](https://Leofolio.io)
-- [Documentation](https://docs.Leofolio.io)
-- [Aleo Blockchain](https://aleo.org)
-- [Community Forum](https://forum.Leofolio.io)
-
+* [Website](https://leofolio.minimasklabs.xyz/)
+* [Documentation](https://docs.Leofolio.io)
+* [Aleo Blockchain](https://aleo.org)
+* [Community Forum](https://forum.Leofolio.io)
 
 ## 📧 Contact
 
-- **Project Lead**: Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - [email@example.com](mailto:email@example.com)
-- **Project Website**: [https://Leofolio.io](https://Leofolio.io)
-
+* **Project Lead**: Kufre-abasi Bassey - [@yourtwitter](https://x.com/KufreabasiBass1) - [kufreabasibassey3@gmail.com](kufreabasibassey3@gmail.com)
+* **Project Website**: [https://leofolio.minimasklabs.xyz/](https://leofolio.minimasklabs.xyz/)
 
 ---
 
-Built with ❤️ on `<a href="https://aleo.org">`Aleo`</a>`
+Built with ❤️ on [Aleo](https://aleo.org)
+
+```
+
+Let me know if you'd like me to help generate badge icons or update your screenshots section next!
+```
