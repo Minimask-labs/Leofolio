@@ -271,7 +271,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             <div className="bg-[#121212] p-6 rounded-lg">
               <div className="flex flex-col md:flex-row justify-between mb-6"></div>
               <div className="w-full flex justify-center">
-                {username && <GitHubCalendar username={username} />}
+                {username ? <GitHubCalendar username={username} /> : ''}
               </div>
               {/* Contribution graph placeholder */}
             </div>
@@ -284,7 +284,7 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
             <div className="bg-[#121212] p-6 rounded-lg">
               <div className="flex flex-col md:flex-row justify-between mb-6"></div>
               <div className="w-full flex justify-center">
-                {username && <GitHubCalendar username={username} />}
+                {username ? <GitHubCalendar username={username} /> : ''}
               </div>
             </div>
           </div>
