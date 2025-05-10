@@ -257,8 +257,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Built with ❤️ on [Aleo](https://aleo.org)
-
-```
-
-Let me know if you'd like me to help generate badge icons or update your screenshots section next!
-```
