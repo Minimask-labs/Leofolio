@@ -248,8 +248,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 * [Website](https://leofolio.minimasklabs.xyz/)
  * [Aleo Blockchain](https://aleo.org)
-* [Community Forum](https://forum.Leofolio.io)
-
+ 
 ## 📧 Contact
 
 * **Project Lead**: Kufre-abasi Bassey - [@KufreabasiBass1](https://x.com/KufreabasiBass1) - [kufreabasibassey3@gmail.com](kufreabasibassey3@gmail.com)
