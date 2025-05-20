@@ -8,7 +8,7 @@ import {
   useRequestSignature,
   Network
 } from '@puzzlehq/sdk';
-import { toast } from 'react-hot-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import {
   Card,
@@ -32,6 +32,7 @@ export function UserTypeSelection() {
   const [currentStep, setCurrentStep] = useState<
     'idle' | 'connecting' | 'signing' | 'authenticating'
   >('idle');
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -92,13 +93,25 @@ export function UserTypeSelection() {
   // Handle errors from wallet interactions
   useEffect(() => {
     if (connectError) {
-      toast.error(`Connection error: ${connectError}`);
+      toast({
+        title: 'Error ',
+        description: `Connection error: ${connectError}`,
+        variant: 'destructive'
+      });
+      
+      // toast.error(`Connection error: ${connectError}`);
       setIsProcessing(false);
       setCurrentStep('idle');
     }
 
     if (requestSignatureError) {
-      toast.error(`Signature error: ${requestSignatureError}`);
+      toast({
+        title: 'Error ',
+        description: `Signature error: ${requestSignatureError}`,
+        variant: 'destructive'
+      });
+
+      // toast.error(`Signature error: ${requestSignatureError}`);
       setIsProcessing(false);
       setCurrentStep('idle');
     }
@@ -127,8 +140,13 @@ export function UserTypeSelection() {
           // Navigate based on user role and new user status
           const isNewUser = response.data.isNewUser;
           const userRole = response.data.user.role;
+      toast({
+        title: 'success',
+        description: response.message || 'Login successful';
+        variant: 'default',
+       });
 
-          toast.success(response.message || 'Login successful');
+          // toast.success(response.message || 'Login successful');
 
           if (userRole === 'freelancer') {
             router.replace(
@@ -142,7 +160,13 @@ export function UserTypeSelection() {
         console.error('Authentication error:', error);
         const errorMessage =
           (error as any)?.response?.data?.message || 'Authentication failed';
-        toast.error(errorMessage);
+          toast({
+            title: 'Error ',
+            description: `${errorMessage}`,
+            variant: 'destructive'
+          });
+    
+        // toast.error(errorMessage);
       } finally {
         setIsProcessing(false);
         setCurrentStep('idle');
@@ -191,7 +215,13 @@ export function UserTypeSelection() {
       }
     } catch (error) {
       console.error('Authentication flow error:', error);
-      toast.error('Authentication process failed');
+      toast({
+        title: 'Error ',
+        description: `Authentication process failed`,
+        variant: 'destructive'
+      });
+
+      // toast.error('Authentication process failed');
       setIsProcessing(false);
       setCurrentStep('idle');
     }

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import { useConnect, useAccount, useDisconnect, Network } from '@puzzlehq/sdk';
-import { toast } from 'react-hot-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,13 +14,15 @@ import { Loader2, ChevronDown, LogOut, Copy, ExternalLink } from 'lucide-react';
 import { useStore } from '@/Store/user';
 import { logout } from '@/service/auth';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export function PuzzleConnectButton() {
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
   const router = useRouter();
- 
+  const { toast } = useToast();
+
  
   const handleLogout = () => {
     try {
@@ -87,10 +88,22 @@ useEffect(() => {
 
   useEffect(() => {
     if (connectError) {
-      toast.error(`Error connecting: ${connectError}`);
+      toast({
+        title: 'Error ',
+        description: `Error connecting: ${connectError}`,
+        variant: 'destructive'
+      });
+
+      // toast.error(`Error connecting: ${connectError}`);
     }
     if (disconnectError) {
-      toast.error(`Error disconnecting: ${disconnectError}`);
+      toast({
+        title: 'Error ',
+        description: `Error disconnecting: ${disconnectError}`,
+        variant: 'destructive'
+      });
+
+      // toast.error(`Error disconnecting: ${disconnectError}`);
     }
   }, [connectError, disconnectError]);
 
@@ -98,9 +111,21 @@ useEffect(() => {
     setLoading(true);
     try {
       await connect();
-      toast.success('Wallet connected successfully!');
+      toast({
+        title: 'success',
+        description: `Wallet connected successfully!`;
+        variant: 'default',
+       });
+
+      // toast.success('Wallet connected successfully!');
     } catch (e) {
-      toast.error(`Error connecting: ${(e as Error).message}`);
+      toast({
+        title: 'Error ',
+        description: `Error connecting: ${(e as Error).message}`,
+        variant: 'destructive'
+      });
+
+      // toast.error(`Error connecting: ${(e as Error).message}`);
     } finally {
       setLoading(false);
     }
@@ -110,10 +135,22 @@ useEffect(() => {
     setLoading(true);
     try {
       await disconnect();
-      toast.success('Wallet disconnected successfully!');
+      toast({
+        title: 'success',
+        description: `Wallet disconnected successfully!`;
+        variant: 'default',
+       });
+
+      // toast.success('Wallet disconnected successfully!');
       handleLogout();
     } catch (e) {
-      toast.error(`Error disconnecting: ${(e as Error).message}`);
+      toast({
+        title: 'Error ',
+        description: `Error disconnecting: ${(e as Error).message}`,
+        variant: 'destructive'
+      });
+
+      // toast.error(`Error disconnecting: ${(e as Error).message}`);
     } finally {
       setLoading(false);
     }
@@ -122,7 +159,13 @@ useEffect(() => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setAddressCopied(true);
-    toast.success('Address copied to clipboard!');
+    // toast.success('Address copied to clipboard!');
+    toast({
+      title: ' ',
+      description: `Address copied to clipboard!`;
+      variant: 'default',
+     });
+
     setTimeout(() => setAddressCopied(false), 2000);
   };
 
