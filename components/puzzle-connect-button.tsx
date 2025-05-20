@@ -113,7 +113,7 @@ useEffect(() => {
       await connect();
       toast({
         title: 'success',
-        description: `Wallet connected successfully!`;
+        description: `Wallet connected successfully!`,
         variant: 'default',
        });
 
@@ -137,7 +137,7 @@ useEffect(() => {
       await disconnect();
       toast({
         title: 'success',
-        description: `Wallet disconnected successfully!`;
+        description: `Wallet disconnected successfully!`,
         variant: 'default',
        });
 
@@ -162,7 +162,7 @@ useEffect(() => {
     // toast.success('Address copied to clipboard!');
     toast({
       title: ' ',
-      description: `Address copied to clipboard!`;
+      description: `Address copied to clipboard!`,
       variant: 'default',
      });
 

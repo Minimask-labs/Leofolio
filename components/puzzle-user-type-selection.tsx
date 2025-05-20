@@ -142,7 +142,7 @@ export function UserTypeSelection() {
           const userRole = response.data.user.role;
       toast({
         title: 'success',
-        description: response.message || 'Login successful';
+        description: response.message || 'Login successful',
         variant: 'default',
        });
 
