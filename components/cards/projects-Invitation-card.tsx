@@ -90,8 +90,9 @@ export type Invitation = {
 
 export interface InvitationCardProps {
   invitation: Invitation;
-  onAccept?: (id: string,projectId: string) => void;
+  onAccept?: (id: string, projectId: string) => void;
   onReject?: (id: string) => void;
+  acceptOnchain: (projectId: string) => void;
   className?: string;
   isLoading?: boolean;
   rejectLoading?: boolean;
@@ -103,7 +104,8 @@ export function InvitationCard({
   onReject,
   className = '',
   isLoading = false,
-  rejectLoading = false
+  rejectLoading = false,
+  acceptOnchain
 }: InvitationCardProps) {
   const [showProjectDetails, setShowProjectDetails] = useState(false);
   const [showEmployerDetails, setShowEmployerDetails] = useState(false);
@@ -143,6 +145,7 @@ export function InvitationCard({
   const handleAccept = () => {
     if (onAccept && isActionable) {
       onAccept(invitation?._id, invitation?.project?._id);
+      acceptOnchain(invitation?.project?._id);
     }
   };
 
@@ -371,6 +374,12 @@ export function InvitationCard({
         </div>
       </CardContent>
       <CardFooter className="w-full">
+        <button
+          onClick={() => acceptOnchain(invitation?.project?._id)}
+          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+        >
+          Accept Onchain
+        </button>
         {isActionable === true ? (
           <div className="flex gap-2 pt-2 w-full">
             <Button

@@ -313,6 +313,53 @@ export function MyProjects() {
   }
 
   // Combined function to handle both backend and blockchain operations
+  const handleAcceptOnchain = async (projectId: string) => {
+    // Hash the project ID for blockchain
+    const hashedProjectId = mongoIdToAleoU64(projectId);
+    console.log('Project ID:', projectId);
+    console.log('Hashed Project ID for blockchain:', hashedProjectId);
+
+    // Store the hashed project ID
+    setBlockchainProjectId(hashedProjectId);
+
+    // Update loading state
+    setLoadingState((prev) => ({
+      ...prev,
+      stage: 'creating-blockchain',
+      message: 'Creating blockchain record...'
+    }));
+
+    try {
+      // Execute the blockchain transaction with the correct parameters
+      await createEvent({
+        type: EventType.Execute,
+        programId: 'escrow_contract11.aleo',
+        functionId: 'accept_job',
+        fee: 1.23,
+        inputs: [hashedProjectId]
+      });
+
+      console.log('Blockchain transaction initiated with event ID:', eventId);
+    } catch (blockchainError: any) {
+      console.error('Error executing blockchain transaction:', blockchainError);
+
+      // Update loading state to failed
+      setLoadingState((prev) => ({
+        ...prev,
+        stage: 'failed',
+        message:
+          blockchainError.message || 'Failed to create blockchain record'
+      }));
+
+      // Show error message
+      toast({
+        title: 'Blockchain Error',
+        description:
+          blockchainError.message || 'Failed to create blockchain record',
+        variant: 'destructive'
+      });
+    }
+  }
   const handleAcceptInner = async (invitationId: string, projectId: string) => {
     // Reset loading state and set initial values
     setLoadingState({
@@ -882,6 +929,7 @@ export function MyProjects() {
               invitation={project}
               onAccept={handleAccept}
               onReject={handleReject}
+              acceptOnchain={handleAcceptOnchain}
               isLoading={
                 loadingState.isLoading &&
                 loadingState.currentInvitationId === project._id
