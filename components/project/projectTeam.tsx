@@ -195,12 +195,12 @@ export function ProjectTeam({
       <Tabs defaultValue="freelancers" className="w-full">
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            {userType === "employer" &&
-              projectDetails?.status !== "completed" && (
-                <TabsTrigger value="freelancers">Find Freelancers</TabsTrigger>
-              )}
             <TabsTrigger value="team">Team Members</TabsTrigger>
             <TabsTrigger value="invites">Sent Invites</TabsTrigger>
+            {userType === 'employer' &&
+              projectDetails?.status !== 'completed' && (
+                <TabsTrigger value="freelancers">Find Freelancers</TabsTrigger>
+              )}
           </TabsList>
         </div>
 
@@ -287,17 +287,17 @@ export function ProjectTeam({
                               <Avatar className="h-12 w-12">
                                 <AvatarFallback>
                                   {freelancer?.fullName
-                                    ?.split(" ")
+                                    ?.split(' ')
                                     ?.map((n: any) => n[0])
-                                    ?.join("")}
-                                </AvatarFallback>{" "}
+                                    ?.join('')}
+                                </AvatarFallback>{' '}
                                 <AvatarImage
                                   src={
                                     freelancer.profileImage ||
-                                    "/placeholder.svg"
+                                    '/placeholder.svg'
                                   }
                                   className="w-full h-full object-cover"
-                                />{" "}
+                                />{' '}
                               </Avatar>
                               <div>
                                 <CardTitle>{freelancer.fullName}</CardTitle>
@@ -323,24 +323,26 @@ export function ProjectTeam({
                             ))}
                           </div>
                           <div className="w-full flex items-center gap-2 mb-3">
-                            <div className='w-1/2 flex items-center gap-2'>
-
-                            <Briefcase className="h-4 w-4 text-slate-500" />
-                            <span className="text-sm text-slate-600">
-                              {freelancer?.experience}
-                            </span>
-                            <Shield className="h-4 w-4 text-blue-600 ml-2" />
-                            <span className="text-sm text-blue-600">
-                              Verified
-                            </span>
-                          </div>
-                            <div className='w-1/2 flex justify-end'>
-
-                            <button title='message' className='text-white'  onClick={() =>
-                            handleStartConversation(freelancer._id)
-                          }>
-                            <MessageSquareMore />
-                            </button>
+                            <div className="w-1/2 flex items-center gap-2">
+                              <Briefcase className="h-4 w-4 text-slate-500" />
+                              <span className="text-sm text-slate-600">
+                                {freelancer?.experience}
+                              </span>
+                              <Shield className="h-4 w-4 text-blue-600 ml-2" />
+                              <span className="text-sm text-blue-600">
+                                Verified
+                              </span>
+                            </div>
+                            <div className="w-1/2 flex justify-end">
+                              <button
+                                title="message"
+                                className="text-white"
+                                onClick={() =>
+                                  handleStartConversation(freelancer._id)
+                                }
+                              >
+                                <MessageSquareMore />
+                              </button>
                             </div>
                           </div>
                           <div className="flex justify-between items-center">
@@ -355,9 +357,9 @@ export function ProjectTeam({
                             <Badge
                               variant="outline"
                               className={
-                                freelancer?.availability === "Available"
-                                  ? "bg-blue-50 text-blue-700 border-blue-200"
-                                  : "bg-amber-50 text-amber-700 border-amber-200"
+                                freelancer?.availability === 'Available'
+                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                  : 'bg-amber-50 text-amber-700 border-amber-200'
                               }
                             >
                               {freelancer?.availability}
@@ -403,9 +405,9 @@ export function ProjectTeam({
                       <Avatar className="h-12 w-12">
                         <AvatarFallback className="text-lg">
                           {freelancer.name
-                            .split(" ")
+                            .split(' ')
                             .map((n: string) => n[0])
-                            .join("")}
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -439,7 +441,7 @@ export function ProjectTeam({
                       <Button variant="outline" size="sm">
                         View Profile
                       </Button>
-                      {userType === "employer" && (
+                      {userType === 'employer' && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -517,16 +519,16 @@ export function ProjectTeam({
                           <AvatarFallback className="text-lg">
                             {invite.freelancer?.fullName
                               ? invite.freelancer.fullName
-                                  .split(" ")
+                                  .split(' ')
                                   .map((n: string) => n[0])
-                                  .join("")
-                              : "FL"}
+                                  .join('')
+                              : 'FL'}
                           </AvatarFallback>
                           {invite.freelancer?.profileImage && (
                             <AvatarImage
                               src={
                                 invite.freelancer.profileImage ||
-                                "/placeholder.svg"
+                                '/placeholder.svg'
                               }
                               className="w-full h-full object-cover"
                             />
@@ -534,10 +536,10 @@ export function ProjectTeam({
                         </Avatar>
                         <div>
                           <p className="font-medium">
-                            {invite.freelancer?.fullName || "Freelancer"}
+                            {invite.freelancer?.fullName || 'Freelancer'}
                           </p>
                           <p className="text-sm text-slate-500">
-                            {invite.freelancer?.role || "Unknown Role"}
+                            {invite.freelancer?.role || 'Unknown Role'}
                           </p>
                         </div>
                       </div>
@@ -554,11 +556,11 @@ export function ProjectTeam({
                           <span className="text-slate-500">Status</span>
                           <Badge
                             variant={
-                              invite.status === "pending"
-                                ? "outline"
-                                : invite.status === "accepted"
-                                ? "default"
-                                : "destructive"
+                              invite.status === 'pending'
+                                ? 'outline'
+                                : invite.status === 'accepted'
+                                ? 'default'
+                                : 'destructive'
                             }
                           >
                             {invite.status.charAt(0).toUpperCase() +
@@ -570,7 +572,7 @@ export function ProjectTeam({
                       <div className="mt-4">
                         <p className="text-sm text-slate-600 mb-2">Message:</p>
                         <p className="text-sm italic">
-                          {invite.message || "No message provided"}
+                          {invite.message || 'No message provided'}
                         </p>
                       </div>
 
@@ -578,7 +580,7 @@ export function ProjectTeam({
                         <Button
                           variant="outline"
                           size="sm"
-                          disabled={invite.status !== "pending"}
+                          disabled={invite.status !== 'pending'}
                           className="text-red-500 border-red-200 hover:bg-red-50"
                         >
                           Cancel Invite
@@ -624,14 +626,14 @@ export function ProjectTeam({
                 <Avatar className="h-24 w-24 mx-auto">
                   <AvatarFallback className="text-xl">
                     {selectedFreelancer?.fullName
-                      ?.split(" ")
+                      ?.split(' ')
                       ?.map((n: string) => n[0])
-                      ?.join("")}
+                      ?.join('')}
                   </AvatarFallback>
                   <AvatarImage
-                    src={selectedFreelancer?.profileImage || "/placeholder.svg"}
+                    src={selectedFreelancer?.profileImage || '/placeholder.svg'}
                     className="w-full h-full object-cover"
-                  />{" "}
+                  />{' '}
                 </Avatar>
                 <div className="mt-4 text-center">
                   <div className="flex items-center justify-center gap-1 mb-2">
@@ -683,9 +685,9 @@ export function ProjectTeam({
                 <Badge
                   variant="outline"
                   className={
-                    selectedFreelancer?.availability === "Available"
-                      ? "bg-blue-50 text-blue-700 border-blue-200"
-                      : "bg-amber-50 text-amber-700 border-amber-200"
+                    selectedFreelancer?.availability === 'Available'
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200'
                   }
                 >
                   {selectedFreelancer?.availability}
@@ -707,7 +709,7 @@ export function ProjectTeam({
               >
                 Close
               </Button>
-              {userType === "employer" && (
+              {userType === 'employer' && (
                 <>
                   <Button
                     variant="outline"
@@ -789,7 +791,7 @@ export function ProjectTeam({
                   Sending...
                 </>
               ) : (
-                "Send Invitation"
+                'Send Invitation'
               )}
             </Button>
           </DialogFooter>

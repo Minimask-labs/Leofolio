@@ -43,7 +43,13 @@ export function ProjectManagement() {
     message: "",
     isBlockchainProcessing: false,
   })
-  const { handleCreateProject, fetchProjects, projects } = useProjectStore()
+  const {
+    handleCreateProject,
+    fetchProjects,
+    fetchCompletedProjects,
+    completed_projects,
+    projects
+  } = useProjectStore();
   const [projectPayload, setProjectPayload] = useState({
     name: "Website Redesign",
     description: "A project to redesign the company website for better UX and performance.",
@@ -374,7 +380,9 @@ export function ProjectManagement() {
   }
   useEffect(() => {
     fetchProjects()
-  }, [fetchProjects])
+    fetchCompletedProjects({ status: "completed" })
+    console.log('completed_projects:', completed_projects);
+  }, [])
 
   // If showing the project dashboard
   if (showDashboard && selectedProject) {
@@ -430,28 +438,38 @@ export function ProjectManagement() {
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mb-4"></div>
               <h3 className="text-lg font-medium mb-2">
-                {loadingState.stage === "validating" && "Validating Project Information"}
-                {loadingState.stage === "creating-backend" && "Creating Project"}
-                {loadingState.stage === "creating-blockchain" && "Recording on Blockchain"}
-                {loadingState.stage === "completed" && "Project Created!"}
-                {loadingState.stage === "failed" && "Operation Failed"}
+                {loadingState.stage === 'validating' &&
+                  'Validating Project Information'}
+                {loadingState.stage === 'creating-backend' &&
+                  'Creating Project'}
+                {loadingState.stage === 'creating-blockchain' &&
+                  'Recording on Blockchain'}
+                {loadingState.stage === 'completed' && 'Project Created!'}
+                {loadingState.stage === 'failed' && 'Operation Failed'}
               </h3>
               <p className="text-slate-600 mb-4">{loadingState.message}</p>
 
-              {loadingState.stage === "creating-blockchain" && (
+              {loadingState.stage === 'creating-blockchain' && (
                 <div className="w-full mb-4">
                   <div className="h-2 bg-blue-100 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-600 animate-pulse"></div>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Blockchain operations may take a few minutes. Please don't close this window.
+                    Blockchain operations may take a few minutes. Please don't
+                    close this window.
                   </p>
                 </div>
               )}
 
-              {(loadingState.stage === "completed" || loadingState.stage === "failed") && (
-                <Button onClick={() => setLoadingState((prev) => ({ ...prev, isLoading: false }))} className="mt-2">
-                  {loadingState.stage === "completed" ? "Continue" : "Close"}
+              {(loadingState.stage === 'completed' ||
+                loadingState.stage === 'failed') && (
+                <Button
+                  onClick={() =>
+                    setLoadingState((prev) => ({ ...prev, isLoading: false }))
+                  }
+                  className="mt-2"
+                >
+                  {loadingState.stage === 'completed' ? 'Continue' : 'Close'}
                 </Button>
               )}
             </div>
@@ -463,9 +481,14 @@ export function ProjectManagement() {
         <div className="flex lg:flex-row flex-col justify-between items-center">
           <div>
             <h2 className="text-xl font-semibold mb-2">Manage Projects</h2>
-            <p className="text-slate-600">Organize and track projects with your hired freelancers.</p>
+            <p className="text-slate-600">
+              Organize and track projects with your hired freelancers.
+            </p>
           </div>
-          <Button onClick={() => setIsCreatingProject(true)} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button
+            onClick={() => setIsCreatingProject(true)}
+            className="bg-blue-600 text-white hover:bg-blue-700"
+          >
             <Plus className="mr-2 h-4 w-4" />
             New Project
           </Button>
@@ -476,7 +499,9 @@ export function ProjectManagement() {
             {/* create project */}
             <CardHeader>
               <CardTitle>Create New Project</CardTitle>
-              <CardDescription>Set up a new project and assign freelancers</CardDescription>
+              <CardDescription>
+                Set up a new project and assign freelancers
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -485,11 +510,18 @@ export function ProjectManagement() {
                   id="name"
                   placeholder="e.g. Website Redesign"
                   value={projectPayload.name}
-                  onChange={(e) => setProjectPayload({ ...projectPayload, name: e.target.value })}
-                  className={errors.name ? "border-red-500" : ""}
+                  onChange={(e) =>
+                    setProjectPayload({
+                      ...projectPayload,
+                      name: e.target.value
+                    })
+                  }
+                  className={errors.name ? 'border-red-500' : ''}
                   disabled={loadingState.isLoading}
                 />
-                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="description">Project Description</Label>
@@ -499,20 +531,28 @@ export function ProjectManagement() {
                   onChange={(e) =>
                     setProjectPayload({
                       ...projectPayload,
-                      description: e.target.value,
+                      description: e.target.value
                     })
                   }
                   rows={3}
                   placeholder="Describe the project scope and goals..."
-                  className={errors.description ? "border-red-500" : ""}
+                  className={errors.description ? 'border-red-500' : ''}
                   disabled={loadingState.isLoading}
                 />
-                {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
+                {errors.description && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.description}
+                  </p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Start Date</Label>
-                  <Input id="startDate" type="date" disabled={loadingState.isLoading} />
+                  <Input
+                    id="startDate"
+                    type="date"
+                    disabled={loadingState.isLoading}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="deadline">Deadline</Label>
@@ -523,13 +563,17 @@ export function ProjectManagement() {
                     onChange={(e) =>
                       setProjectPayload({
                         ...projectPayload,
-                        deadline: e.target.value,
+                        deadline: e.target.value
                       })
                     }
-                    className={errors.deadline ? "border-red-500" : ""}
+                    className={errors.deadline ? 'border-red-500' : ''}
                     disabled={loadingState.isLoading}
                   />
-                  {errors.deadline && <p className="text-xs text-red-500 mt-1">{errors.deadline}</p>}
+                  {errors.deadline && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.deadline}
+                    </p>
+                  )}
                 </div>
               </div>
               {/* [planning, in_progress, completed, on_hold, cancelled] */}
@@ -537,7 +581,9 @@ export function ProjectManagement() {
                 <Label htmlFor="status">Project Status</Label>
                 <Select
                   defaultValue="planning"
-                  onValueChange={(value) => setProjectPayload({ ...projectPayload, status: value })}
+                  onValueChange={(value) =>
+                    setProjectPayload({ ...projectPayload, status: value })
+                  }
                   value={projectPayload.status}
                   disabled={loadingState.isLoading}
                 >
@@ -552,7 +598,7 @@ export function ProjectManagement() {
                     <SelectItem value="cancelled">cancelled</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>{" "}
+              </div>{' '}
               <div className="space-y-2">
                 <Label htmlFor="price">Project Price (Aleo tokens)</Label>
                 <div className="relative">
@@ -564,34 +610,47 @@ export function ProjectManagement() {
                     onChange={(e) =>
                       setProjectPayload({
                         ...projectPayload,
-                        price: Number.parseFloat(e.target.value) || 0,
+                        price: Number.parseFloat(e.target.value) || 0
                       })
                     }
-                    className={errors.price ? "border-red-500" : ""}
+                    className={errors.price ? 'border-red-500' : ''}
                     disabled={loadingState.isLoading}
                   />
-                  {errors.price && <p className="text-xs text-red-500 mt-1">{errors.price}</p>}
+                  {errors.price && (
+                    <p className="text-xs text-red-500 mt-1">{errors.price}</p>
+                  )}
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Project Milestones</Label>
-                {errors.milestones && <p className="text-xs text-red-500 mt-1">{errors.milestones}</p>}
+                {errors.milestones && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.milestones}
+                  </p>
+                )}
                 <div className="space-y-4 border rounded-md p-4">
                   {projectPayload.milestones.map((milestone, index) => (
-                    <div key={index} className="space-y-2 pb-4 border-b last:border-b-0 last:pb-0">
+                    <div
+                      key={index}
+                      className="space-y-2 pb-4 border-b last:border-b-0 last:pb-0"
+                    >
                       <div className="flex justify-between">
-                        <h4 className="text-sm font-medium">Milestone {index + 1}</h4>
+                        <h4 className="text-sm font-medium">
+                          Milestone {index + 1}
+                        </h4>
                         <Button
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0 text-red-500"
                           onClick={() => {
-                            const updatedMilestones = [...projectPayload.milestones]
-                            updatedMilestones.splice(index, 1)
+                            const updatedMilestones = [
+                              ...projectPayload.milestones
+                            ];
+                            updatedMilestones.splice(index, 1);
                             setProjectPayload({
                               ...projectPayload,
-                              milestones: updatedMilestones,
-                            })
+                              milestones: updatedMilestones
+                            });
                           }}
                           disabled={loadingState.isLoading}
                         >
@@ -616,38 +675,53 @@ export function ProjectManagement() {
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         <div>
-                          <Label htmlFor={`milestone-title-${index}`}>Title</Label>
+                          <Label htmlFor={`milestone-title-${index}`}>
+                            Title
+                          </Label>
                           <Input
                             id={`milestone-title-${index}`}
                             value={milestone.title}
                             onChange={(e) => {
-                              const updatedMilestones = [...projectPayload.milestones]
-                              updatedMilestones[index].title = e.target.value
+                              const updatedMilestones = [
+                                ...projectPayload.milestones
+                              ];
+                              updatedMilestones[index].title = e.target.value;
                               setProjectPayload({
                                 ...projectPayload,
-                                milestones: updatedMilestones,
-                              })
+                                milestones: updatedMilestones
+                              });
                             }}
                             placeholder="Milestone title"
-                            className={errors[`milestone-${index}-title`] ? "border-red-500" : ""}
+                            className={
+                              errors[`milestone-${index}-title`]
+                                ? 'border-red-500'
+                                : ''
+                            }
                             disabled={loadingState.isLoading}
                           />
                           {errors[`milestone-${index}-title`] && (
-                            <p className="text-xs text-red-500 mt-1">{errors[`milestone-${index}-title`]}</p>
+                            <p className="text-xs text-red-500 mt-1">
+                              {errors[`milestone-${index}-title`]}
+                            </p>
                           )}
                         </div>
                         <div>
-                          <Label htmlFor={`milestone-description-${index}`}>Description</Label>
+                          <Label htmlFor={`milestone-description-${index}`}>
+                            Description
+                          </Label>
                           <Textarea
                             id={`milestone-description-${index}`}
                             value={milestone.description}
                             onChange={(e) => {
-                              const updatedMilestones = [...projectPayload.milestones]
-                              updatedMilestones[index].description = e.target.value
+                              const updatedMilestones = [
+                                ...projectPayload.milestones
+                              ];
+                              updatedMilestones[index].description =
+                                e.target.value;
                               setProjectPayload({
                                 ...projectPayload,
-                                milestones: updatedMilestones,
-                              })
+                                milestones: updatedMilestones
+                              });
                             }}
                             placeholder="Describe this milestone"
                             rows={2}
@@ -656,37 +730,59 @@ export function ProjectManagement() {
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           <div>
-                            <Label htmlFor={`milestone-deadline-${index}`}>Deadline</Label>
+                            <Label htmlFor={`milestone-deadline-${index}`}>
+                              Deadline
+                            </Label>
                             <Input
                               id={`milestone-deadline-${index}`}
                               type="date"
-                              value={milestone.deadline ? new Date(milestone.deadline).toISOString().split("T")[0] : ""}
+                              value={
+                                milestone.deadline
+                                  ? new Date(milestone.deadline)
+                                      .toISOString()
+                                      .split('T')[0]
+                                  : ''
+                              }
                               onChange={(e) => {
-                                const updatedMilestones = [...projectPayload.milestones]
-                                updatedMilestones[index].deadline = new Date(e.target.value).toISOString()
+                                const updatedMilestones = [
+                                  ...projectPayload.milestones
+                                ];
+                                updatedMilestones[index].deadline = new Date(
+                                  e.target.value
+                                ).toISOString();
                                 setProjectPayload({
                                   ...projectPayload,
-                                  milestones: updatedMilestones,
-                                })
+                                  milestones: updatedMilestones
+                                });
                               }}
-                              className={errors[`milestone-${index}-deadline`] ? "border-red-500" : ""}
+                              className={
+                                errors[`milestone-${index}-deadline`]
+                                  ? 'border-red-500'
+                                  : ''
+                              }
                               disabled={loadingState.isLoading}
                             />
                             {errors[`milestone-${index}-deadline`] && (
-                              <p className="text-xs text-red-500 mt-1">{errors[`milestone-${index}-deadline`]}</p>
+                              <p className="text-xs text-red-500 mt-1">
+                                {errors[`milestone-${index}-deadline`]}
+                              </p>
                             )}
                           </div>
                           <div>
-                            <Label htmlFor={`milestone-status-${index}`}>Status</Label>
+                            <Label htmlFor={`milestone-status-${index}`}>
+                              Status
+                            </Label>
                             <Select
                               value={milestone.status}
                               onValueChange={(value) => {
-                                const updatedMilestones = [...projectPayload.milestones]
-                                updatedMilestones[index].status = value
+                                const updatedMilestones = [
+                                  ...projectPayload.milestones
+                                ];
+                                updatedMilestones[index].status = value;
                                 setProjectPayload({
                                   ...projectPayload,
-                                  milestones: updatedMilestones,
-                                })
+                                  milestones: updatedMilestones
+                                });
                               }}
                               disabled={loadingState.isLoading}
                             >
@@ -694,11 +790,19 @@ export function ProjectManagement() {
                                 <SelectValue placeholder="Select status" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="planning">Planning</SelectItem>
-                                <SelectItem value="in_progress">In Progress</SelectItem>
+                                <SelectItem value="planning">
+                                  Planning
+                                </SelectItem>
+                                <SelectItem value="in_progress">
+                                  In Progress
+                                </SelectItem>
                                 <SelectItem value="on_hold">on hold</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                                <SelectItem value="cancelled">cancelled</SelectItem>
+                                <SelectItem value="completed">
+                                  Completed
+                                </SelectItem>
+                                <SelectItem value="cancelled">
+                                  cancelled
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -714,15 +818,18 @@ export function ProjectManagement() {
                       className="w-full mt-2"
                       onClick={() => {
                         const newMilestone = {
-                          title: "",
-                          description: "",
+                          title: '',
+                          description: '',
                           deadline: new Date().toISOString(),
-                          status: "planning",
-                        }
+                          status: 'planning'
+                        };
                         setProjectPayload({
                           ...projectPayload,
-                          milestones: [...projectPayload.milestones, newMilestone],
-                        })
+                          milestones: [
+                            ...projectPayload.milestones,
+                            newMilestone
+                          ]
+                        });
                       }}
                       disabled={loadingState.isLoading}
                     >
@@ -737,7 +844,10 @@ export function ProjectManagement() {
                 <div className="border rounded-md p-4">
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     {projectPayload.medias.map((media, index) => (
-                      <div key={index} className="relative border rounded-md p-2">
+                      <div
+                        key={index}
+                        className="relative border rounded-md p-2"
+                      >
                         <div className="flex items-center gap-2">
                           <div className="w-12 h-12 bg-slate-100 rounded flex items-center justify-center">
                             <svg
@@ -752,14 +862,25 @@ export function ProjectManagement() {
                               strokeLinejoin="round"
                               className="h-6 w-6"
                             >
-                              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                              <rect
+                                width="18"
+                                height="18"
+                                x="3"
+                                y="3"
+                                rx="2"
+                                ry="2"
+                              ></rect>
                               <circle cx="9" cy="9" r="2"></circle>
                               <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
                             </svg>
                           </div>
                           <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium truncate">{media.name}</p>
-                            <p className="text-xs text-slate-500 truncate">{media.url}</p>
+                            <p className="text-sm font-medium truncate">
+                              {media.name}
+                            </p>
+                            <p className="text-xs text-slate-500 truncate">
+                              {media.url}
+                            </p>
                           </div>
                         </div>
                         <Button
@@ -767,12 +888,12 @@ export function ProjectManagement() {
                           size="sm"
                           className="absolute top-1 right-1 h-6 w-6 p-0 text-red-500"
                           onClick={() => {
-                            const updatedMedias = [...projectPayload.medias]
-                            updatedMedias.splice(index, 1)
+                            const updatedMedias = [...projectPayload.medias];
+                            updatedMedias.splice(index, 1);
                             setProjectPayload({
                               ...projectPayload,
-                              medias: updatedMedias,
-                            })
+                              medias: updatedMedias
+                            });
                           }}
                           disabled={loadingState.isLoading}
                         >
@@ -801,7 +922,11 @@ export function ProjectManagement() {
                     <div className="text-center">
                       <Label
                         htmlFor="media-upload"
-                        className={`cursor-pointer ${loadingState.isLoading ? "opacity-50 pointer-events-none" : ""}`}
+                        className={`cursor-pointer ${
+                          loadingState.isLoading
+                            ? 'opacity-50 pointer-events-none'
+                            : ''
+                        }`}
                       >
                         <div className="border-2 border-dashed border-slate-200 rounded-md p-6 flex flex-col items-center justify-center">
                           <svg
@@ -822,7 +947,9 @@ export function ProjectManagement() {
                             <circle cx="9" cy="9" r="2"></circle>
                             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
                           </svg>
-                          <p className="text-sm font-medium">Click to upload media</p>
+                          <p className="text-sm font-medium">
+                            Click to upload media
+                          </p>
                           <p className="text-xs text-slate-500 mt-1">
                             {5 - projectPayload.medias.length} uploads remaining
                           </p>
@@ -832,28 +959,32 @@ export function ProjectManagement() {
                           type="file"
                           className="hidden"
                           onChange={(e) => {
-                            const file = e.target.files?.[0]
+                            const file = e.target.files?.[0];
                             if (file && projectPayload.medias.length < 5) {
                               uploadedImage(file).then(() => {
                                 if (media && media[0]) {
                                   const newMedia = {
                                     name: file.name,
-                                    url: media[0],
-                                  }
+                                    url: media[0]
+                                  };
                                   setProjectPayload({
                                     ...projectPayload,
-                                    medias: [...projectPayload.medias, newMedia],
-                                  })
+                                    medias: [...projectPayload.medias, newMedia]
+                                  });
                                 }
-                              })
+                              });
                             }
                             // Reset the input value so the same file can be selected again
-                            e.target.value = ""
+                            e.target.value = '';
                           }}
                           disabled={loadingState.isLoading}
                         />
                       </Label>
-                      {isUploading && <p className="text-sm text-blue-600 mt-2">Uploading media...</p>}
+                      {isUploading && (
+                        <p className="text-sm text-blue-600 mt-2">
+                          Uploading media...
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -864,7 +995,11 @@ export function ProjectManagement() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={() => setIsCreatingProject(false)} disabled={loadingState.isLoading}>
+              <Button
+                variant="outline"
+                onClick={() => setIsCreatingProject(false)}
+                disabled={loadingState.isLoading}
+              >
                 Cancel
               </Button>
               <Button
@@ -875,14 +1010,16 @@ export function ProjectManagement() {
                 {loadingState.isLoading ? (
                   <>
                     <span className="mr-2">
-                      {loadingState.stage === "validating" && "Validating..."}
-                      {loadingState.stage === "creating-backend" && "Creating..."}
-                      {loadingState.stage === "creating-blockchain" && "Recording on Blockchain..."}
+                      {loadingState.stage === 'validating' && 'Validating...'}
+                      {loadingState.stage === 'creating-backend' &&
+                        'Creating...'}
+                      {loadingState.stage === 'creating-blockchain' &&
+                        'Recording on Blockchain...'}
                     </span>
                     <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
                   </>
                 ) : (
-                  "Create Project"
+                  'Create Project'
                 )}
               </Button>
             </CardFooter>
@@ -897,220 +1034,269 @@ export function ProjectManagement() {
             <TabsContent value="active" className="mt-4">
               <div className="grid grid-cols-1 gap-4">
                 {Array.isArray(projects?.data) &&
-                  projects.data
-                    .filter((p: any) => p.status !== "completed")
-                    .map((project: any) => (
-                      <Card key={project._id} className={expandedProject === project._id ? "border-blue-300" : ""}>
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-start">
-                            <CardTitle>{project.name}</CardTitle>
-                            {getStatusBadge(project.status)}
+                  projects.data.map((project: any) => (
+                    <Card
+                      key={project._id}
+                      className={
+                        expandedProject === project._id ? 'border-blue-300' : ''
+                      }
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <CardTitle>{project.name}</CardTitle>
+                          {getStatusBadge(project.status)}
+                        </div>
+                        <CardDescription>{project.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="pb-2">
+                        <div className="mb-4">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-sm font-medium">
+                              Progress
+                            </span>
+                            <span className="text-sm">{project.progress}%</span>
                           </div>
-                          <CardDescription>{project.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pb-2">
-                          <div className="mb-4">
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-sm font-medium">Progress</span>
-                              <span className="text-sm">{project.progress}%</span>
-                            </div>
-                            <Progress value={project.progress} className="h-2" />
-                          </div>
+                          <Progress value={project.progress} className="h-2" />
+                        </div>
 
-                          <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
-                            <Calendar className="h-4 w-4" />
-                            <span>Deadline: {new Date(project.deadline).toLocaleDateString()}</span>
-                          </div>
+                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            Deadline:{' '}
+                            {new Date(project.deadline).toLocaleDateString()}
+                          </span>
+                        </div>
 
-                          <div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Users className="h-4 w-4 text-slate-500" />
-                              <span className="text-sm font-medium">Assigned Freelancers</span>
-                            </div>
-                            <div className="space-y-2">
-                              {project?.freelancers?.map((freelancer: any, index: number) => (
-                                <div key={index} className="flex items-center gap-2">
+                        {/* <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="h-4 w-4 text-slate-500" />
+                            <span className="text-sm font-medium">
+                              Assigned Freelancers
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {project?.freelancers?.map(
+                              (freelancer: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-2"
+                                >
                                   <Avatar className="h-6 w-6">
                                     <AvatarFallback className="text-xs">
                                       {freelancer.name
-                                        .split(" ")
+                                        .split(' ')
                                         .map((n: any) => n[0])
-                                        .join("")}
+                                        .join('')}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <p className="text-sm font-medium">{freelancer.name}</p>
-                                    <p className="text-xs text-slate-500">{freelancer.role}</p>
+                                    <p className="text-sm font-medium">
+                                      {freelancer.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                      {freelancer.role}
+                                    </p>
                                   </div>
                                 </div>
-                              ))}
-                            </div>
+                              )
+                            )}
                           </div>
+                        </div> */}
 
-                          {expandedProject === project.id && (
-                            <div className="mt-6 space-y-4">
-                              <div>
-                                <h4 className="text-sm font-medium mb-2">Milestones</h4>
-                                <div className="space-y-2">
-                                  {project?.milestones?.map((milestone: any, index: number) => (
+                        {expandedProject === project._id && (
+                          <div className="mt-6 space-y-4">
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">
+                                Milestones
+                              </h4>
+                              <div className="space-y-2">
+                                {project?.milestones?.map(
+                                  (milestone: any, index: number) => (
                                     <div
                                       key={index}
                                       className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
                                     >
                                       <div className="flex items-center gap-2">
-                                        {milestone.status === "completed" ? (
+                                        {milestone.status === 'completed' ? (
                                           <CheckCircle className="h-4 w-4 text-blue-500" />
-                                        ) : milestone.status === "in_progress" ? (
+                                        ) : milestone.status ===
+                                          'in_progress' ? (
                                           <Clock className="h-4 w-4 text-blue-500" />
                                         ) : (
                                           <AlertCircle className="h-4 w-4 text-slate-400" />
                                         )}
-                                        <span className="text-sm">{milestone.title}</span>
+                                        <span className="text-sm">
+                                          {milestone.title}
+                                        </span>
                                       </div>
                                       <div className="flex items-center gap-2">
                                         <span className="text-xs text-blue-300">
-                                          Due: {new Date(milestone.deadline).toLocaleDateString()}
+                                          Due:{' '}
+                                          {new Date(
+                                            milestone.deadline
+                                          ).toLocaleDateString()}
                                         </span>
-                                        <Select defaultValue={milestone.status}>
-                                          <SelectTrigger className="h-7 w-[130px]">
-                                            <SelectValue placeholder="Status" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="planning">Planning</SelectItem>
-                                            <SelectItem value="in_progress">In Progress</SelectItem>
-                                            <SelectItem value="on_hold">on hold</SelectItem>
-                                            <SelectItem value="completed">Completed</SelectItem>
-                                            <SelectItem value="cancelled">cancelled</SelectItem>
-                                          </SelectContent>
-                                        </Select>
+                                        <div>
+                                          {getStatusBadge(milestone.status)}
+                                        </div>
                                       </div>
                                     </div>
-                                  ))}
-                                </div>
+                                  )
+                                )}
                               </div>
-
-                              <ProjectUpdates project={project} />
                             </div>
+                           </div>
+                        )}
+                      </CardContent>
+                      <CardFooter className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => toggleProjectExpansion(project._id)}
+                        >
+                          {expandedProject === project._id ? (
+                            <>
+                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
+                              Details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="h-4 w-4 mr-1" /> Show
+                              Details
+                            </>
                           )}
-                        </CardContent>
-                        <CardFooter className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={() => toggleProjectExpansion(project.id)}
-                          >
-                            {expandedProject === project.id ? (
-                              <>
-                                <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                              </>
-                            ) : (
-                              <>
-                                <ChevronDown className="h-4 w-4 mr-1" /> Show Details
-                              </>
-                            )}
-                          </Button>
+                        </Button>
 
-                          <Button
-                            className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
-                            onClick={() => router.replace(`project-dashboard/${project._id}`)}
-                          >
-                            Project Dashboard
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    ))}
+                        <Button
+                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={() =>
+                            router.replace(`project-dashboard/${project._id}`)
+                          }
+                        >
+                          Project Dashboard
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
               </div>
             </TabsContent>
 
             <TabsContent value="completed" className="mt-4">
               <div className="grid grid-cols-1 gap-4">
-                {Array.isArray(projects) &&
-                  projects
-                    .filter((p: any) => p.status === "completed")
-                    .map((project: any) => (
-                      <Card key={project.id} className={expandedProject === project.id ? "border-blue-300" : ""}>
-                        <CardHeader className="pb-2">
-                          <div className="flex justify-between items-start">
-                            <CardTitle>{project.name}</CardTitle>
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                              Completed
-                            </Badge>
-                          </div>
-                          <CardDescription>{project.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pb-2">
-                          <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                              Completed on:{" "}
-                              {project.completionDate ? new Date(project.completionDate).toLocaleDateString() : "N/A"}
+                {Array.isArray(projects?.data) &&
+                  projects.data.map((project: any) => (
+                    <Card
+                      key={project?._id}
+                      className={
+                        expandedProject === project?._id
+                          ? 'border-blue-300'
+                          : ''
+                      }
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <CardTitle>{project?.name}</CardTitle>
+                          <Badge
+                            variant="outline"
+                            className="bg-blue-50 text-blue-700 border-blue-200"
+                          >
+                            {getStatusBadge(project?.status)}
+                          </Badge>
+                        </div>
+                        <CardDescription>
+                          {project?.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pb-2">
+                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            Completed on:{' '}
+                            {project?.updatedAt
+                              ? new Date(
+                                  project?.updatedAt
+                                ).toLocaleDateString()
+                              : 'N/A'}
+                          </span>
+                        </div>
+
+                        {/* <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="h-4 w-4 text-slate-500" />
+                            <span className="text-sm font-medium">
+                              Freelancers
                             </span>
                           </div>
-
-                          <div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Users className="h-4 w-4 text-slate-500" />
-                              <span className="text-sm font-medium">Freelancers</span>
-                            </div>
-                            <div className="space-y-2">
-                              {project?.freelancers?.map((freelancer: any, index: number) => (
-                                <div key={index} className="flex items-center gap-2">
+                          <div className="space-y-2">
+                            {project?.freelancers?.map(
+                              (freelancer: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-2"
+                                >
                                   <Avatar className="h-6 w-6">
                                     <AvatarFallback className="text-xs">
-                                      {freelancer.name
-                                        .split(" ")
+                                      {freelancer?.name
+                                        .split(' ')
                                         .map((n: any) => n[0])
-                                        .join("")}
+                                        .join('')}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <p className="text-sm font-medium">{freelancer.name}</p>
-                                    <p className="text-xs text-slate-500">{freelancer.role}</p>
+                                    <p className="text-sm font-medium">
+                                      {freelancer?.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                      {freelancer?.role}
+                                    </p>
                                   </div>
                                 </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {expandedProject === project.id && (
-                            <div className="mt-6 space-y-4">
-                              <ProjectUpdates project={project} />
-                            </div>
-                          )}
-                        </CardContent>
-                        <CardFooter className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={() => toggleProjectExpansion(project.id)}
-                          >
-                            {expandedProject === project.id ? (
-                              <>
-                                <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                              </>
-                            ) : (
-                              <>
-                                <ChevronDown className="h-4 w-4 mr-1" /> Show Details
-                              </>
+                              )
                             )}
-                          </Button>
-                          <Button
-                            className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
-                            onClick={() => {
-                              setSelectedProject(project)
-                              setShowReport(true)
-                            }}
-                          >
-                            View Report
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    ))}
+                          </div>
+                        </div> */}
+
+                        {/* {expandedProject === project?._id && (
+                          <div className="mt-6 space-y-4">
+                            <ProjectUpdates project={project} />
+                          </div>
+                        )} */}
+                      </CardContent>
+                      <CardFooter className="flex gap-2">
+                        {/* <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => toggleProjectExpansion(project?._id)}
+                        >
+                          {expandedProject === project?._id ? (
+                            <>
+                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
+                              Details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="h-4 w-4 mr-1" /> Show
+                              Details
+                            </>
+                          )}
+                        </Button> */}
+                        <Button
+                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setShowReport(true);
+                          }}
+                        >
+                          View Report
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
               </div>
             </TabsContent>
           </Tabs>
         )}
       </div>
     </>
-  )
+  );
 }

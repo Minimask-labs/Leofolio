@@ -360,10 +360,8 @@ return response;
       (m: any) => m.status === 'in-progress'
     )?.length;
 
-    const startDate = new Date(project_details?.startDate);
-    const endDate = project_details?.completionDate
-      ? new Date(project_details?.completionDate)
-      : new Date(project_details?.deadline);
+    const startDate = new Date(project_details?.createdAt);
+    const endDate = new Date(project_details?.deadline);
     const totalDays = Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -489,12 +487,36 @@ useEffect(() => {
           {getStatusBadge(project_details?.status)}
         </div>
       </div>
+      {/* If the project is completed, show the certificate/reward section */}
+      {project_details?.status === 'completed' && (
+        <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="bg-amber-100 p-4 rounded-full">
+                <Gift className="h-8 w-8 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-medium text-amber-800">
+                  Project Completed Successfully!
+                </h3>
+                <p className="text-amber-700">
+                  This project has been completed and approved. A certificate of
+                  completion is available.
+                </p>
+              </div>
+              <Button className="bg-amber-600 hover:bg-amber-700">
+                View Certificate
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Project Tabs */}
       <Tabs value={activeTab} onValueChange={(tab) => updateUrlTab(tab)}>
         <TabsList
           className={`${
-            userType !== 'freelancer' ? 'grid-cols-5' : 'grid-cols-4'
+            userType !== 'freelancer' ? 'grid-cols-4' : 'grid-cols-4'
           } grid  w-full`}
         >
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -504,7 +526,7 @@ useEffect(() => {
           ) : (
             <></>
           )}
-          <TabsTrigger value="chat">Chat</TabsTrigger>
+          {/* <TabsTrigger value="chat">Chat</TabsTrigger> */}
           <TabsTrigger value="files">Files</TabsTrigger>
         </TabsList>
         {/* Overview Tab */}
@@ -533,7 +555,7 @@ useEffect(() => {
                     <p className="text-sm text-slate-500">Start Date</p>
                     <p className="font-medium">
                       {new Date(
-                        project_details?.startDate
+                        project_details?.createdAt
                       ).toLocaleDateString()}
                     </p>
                   </div>
@@ -618,8 +640,8 @@ useEffect(() => {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
+          <div className="grid grid-cols-1 gap-4">
+            {/* <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Team</CardTitle>
               </CardHeader>
@@ -666,9 +688,9 @@ useEffect(() => {
                   )}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card>
+            {/* <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Recent Updates</CardTitle>
               </CardHeader>
@@ -697,7 +719,7 @@ useEffect(() => {
                   View All Updates
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card>
               <CardHeader className="pb-2">
@@ -713,7 +735,7 @@ useEffect(() => {
                       <p className="text-xs font-medium">Project Started</p>
                       <p className="text-xs text-slate-500">
                         {new Date(
-                          project_details?.startDate
+                          project_details?.createdAt
                         ).toLocaleDateString()}
                       </p>
                     </div>
@@ -756,7 +778,7 @@ useEffect(() => {
                         <p className="text-xs font-medium">Completed</p>
                         <p className="text-xs text-slate-500">
                           {new Date(
-                            project_details?.completionDate
+                            project_details?.deadline
                           ).toLocaleDateString()}
                         </p>
                       </div>
@@ -790,9 +812,7 @@ useEffect(() => {
                     <p className="text-sm text-slate-500">Days to Complete</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-purple-600">
-                      {project_details?.freelancers?.length}
-                    </p>
+                    <p className="text-3xl font-bold text-purple-600">1 </p>
                     <p className="text-sm text-slate-500">Team Members</p>
                   </div>
                   <div className="bg-slate-50 p-4 rounded-lg text-center">
@@ -805,20 +825,17 @@ useEffect(() => {
 
                 <div>
                   <h3 className="text-lg font-medium mb-2">Project Summary</h3>
-                  <p className="text-sm text-slate-600">
-                    This project was completed successfully, meeting all primary
-                    objectives and deliverables. The team overcame several
-                    challenges including [specific challenges] and delivered
-                    high-quality work that exceeded client expectations.
+                  <p className="text-sm text-slate-300">
+                    {project_details?.description}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1  gap-6">
                   <div>
                     <h3 className="text-base font-medium mb-2">
                       Client Feedback
                     </h3>
-                    <div className="border rounded-md p-4 bg-slate-50">
+                    <div className="border rounded-md text-slate-500 p-4 bg-slate-50">
                       <div className="flex items-center gap-2 mb-2">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
@@ -847,7 +864,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <h3 className="text-base font-medium mb-2">
                       Key Achievements
                     </h3>
@@ -873,7 +890,7 @@ useEffect(() => {
                         <span>Provided comprehensive documentation</span>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex justify-center mt-4">
@@ -1016,45 +1033,67 @@ useEffect(() => {
                         type="button"
                         variant="outline"
                         onClick={() => approveMilestone(milestone?._id)}
-                        disabled={isApprovingMilestone === milestone?._id}
+                        disabled={
+                          isApprovingMilestone === milestone?._id ||
+                          milestone?.status === 'completed'
+                        }
                       >
-                        {isApprovingMilestone === milestone?._id ? (
-                          <>
-                            <span className="mr-2">Approving...</span>
-                            <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                          </>
+                        {milestone.status === 'completed' ? (
+                          <span className="text-slate-500">
+                            Milestone Completed
+                          </span>
                         ) : (
-                          'Approve Milestone'
+                          <>
+                            {isApprovingMilestone === milestone?._id ? (
+                              <>
+                                <span className="mr-2">Approving...</span>
+                                <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                              </>
+                            ) : (
+                              'Approve Milestone'
+                            )}
+                          </>
                         )}
                       </Button>
                     ) : (
-                      <Select
-                        defaultValue={milestone.status}
-                        onValueChange={(value: any) =>
-                          updateMilestoneStatus(milestone._id, value)
-                        }
-                        disabled={
-                          isCompletingMilestone === milestone?._id ||
-                          milestone.status === 'completed'
-                        }
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          {isCompletingMilestone === milestone?._id ? (
-                            <div className="flex items-center">
-                              <span className="mr-2">Updating...</span>
-                              <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                            </div>
-                          ) : (
-                            <SelectValue placeholder="Update status" />
-                          )}
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="in-progress">
-                            In Progress
-                          </SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <>
+                        {' '}
+                        {milestone.status === 'completed' ? (
+                          <span className="text-slate-500">
+                            Milestone Completed
+                          </span>
+                        ) : (
+                          <Select
+                            defaultValue={milestone.status}
+                            onValueChange={(value: any) =>
+                              updateMilestoneStatus(milestone._id, value)
+                            }
+                            disabled={
+                              isCompletingMilestone === milestone?._id ||
+                              milestone.status === 'completed'
+                            }
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              {isCompletingMilestone === milestone?._id ? (
+                                <div className="flex items-center">
+                                  <span className="mr-2">Updating...</span>
+                                  <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                                </div>
+                              ) : (
+                                <SelectValue placeholder="Update status" />
+                              )}
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="in-progress">
+                                In Progress
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                Completed
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </>
                     )}
                   </CardFooter>
                 </Card>
@@ -1215,39 +1254,20 @@ useEffect(() => {
                 <h3 className="font-medium">Project Documents</h3>
               </div>
               <div className="divide-y">
-                {[
-                  {
-                    name: 'Project Proposal.pdf',
-                    type: 'pdf',
-                    size: '2.4 MB',
-                    date: '2023-07-01'
-                  },
-                  {
-                    name: 'Requirements Specification.docx',
-                    type: 'docx',
-                    size: '1.8 MB',
-                    date: '2023-07-05'
-                  },
-                  {
-                    name: 'Design Assets.zip',
-                    type: 'zip',
-                    size: '15.2 MB',
-                    date: '2023-07-15'
-                  }
-                ].map((file, idx) => (
+                {project_details?.medias?.map((file: any, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
+                      {/* <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
                         {file.type}
-                      </div>
+                      </div> */}
                       <div>
                         <p className="font-medium">{file.name}</p>
                         <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
-                          {new Date(file.date).toLocaleDateString()}
+                          {/* {file.size} • Uploaded on{' '} */}
+                          {/* {new Date(file.date).toLocaleDateString()} */}
                         </p>
                       </div>
                     </div>
@@ -1264,7 +1284,7 @@ useEffect(() => {
                 <h3 className="font-medium">Deliverables</h3>
               </div>
               <div className="divide-y">
-                {[
+                {/* {[
                   {
                     name: 'Final Presentation.pptx',
                     type: 'pptx',
@@ -1298,37 +1318,12 @@ useEffect(() => {
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* If the project is completed, show the certificate/reward section */}
-      {project_details?.status === 'completed' && (
-        <Card className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <div className="bg-amber-100 p-4 rounded-full">
-                <Gift className="h-8 w-8 text-amber-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-amber-800">
-                  Project Completed Successfully!
-                </h3>
-                <p className="text-amber-700">
-                  This project has been completed and approved. A certificate of
-                  completion is available.
-                </p>
-              </div>
-              <Button className="bg-amber-600 hover:bg-amber-700">
-                View Certificate
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

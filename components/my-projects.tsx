@@ -55,6 +55,8 @@ export function MyProjects() {
     fetchProjects,
     projects,
     fetchFreelancerProjects,
+    fetchFreelancerCompletedProjects,
+    freelancer_completed_projects,
     freelancer_projects
   } = useProjectStore();
   const router = useRouter();
@@ -524,7 +526,8 @@ export function MyProjects() {
   useEffect(() => {
     const fetchData = async () => {
       await handleViewProjectInvitationsList();
-      fetchFreelancerProjects();
+      await fetchFreelancerProjects();
+      await fetchFreelancerCompletedProjects();
     };
     fetchData();
   }, [handleViewProjectInvitationsList, fetchFreelancerProjects]);
@@ -774,97 +777,98 @@ export function MyProjects() {
         </TabsContent>
 
         <TabsContent value="completed" className="mt-4 space-y-4">
-          {completedProjects.map((project) => (
-            <Card key={project?.id}>
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-blue-600" />
-                      <CardTitle>{project?.title}</CardTitle>
-                    </div>
-                    <CardDescription>{project?.client}</CardDescription>
-                  </div>
-                  <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                    Completed
-                  </Badge>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pb-2">
-                <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
-                  <Calendar className="h-4 w-4" />
-                  <span>
-                    Completed:{' '}
-                    {new Date(project?.completionDate).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <p className="text-sm text-slate-700 mb-3">
-                  {project?.description}
-                </p>
-
-                {expandedProject === project?.id && (
-                  <div className="mt-4 space-y-4">
+          {Array.isArray(freelancer_completed_projects?.data) &&
+            freelancer_completed_projects.data.map((project: any) => (
+              <Card key={project?._id}>
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium mb-2">Milestones</h4>
-                      <div className="space-y-2">
-                        {project?.milestones.map((milestone) => (
-                          <div
-                            key={milestone?.id}
-                            className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
-                          >
-                            <div className="flex items-center gap-2">
-                              <CheckCircle className="h-4 w-4 text-blue-500" />
-                              <span className="text-sm">
-                                {milestone?.title}
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                        <CardTitle>{project?.title}</CardTitle>
+                      </div>
+                      <CardDescription>{project?.client}</CardDescription>
+                    </div>
+                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                      Completed
+                    </Badge>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="pb-2">
+                  <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
+                    <Calendar className="h-4 w-4" />
+                    <span>
+                      Completed:{' '}
+                      {new Date(project?.completionDate).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-slate-700 mb-3">
+                    {project?.description}
+                  </p>
+
+                  {expandedProject === project?.id && (
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium mb-2">Milestones</h4>
+                        <div className="space-y-2">
+                          {project?.milestones.map((milestone:any) => (
+                            <div
+                              key={milestone?.id}
+                              className="flex justify-between items-center p-2 bg-slate-50 rounded-md"
+                            >
+                              <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-blue-500" />
+                                <span className="text-sm">
+                                  {milestone?.title}
+                                </span>
+                              </div>
+                              <span className="text-xs text-slate-500">
+                                Completed on{' '}
+                                {new Date(
+                                  milestone?.dueDate
+                                ).toLocaleDateString()}
                               </span>
                             </div>
-                            <span className="text-xs text-slate-500">
-                              Completed on{' '}
-                              {new Date(
-                                milestone?.dueDate
-                              ).toLocaleDateString()}
-                            </span>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
+
+                      <ProjectUpdates project={project} />
                     </div>
-
-                    <ProjectUpdates project={project} />
-                  </div>
-                )}
-              </CardContent>
-
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  className="text-sm"
-                  onClick={() => toggleProjectExpansion(project?.id)}
-                >
-                  {expandedProject === project?.id ? (
-                    <>
-                      <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-4 w-4 mr-1" /> Show Details
-                    </>
                   )}
-                </Button>
+                </CardContent>
 
-                <Button
-                  className="bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={() => {
-                    setSelectedProject(project);
-                    setShowReport(true);
-                  }}
-                >
-                  View Report
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                <CardFooter className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    className="text-sm"
+                    onClick={() => toggleProjectExpansion(project?.id)}
+                  >
+                    {expandedProject === project?.id ? (
+                      <>
+                        <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4 mr-1" /> Show Details
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    className="bg-blue-600 text-white hover:bg-blue-700"
+                    onClick={() => {
+                      setSelectedProject(project);
+                      setShowReport(true);
+                    }}
+                  >
+                    View Report
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
         </TabsContent>
         <TabsContent value="invites" className="mt-4 space-y-4">
           {projects_invites?.map((project: any, index: number) => (

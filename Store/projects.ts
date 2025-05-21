@@ -64,13 +64,16 @@ export type UserState = {
   error: string | null;
   loading: boolean;
   projects: DataResponse | null;
+  completed_projects: DataResponse | null;
   projects_invites: any | null;
   project_details: any | null;
   freelancer_projects: DataResponse | null;
+  freelancer_completed_projects: DataResponse | null;
 };
 
 export type UserActions = {
   fetchProjects: (params?: any) => void;
+  fetchCompletedProjects: (params?: { status: 'completed' }) => void;
   handleCreateProject: (body: any) => Promise<void>;
   handleViewProjectInvitations: (params?: any) => Promise<void>;
   handleProjectInviteResponse: (
@@ -93,6 +96,7 @@ export type UserActions = {
   ) => Promise<void>;
   handleViewProjectDetail: (projectId: string) => Promise<void>;
   fetchFreelancerProjects: (params?: any) => Promise<void>;
+  fetchFreelancerCompletedProjects: (params?: {status: 'completed'}) => Promise<void>;
   handleCompleteProject: (projectId: string) => Promise<void>;
   handleApproveProject: (projectId: string) => Promise<void>;
   // Add more actions as needed
@@ -105,9 +109,11 @@ export const useProjectStore = create<UserStore>((set) => ({
   project_details: null,
   projects_invites: null,
   freelancer_projects: null,
+  freelancer_completed_projects: null,
   status: 'idle',
   error: null,
   loading: false,
+  completed_projects: null,
 
   // Action to set the singleProjectId
 
@@ -125,6 +131,45 @@ export const useProjectStore = create<UserStore>((set) => ({
       throw error;
     }
   },
+  fetchCompletedProjects: async (params?: { status: 'completed' }) => {
+    // export enum ProjectStatusEnum {
+    //   PLANNING = "planning",
+    //   IN_PROGRESS = "in_progress",
+    //   AWAITING_APPROVAL = "awaiting_approval",
+    //   COMPLETED = "completed",
+    //   ON_HOLD = "on_hold",
+    //   CANCELLED = "cancelled",
+    // }
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await myProjects(params);
+      set({
+        loading: false,
+        completed_projects: response.data,
+        status: 'succeeded'
+      });
+    } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+  fetchFreelancerCompletedProjects: async (params?: {
+    status: 'completed';
+  }) => {
+    set({ loading: true, status: 'loading', error: null });
+    try {
+      const response = await myFreelancerProjects(params);
+      set({
+        loading: false,
+        freelancer_completed_projects: response.data,
+        status: 'succeeded'
+      });
+    } catch (error: any) {
+      set({ loading: false, status: 'failed', error: error.message });
+      throw error;
+    }
+  },
+
   fetchFreelancerProjects: async (params?: any) => {
     set({ loading: true, status: 'loading', error: null });
     try {
@@ -246,8 +291,12 @@ export const useProjectStore = create<UserStore>((set) => ({
     set({ loading: true, status: 'loading', error: null });
     try {
       const response = await projectDetail({ projectId });
-      set({ loading: false, project_details: response.data, status: 'succeeded' });
-     } catch (error: any) {
+      set({
+        loading: false,
+        project_details: response.data,
+        status: 'succeeded'
+      });
+    } catch (error: any) {
       set({ loading: false, status: 'failed', error: error.message });
       throw error;
     }

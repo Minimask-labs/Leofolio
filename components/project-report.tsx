@@ -27,15 +27,13 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
 
   // Function to calculate project stats
   const calculateProjectStats = () => {
-    const totalMilestones = project.milestones.length;
-    const completedMilestones = project.milestones.filter(
+    const totalMilestones = project?.milestones?.length;
+    const completedMilestones = project?.milestones?.filter(
       (m: any) => m.status === 'completed'
     ).length;
 
-    const startDate = new Date(project.startDate);
-    const endDate = project.completionDate
-      ? new Date(project.completionDate)
-      : new Date(project.deadline);
+    const startDate = new Date(project?.createdAt);
+    const endDate = new Date(project?.deadline);
     const totalDays = Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -62,7 +60,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Project Completion Report</h1>
-          <p className="text-slate-600">{project.name || project.title}</p>
+          <p className="text-slate-300">{project?.name}</p>
         </div>
         <Button className="gap-2">
           <FileBarChart className="h-4 w-4" />
@@ -82,9 +80,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
               </h3>
               <p className="text-blue-700">
                 This project was completed on{' '}
-                {new Date(
-                  project.completionDate || project.deadline
-                ).toLocaleDateString()}
+                {new Date(project?.deadline).toLocaleDateString()}
               </p>
             </div>
             <div className="flex items-center gap-1">
@@ -100,9 +96,9 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 w-full">
+        <TabsList className="grid grid-cols-2 w-full">
           <TabsTrigger value="summary">Summary</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
+          {/* <TabsTrigger value="performance">Performance</TabsTrigger> */}
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
         </TabsList>
 
@@ -129,7 +125,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                     <Calendar className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold">{stats.totalDays}</div>
+                <div className="text-2xl font-bold">{stats?.totalDays}</div>
                 <p className="text-sm text-slate-500">Days to Complete</p>
               </CardContent>
             </Card>
@@ -141,9 +137,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                     <Users className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold">
-                  {project.freelancers.length}
-                </div>
+                <div className="text-2xl font-bold">1 </div>
                 <p className="text-sm text-slate-500">Team Members</p>
               </CardContent>
             </Card>
@@ -156,7 +150,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   </div>
                 </div>
                 <div className="text-2xl font-bold">
-                  {stats.onTimeCompletionRate}%
+                  {stats?.onTimeCompletionRate}%
                 </div>
                 <p className="text-sm text-slate-500">On-Time Completion</p>
               </CardContent>
@@ -173,37 +167,34 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   <div>
                     <p className="text-sm text-slate-500">Start Date</p>
                     <p className="font-medium">
-                      {new Date(project.startDate).toLocaleDateString()}
+                      {new Date(project?.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Completion Date</p>
                     <p className="font-medium">
-                      {new Date(
-                        project.completionDate || project.deadline
-                      ).toLocaleDateString()}
+                      {new Date(project?.deadline).toLocaleDateString()}
                     </p>
                   </div>
-                  <div>
+                  {/* <div>
                     <p className="text-sm text-slate-500">Client</p>
                     <p className="font-medium">
-                      {project.client || project.company}
+                      {project?.client || project?.company}
                     </p>
-                  </div>
+                  </div> */}
                   <div>
                     <p className="text-sm text-slate-500">Project ID</p>
-                    <p className="font-medium">PRJ-{project.id || '0001'}</p>
+                    <p className="font-medium">PRJ-{project?._id || '0001'}</p>
                   </div>
                 </div>
 
                 <div>
                   <p className="text-sm text-slate-500 mb-1">Description</p>
-                  <p className="text-sm">{project.description}</p>
+                  <p className="text-sm">{project?.description}</p>
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Key Achievements</CardTitle>
               </CardHeader>
@@ -251,64 +242,61 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   </li>
                 </ul>
               </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative pl-8 space-y-6 before:absolute before:left-4 before:top-0 before:h-full before:w-[2px] before:bg-slate-200">
-                <div className="relative pt-2">
+            </Card> */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Project Timeline</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="relative pl-8 space-y-6 before:absolute before:left-4 before:top-0 before:h-full before:w-[2px] before:bg-slate-200">
+                  {/* <div className="relative pt-2">
                   <div className="absolute -left-8 mt-1 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
                     <CheckCircle className="h-3 w-3 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-medium">Project Kick-off</p>
                     <p className="text-sm text-slate-500">
-                      {new Date(project.startDate).toLocaleDateString()}
+                      {new Date(project?.startDate).toLocaleDateString()}
                     </p>
                     <p className="text-sm mt-1">
                       Project requirements finalized and team assembled
                     </p>
                   </div>
-                </div>
+                </div> */}
 
-                {project.milestones.map((milestone: any, idx: number) => (
-                  <div key={idx} className="relative pt-2">
-                    <div className="absolute -left-8 mt-1 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <CheckCircle className="h-3 w-3 text-blue-600" />
+                  {project?.milestones.map((milestone: any, idx: number) => (
+                    <div key={idx} className="relative pt-2">
+                      <div className="absolute -left-8 mt-1 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <CheckCircle className="h-3 w-3 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{milestone?.title}</p>
+                        <p className="text-sm text-slate-500">
+                          {new Date(milestone?.deadline).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm mt-1">Milestone completed</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{milestone.title}</p>
-                      <p className="text-sm text-slate-500">
-                        {new Date(milestone.dueDate).toLocaleDateString()}
-                      </p>
-                      <p className="text-sm mt-1">Milestone completed</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
 
-                <div className="relative pt-2">
+                  {/* <div className="relative pt-2">
                   <div className="absolute -left-8 mt-1 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
                     <CheckCircle className="h-3 w-3 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-medium">Project Completion</p>
                     <p className="text-sm text-slate-500">
-                      {new Date(
-                        project.completionDate || project.deadline
-                      ).toLocaleDateString()}
+                      {new Date(project?.deadline).toLocaleDateString()}
                     </p>
                     <p className="text-sm mt-1">
                       All deliverables finalized and project closed
                     </p>
                   </div>
+                </div> */}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>{' '}
+          </div>
         </TabsContent>
 
         <TabsContent value="performance" className="space-y-6 mt-6">
@@ -345,19 +333,19 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                               <div className="flex items-center gap-2">
                                 <Avatar className="h-8 w-8">
                                   <AvatarFallback className="text-xs">
-                                    {freelancer.name
+                                    {freelancer?.name
                                       .split(' ')
                                       .map((n: string) => n[0])
                                       .join('')}
                                   </AvatarFallback>
                                 </Avatar>
                                 <span className="font-medium">
-                                  {freelancer.name}
+                                  {freelancer?.name}
                                 </span>
                               </div>
                             </td>
-                            <td className="p-3 text-slate-600">
-                              {freelancer.role}
+                            <td className="p-3 text-slate-300">
+                              {freelancer?.role}
                             </td>
                             <td className="p-3 text-center font-medium">
                               {4 + idx}
@@ -396,28 +384,32 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {project.milestones.map((milestone: any, idx: number) => (
-                        <div key={idx} className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium">
-                              {milestone.title}
-                            </span>
-                            <span className="text-xs text-slate-500">
-                              {new Date(milestone.dueDate).toLocaleDateString()}
-                            </span>
+                      {project?.milestones?.map(
+                        (milestone: any, idx: number) => (
+                          <div key={idx} className="space-y-1">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium">
+                                {milestone?.title}
+                              </span>
+                              <span className="text-xs text-slate-500">
+                                {new Date(
+                                  milestone?.dueDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-blue-500"
+                                style={{ width: `${100 - idx * 5}%` }}
+                              ></div>
+                            </div>
+                            <div className="flex justify-between text-xs text-slate-500">
+                              <span>Completed on time</span>
+                              <span>{100 - idx * 5}% efficiency</span>
+                            </div>
                           </div>
-                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-blue-500"
-                              style={{ width: `${100 - idx * 5}%` }}
-                            ></div>
-                          </div>
-                          <div className="flex justify-between text-xs text-slate-500">
-                            <span>Completed on time</span>
-                            <span>{100 - idx * 5}% efficiency</span>
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -571,20 +563,18 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   <div className="flex items-center gap-3 mb-3">
                     <Avatar className="h-10 w-10">
                       <AvatarFallback>
-                        {project.clientContact
+                        {project?.clientContact
                           ?.split(' ')
                           .map((n: string) => n[0])
                           .join('') || 'CL'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">
-                        {project.clientContact || 'Client Representative'}
+                      <p className="font-medium text-slate-600">
+                        {project?.clientContact || 'Client Representative'}
                       </p>
-                      <p className="text-xs text-slate-500">
-                        {new Date(
-                          project.completionDate || project.deadline
-                        ).toLocaleDateString()}
+                      <p className="text-xs text-slate-300">
+                        {new Date(project?.deadline).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="ml-auto flex items-center gap-0.5">
@@ -598,9 +588,9 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   </div>
 
                   <div>
-                    <p className="text-lg italic mb-2">
-                      "The team delivered exceptional work on this project. They
-                      were responsive, professional, and met all our
+                    <p className="text-lg italic text-slate-600 mb-2">
+                      "The team delivered exceptional work on this project?.
+                      They were responsive, professional, and met all our
                       requirements with high quality. I would definitely work
                       with them again."
                     </p>
@@ -647,7 +637,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center p-3">
                         <div className="w-1/3">
-                          <p className="font-medium">{item.category}</p>
+                          <p className="font-medium">{item?.category}</p>
                         </div>
                         <div className="w-1/3 flex items-center">
                           <div className="flex items-center gap-0.5">
@@ -666,7 +656,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                             {item.rating}
                           </span>
                         </div>
-                        <div className="w-1/3 text-sm text-slate-600">
+                        <div className="w-1/3 text-sm text-slate-300">
                           {item.comment}
                         </div>
                       </div>
@@ -677,7 +667,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Team Reflections</CardTitle>
             </CardHeader>
@@ -779,9 +769,9 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Recognition</CardTitle>
             </CardHeader>
@@ -791,17 +781,17 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                   {[
                     {
                       title: 'Highest Quality Code',
-                      recipient: project.freelancers[0]?.name,
+                      recipient: project?.freelancers[0]?.name,
                       icon: Award
                     },
                     {
                       title: 'Best Team Player',
-                      recipient: project.freelancers[1]?.name || 'Jamie Chen',
+                      recipient: project?.freelancers[1]?.name || 'Jamie Chen',
                       icon: Users
                     },
                     {
                       title: 'Most Innovative Solution',
-                      recipient: project.freelancers[2]?.name || 'Sam Wilson',
+                      recipient: project?.freelancers[2]?.name || 'Sam Wilson',
                       icon: Gift
                     }
                   ].map((award, idx) => (
@@ -834,7 +824,7 @@ export function ProjectReport({ project, userType }: ProjectReportProps) {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </TabsContent>
       </Tabs>
     </div>
