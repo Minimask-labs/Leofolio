@@ -516,7 +516,7 @@ useEffect(() => {
       <Tabs value={activeTab} onValueChange={(tab) => updateUrlTab(tab)}>
         <TabsList
           className={`${
-            userType !== 'freelancer' ? 'grid-cols-4' : 'grid-cols-4'
+            userType !== 'freelancer' ? 'grid-cols-4' : 'grid-cols-3'
           } grid  w-full`}
         >
           <TabsTrigger value="overview">Overview</TabsTrigger>

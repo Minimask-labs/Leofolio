@@ -37,11 +37,11 @@ export function FreelancerDashboard({ connected, setConnected }: FreelancerDashb
       />
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="devfolio" className="mt-8">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="devfolio">Devfolio</TabsTrigger>
             <TabsTrigger value="my-projects">My Projects</TabsTrigger>
             {/* <TabsTrigger value="available-projects">Available Projects</TabsTrigger> */}
-            <TabsTrigger value="payments">Payments</TabsTrigger>
+            {/* <TabsTrigger value="payments">Payments</TabsTrigger> */}
             {/* <TabsTrigger value="proofs">Generate Proofs</TabsTrigger> */}
           </TabsList>
           <TabsContent value="devfolio" className="mt-6">

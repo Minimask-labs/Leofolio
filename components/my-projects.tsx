@@ -651,7 +651,7 @@ export function MyProjects() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 mb-3">
+                  {/* <div className="flex items-center gap-2 mb-3">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback className="text-xs">
                         {project?.clientContact
@@ -661,7 +661,7 @@ export function MyProjects() {
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm">{project?.clientContact}</span>
-                  </div>
+                  </div> */}
 
                   {expandedProject === project?.id && (
                     <div className="mt-4 space-y-4">
@@ -709,7 +709,12 @@ export function MyProjects() {
                                               milestone.deadline
                                             ).toLocaleDateString()}
                                           </span>
-                                          <Select
+                                          <div>
+                                            {' '}
+                                            {getStatusBadge(milestone?.status)}
+                                          </div>
+
+                                          {/* <Select
                                             defaultValue={milestone.status}
                                           >
                                             <SelectTrigger className="h-7 w-[130px]">
@@ -719,17 +724,17 @@ export function MyProjects() {
                                               <SelectItem value="planning">
                                                 Planning
                                               </SelectItem>
-                                              {/* <SelectItem value="in_progress">
+                                               <SelectItem value="in_progress">
                                                 In Progress
                                               </SelectItem>
                                               <SelectItem value="on_hold">
                                                 on hold
-                                              </SelectItem> */}
+                                              </SelectItem> 
                                               <SelectItem value="completed">
                                                 Completed
                                               </SelectItem>
                                             </SelectContent>
-                                          </Select>
+                                          </Select> */}
                                         </div>
                                       </div>
                                     )
@@ -737,7 +742,7 @@ export function MyProjects() {
                                 </div>
                               </div>
 
-                              <ProjectUpdates project={project} />
+                              {/* <ProjectUpdates project={project} /> */}
                             </div>
                           )}
                         </div>
@@ -813,7 +818,7 @@ export function MyProjects() {
                       <div>
                         <h4 className="text-sm font-medium mb-2">Milestones</h4>
                         <div className="space-y-2">
-                          {project?.milestones.map((milestone:any) => (
+                          {project?.milestones.map((milestone: any) => (
                             <div
                               key={milestone?.id}
                               className="flex justify-between items-center p-2 bg-slate-50 rounded-md"

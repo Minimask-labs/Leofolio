@@ -200,10 +200,10 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
         onValueChange={setActiveTab}
         className="space-y-4"
       >
-        <TabsList className="w-full grid grid-cols-3">
+        <TabsList className="w-full grid grid-cols-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="credentials">Credentials</TabsTrigger>
-          <TabsTrigger value="work-history">Work History</TabsTrigger>
+          {/* <TabsTrigger value="credentials">Credentials</TabsTrigger>
+          <TabsTrigger value="work-history">Work History</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
