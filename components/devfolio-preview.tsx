@@ -7,6 +7,7 @@ import { CredentialManager } from './credential-manager';
 import { WorkHistory } from './work-history';
 import { useState, useEffect } from 'react';
 import GitHubCalendar from 'react-github-calendar';
+import { useProjectStore } from '@/Store/projects';
 
 import {
   Github,
@@ -46,6 +47,18 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
+    const {
+      handleViewProjectInvitationsList,
+      projects_invites,
+      handleProjectInviteResponse,
+      fetchProjects,
+      projects,
+      fetchFreelancerProjects,
+      fetchFreelancerCompletedProjects,
+      freelancer_completed_projects,
+      freelancer_projects
+    } = useProjectStore();
+  
   // if (profile?.socials?.github !== '') {
   //   const url = new URL(profile?.socials?.github);
   //   const pathname = url.pathname; // ""
@@ -70,6 +83,13 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
       extractUsername(profile?.socials?.github); // extractUsername(profile?.socials?.github);
     }
   }, []);
+  const fetchData = async () => {
+    await fetchFreelancerProjects();
+  };
+
+  useEffect(() => {
+    fetchData();
+   }, []);
 
   return (
     <div className=" border rounded-lg w-full shadow-sm overflow-hidden">
@@ -219,7 +239,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
                     <FileText className="h-6 w-6 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-2xl text-[#121212] font-bold">0</p>
+                    <p className="text-2xl text-[#121212] font-bold">
+                      {freelancer_projects?.meta?.total || 0}
+                    </p>
                     <p className="text-sm text-slate-600">Projects</p>
                   </div>
                 </CardContent>
