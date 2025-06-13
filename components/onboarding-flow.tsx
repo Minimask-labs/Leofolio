@@ -590,7 +590,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                           className={
                             errors.email ? 'border-red-500 pr-10' : 'pr-10'
                           }
-                         />
+                        />
                         {/* {isEmailVerified && (
                           <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600" />
                         )} */}
@@ -642,7 +642,7 @@ export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
                   <div className="space-y-2">
                     <Label htmlFor="username">Username</Label>
                     <div className="flex">
-                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-200 bg-muted text-muted-foreground text-sm">
                         @
                       </span>
                       <Input

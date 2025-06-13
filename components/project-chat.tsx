@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useChatStore } from "@/Store/chat";
-import { MessageSquare, Send, Search, ChevronLeft, Loader } from "lucide-react";
-import { formatDateTime } from "./utils/utils";
-import { useStore } from "@/Store/user";
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar } from '@/components/ui/avatar';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useChatStore } from '@/Store/chat';
+import { MessageSquare, Send, Search, ChevronLeft, Loader } from 'lucide-react';
+import { formatDateTime } from './utils/utils';
+import { useStore } from '@/Store/user';
 
 // Define a new interface for individual messages
 interface IMessage {
@@ -48,7 +48,7 @@ function ProjectChat() {
     chat,
     handleGetSingleConversation,
     handleViewMessages,
-    handleSendMessage,
+    handleSendMessage
   } = useChatStore();
 
   const { userData } = useStore();
@@ -57,21 +57,21 @@ function ProjectChat() {
   const [selectedConversation, setSelectedConversation] = useState<
     string | null
   >(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [chatData, setChatData] = useState<any[]>([]); // Holds all conversation items from API
   const [messages, setMessages] = useState<IMessage[]>([]); // State for messages of selected conversation
-  const [searchQuery, setSearchQuery] = useState("");
-  const tabParam = searchParams.get("tab"); // tabParam is read but not used to control component behavior
-  const [conversationId, setConversationId] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const tabParam = searchParams.get('tab'); // tabParam is read but not used to control component behavior
+  const [conversationId, setConversationId] = useState('');
   const currentUserId = userData?.data?.user._id;
-  const [recipientId, setRecipientId] = useState("");
+  const [recipientId, setRecipientId] = useState('');
   const [isLoading, setIsLoading] = useState(false); // General loading for messages
   const [isSending, setIsSending] = useState(false); // Specific loading for sending a message
   const [isInitialLoading, setIsInitialLoading] = useState(false); // Only for first load of messages
 
   useEffect(() => {
-    const id = searchParams.get("id");
-    const conversationIdParam = searchParams.get("conversationId");
+    const id = searchParams.get('id');
+    const conversationIdParam = searchParams.get('conversationId');
     if (id || conversationIdParam) {
       setSelectedConversation(id || conversationIdParam);
     }
@@ -80,12 +80,12 @@ function ProjectChat() {
   useEffect(() => {
     if (selectedConversation) {
       setConversationId(selectedConversation);
-      setRecipientId(""); // Reset recipientId when conversation changes
+      setRecipientId(''); // Reset recipientId when conversation changes
       setMessages([]); // Clear previous messages
     } else {
-      setConversationId("");
+      setConversationId('');
       setMessages([]);
-      setRecipientId("");
+      setRecipientId('');
     }
   }, [selectedConversation]);
 
@@ -95,16 +95,16 @@ function ProjectChat() {
       try {
         await fetchMychat();
       } catch (error) {
-        console.log("Error fetching my chats:", error);
+        console.log('Error fetching my chats:', error);
       }
     };
     // Initial fetch
-    if (tabParam === "chat" || pathname?.includes("/chat")) {
+    if (tabParam === 'chat' || pathname?.includes('/chat')) {
       fetchChats();
     }
     // Polling every 2 seconds
     const interval = setInterval(() => {
-      if (tabParam === "chat" || pathname?.includes("/chat")) {
+      if (tabParam === 'chat' || pathname?.includes('/chat')) {
         fetchChats();
       }
     }, 2000);
@@ -138,18 +138,18 @@ function ProjectChat() {
             (p: any) => p._id === (msg.sender?._id || msg.sender)
           );
           // Check if the sender is an employer (client)
-          const isEmployer = senderParticipant?.role !== "freelancer";
+          const isEmployer = senderParticipant?.role !== 'freelancer';
           return {
             _id: msg._id,
             sender: {
               ...msg.sender,
-              role: senderParticipant?.role,
+              role: senderParticipant?.role
             },
             content: msg.content,
             createdAt: msg.createdAt,
             updatedAt: msg.updatedAt,
             isOwn: msg.sender === currentUserId,
-            isEmployer: isEmployer,
+            isEmployer: isEmployer
           };
         });
         setMessages(
@@ -164,7 +164,7 @@ function ProjectChat() {
         setIsInitialLoading(false);
       }
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      console.error('Error fetching messages:', error);
       setMessages([]);
       setIsInitialLoading(false);
     } finally {
@@ -184,7 +184,7 @@ function ProjectChat() {
   useEffect(() => {
     if (!conversationId) return;
     // const interval = setInterval(() => {
-      fetchMessagesForConversation(conversationId);
+    fetchMessagesForConversation(conversationId);
     // });
     // return () => clearInterval(interval);
   }, [conversationId, handleViewMessages, currentUserId]);
@@ -193,7 +193,7 @@ function ProjectChat() {
   useEffect(() => {
     const getConversationDetails = async () => {
       if (!conversationId) {
-        setRecipientId("");
+        setRecipientId('');
         return;
       }
       try {
@@ -211,21 +211,21 @@ function ProjectChat() {
             if (otherParticipant) {
               setRecipientId(otherParticipant._id);
             } else {
-              setRecipientId("");
+              setRecipientId('');
               console.warn(
-                "Could not find other participant in conversation:",
+                'Could not find other participant in conversation:',
                 conversationId
               );
             }
           } else {
-            setRecipientId("");
+            setRecipientId('');
           }
         } else {
-          setRecipientId("");
+          setRecipientId('');
         }
       } catch (error) {
-        console.error("Error fetching conversation details:", error);
-        setRecipientId("");
+        console.error('Error fetching conversation details:', error);
+        setRecipientId('');
       }
     };
 
@@ -264,12 +264,12 @@ function ProjectChat() {
                 )}...${otherParticipant.walletAddress.substring(
                   otherParticipant.walletAddress.length - 4
                 )}`
-              : "Unknown User");
+              : 'Unknown User');
 
           return {
             id: conversation._id,
             name: displayName,
-            lastMessage: conversation.lastMessage?.content || "No messages yet",
+            lastMessage: conversation.lastMessage?.content || 'No messages yet',
             timestamp: formatDateTime(
               conversation.lastMessage?.createdAt ||
                 conversation.updatedAt ||
@@ -277,7 +277,7 @@ function ProjectChat() {
             ),
             unreadCounts: conversation.unreadCounts?.[currentUserId] || 0,
             type:
-              otherParticipant?.role === "freelancer" ? "employee" : "client",
+              otherParticipant?.role === 'freelancer' ? 'employee' : 'client'
           };
         }
       )
@@ -302,7 +302,7 @@ function ProjectChat() {
   const sendMessage = async () => {
     if (!message.trim() || !recipientId) {
       if (!recipientId)
-        console.error("No recipient ID available for sending message.");
+        console.error('No recipient ID available for sending message.');
       return;
     }
 
@@ -315,28 +315,28 @@ function ProjectChat() {
         _id: `temp-${Date.now()}`,
         sender: {
           _id: currentUserId,
-          fullName: userData?.data?.user?.fullName || "You",
-          role: userData?.data?.user?.role,
+          fullName: userData?.data?.user?.fullName || 'You',
+          role: userData?.data?.user?.role
         },
         content: message,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         isOwn: true,
-        isEmployer: userData?.data?.user?.role !== "freelancer",
+        isEmployer: userData?.data?.user?.role !== 'freelancer'
       };
 
       optimisticMessageId = optimisticMessage._id;
 
       setMessages((prevMessages) => [...prevMessages, optimisticMessage]);
       const messageCopy = message;
-      setMessage("");
+      setMessage('');
       await handleSendMessage(recipientId, messageCopy);
       setIsSending(false);
 
       // Remove explicit refetch and let polling handle updating messages
       // The polling will naturally update the messages within 2 seconds
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
       // Optionally, remove optimistic message or show error state
       if (optimisticMessageId) {
         setMessages((prevMessages) =>
@@ -349,22 +349,23 @@ function ProjectChat() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-black text-white">
+    <div className="flex flex-col h-screen text-white">
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-max pt-4 border-r border-gray-800 flex flex-col">
+        {/* Sidebar */}
+        <div className="w-[320px] pt-4 border-r border-gray-800/50 flex flex-col bg-[#111111]">
           <div className="px-4 mb-4">
             <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search conversations..."
-                className="pl-8 bg-gray-800 border-gray-700"
+                className="pl-10 bg-gray-800/50 border-gray-700/50 h-11 rounded-xl focus:ring-1 focus:ring-blue-500/50 transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -372,47 +373,19 @@ function ProjectChat() {
           </div>
 
           <ScrollArea className="flex-1">
-            {/* <div className="space-y-1 p-2">
-              {filteredConversations?.map((conversation: { id: string; name: string; lastMessage: string; timestamp: string; unread: number; type: string }) => (
-                <div
-                  key={conversation.id}
-                  className={`flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-800 ${
-                    selectedConversation === conversation.id ? "bg-gray-800" : ""
-                  }`}
-                  onClick={() => setSelectedConversation(conversation.id)}
-                >
-                  <Avatar className="h-10 w-10 mr-3">
-                    <img src={"/placeholder.svg"} alt={conversation.name} />
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-center">
-                      <p className="font-medium truncate">{conversation.name}</p>
-                      <span className="text-xs text-gray-400">{conversation.timestamp}</span>
-                    </div>
-                    <p className="text-sm text-gray-400 truncate">{conversation.lastMessage}</p>
-                  </div>
-                  {conversation.unread > 0 && (
-                    <div className="ml-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {conversation.unread}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div> */}
-
             <div className="flex-1 overflow-y-auto">
               <div className="space-y-1 p-2">
                 {filteredConversations?.map((conversation) => (
                   <div
                     key={conversation.id}
-                    className={`flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-800 ${
+                    className={`flex items-center p-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-gray-800/50 ${
                       selectedConversation === conversation.id
-                        ? "bg-gray-800"
-                        : ""
+                        ? 'bg-gray-800/70'
+                        : ''
                     }`}
                     onClick={() => setSelectedConversation(conversation.id)}
                   >
-                    <div className="h-10 w-10 mr-3 rounded-full bg-gray-700 flex items-center justify-center text-white">
+                    <div className="h-11 w-11 mr-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-lg shadow-lg">
                       {conversation.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -424,12 +397,12 @@ function ProjectChat() {
                           {conversation.timestamp}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-400 truncate">
+                      <p className="text-xs text-gray-400 truncate mt-0.5">
                         {conversation.lastMessage}
                       </p>
                     </div>
-                    {conversation.unreadCounts > 0 && ( // Changed from unreadCounts object to direct number
-                      <div className="ml-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {conversation.unreadCounts > 0 && (
+                      <div className="ml-2 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm">
                         {conversation.unreadCounts}
                       </div>
                     )}
@@ -440,38 +413,42 @@ function ProjectChat() {
           </ScrollArea>
         </div>
 
-        <div className="flex-1 flex flex-col">
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col bg-[#0A0A0A]">
           {selectedConversation ? (
             <>
-              <div className="p-4 border-b border-gray-800 flex items-center">
+              <div className="p-4 border-b border-gray-800/50 flex items-center bg-[#111111]">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden mr-2"
+                  className="md:hidden mr-2 hover:bg-gray-800/50"
                   onClick={() => setSelectedConversation(null)}
                 >
                   <ChevronLeft />
                 </Button>
-                <Avatar className="h-10 w-10 mr-3">
-                  <img src="/placeholder.svg?height=40&width=40" alt="Avatar" />
-                </Avatar>
+                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-lg shadow-lg mr-3">
+                  {formattedConversations
+                    .find((c) => c.id === selectedConversation)
+                    ?.name?.charAt(0)
+                    .toUpperCase() || 'C'}
+                </div>
                 <div>
                   <h2 className="font-medium">
                     {formattedConversations.find(
                       (c) => c.id === selectedConversation
-                    )?.name || "Conversation"}
+                    )?.name || 'Conversation'}
                   </h2>
                   <p className="text-xs text-gray-400">
                     {formattedConversations.find(
                       (c) => c.id === selectedConversation
-                    )?.type === "employee"
-                      ? "Freelancer"
-                      : "Client"}
+                    )?.type === 'employee'
+                      ? 'Freelancer'
+                      : 'Client'}
                   </p>
                 </div>
               </div>
               <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
+                <div className="space-y-4 max-w-3xl mx-auto">
                   {isLoading && messages.length === 0 ? (
                     <div className="flex justify-center items-center h-full py-8">
                       <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
@@ -481,51 +458,56 @@ function ProjectChat() {
                       <div
                         key={msg._id}
                         className={`flex ${
-                          msg.isOwn ? "justify-end" : "justify-start"
-                        }`}
+                          msg.isOwn ? 'justify-end' : 'justify-start'
+                        } group`}
                       >
                         <div className="max-w-[80%] flex flex-col items-start gap-y-1">
-                        <div
-                          className={`rounded-lg p-3 ${
-                            msg.isOwn
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-800 text-white"
-                          }`}
-                        >
-                          <p>{msg.content}</p>
-                          {/* <p className="text-xs mt-1 opacity-70 text-right italic">
+                          <div
+                            className={`rounded-2xl p-4 shadow-lg ${
+                              msg.isOwn
+                                ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
+                                : 'bg-gray-800/50 text-white'
+                            }`}
+                          >
+                            <p className="text-[15px] leading-relaxed">
+                              {msg.content}
+                            </p>
+                          </div>
+                          <span className="text-xs text-gray-500 group-hover:text-gray-400 transition-colors">
                             {formatDateTime(msg.createdAt)}
-                          </p> */}
+                          </span>
                         </div>
-                          <span className="text-xs text-gray-400 italic">{`sent ${formatDateTime(msg.createdAt)}`}</span>
-
-                      </div>
-
                       </div>
                     ))
                   ) : (
-                    <div className="text-center text-gray-500 py-8">
-                      <p>No messages yet</p>
-                      <p className="text-sm mt-2">
+                    <div className="text-center text-gray-500 py-12">
+                      <MessageSquare
+                        size={48}
+                        className="mx-auto mb-4 text-gray-600"
+                      />
+                      <p className="text-lg font-medium mb-2">
+                        No messages yet
+                      </p>
+                      <p className="text-sm text-gray-400">
                         Start the conversation by sending a message
                       </p>
                     </div>
                   )}
                 </div>
               </ScrollArea>
-              <div className="p-4 border-t border-gray-800">
-                <div className="flex items-center bg-gray-800 rounded-lg p-2">
+              <div className="p-4 border-t border-gray-800/50 bg-[#111111]">
+                <div className="flex items-center bg-gray-800/50 rounded-xl p-2 max-w-3xl mx-auto">
                   <Input
                     placeholder="Type a message..."
-                    className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="flex-1 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px] placeholder:text-gray-500"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    disabled={isInitialLoading || isSending || !recipientId} // Disable only for initial load, sending, or no recipient
+                    disabled={isInitialLoading || isSending || !recipientId}
                   />
                   <Button
                     size="icon"
-                    className="bg-blue-600 hover:bg-blue-700 ml-2"
+                    className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ml-2 rounded-lg transition-all duration-200 shadow-lg"
                     onClick={sendMessage}
                     disabled={
                       !message?.trim() ||
@@ -541,23 +523,26 @@ function ProjectChat() {
                     )}
                   </Button>
                 </div>
-                {!recipientId &&
-                  conversationId &&
-                  !isLoading && ( // Only show if not loading and conversation is selected
-                    <p className="text-xs text-red-400 mt-2 text-center">
-                      Unable to identify recipient. Please select the
-                      conversation again or check connection.
-                    </p>
-                  )}
+                {!recipientId && conversationId && !isLoading && (
+                  <p className="text-xs text-red-400 mt-2 text-center">
+                    Unable to identify recipient. Please select the conversation
+                    again or check connection.
+                  </p>
+                )}
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-              <MessageSquare size={48} className="text-gray-500 mb-4" />
-              <h3 className="text-xl font-medium mb-2">Your Messages</h3>
-              <p className="text-gray-400 max-w-md">
-                Select a conversation from the sidebar to view your messages
-              </p>
+            <div className="flex-1 flex flex-col items-center justify-center p-4 text-center bg-[#111111]">
+              <div className="bg-gray-800/50 p-8 rounded-2xl max-w-md">
+                <MessageSquare
+                  size={48}
+                  className="text-blue-500 mx-auto mb-4"
+                />
+                <h3 className="text-xl font-medium mb-2">Your Messages</h3>
+                <p className="text-gray-400">
+                  Select a conversation from the sidebar to view your messages
+                </p>
+              </div>
             </div>
           )}
         </div>

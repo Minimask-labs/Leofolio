@@ -73,7 +73,8 @@ export function UserTypeSelection() {
           'escrow_contract_v2.aleo',
           'escrow_contract_v3.aleo',
           'zk_privacy_escrow.aleo',
-          'escrow_contract11.aleo','escrow_contract_beta.aleo'
+          'escrow_contract11.aleo',
+          'escrow_contract_beta.aleo'
         ]
       }
     }
@@ -98,7 +99,7 @@ export function UserTypeSelection() {
         description: `Connection error: ${connectError}`,
         variant: 'destructive'
       });
-      
+
       // toast.error(`Connection error: ${connectError}`);
       setIsProcessing(false);
       setCurrentStep('idle');
@@ -140,11 +141,11 @@ export function UserTypeSelection() {
           // Navigate based on user role and new user status
           const isNewUser = response.data.isNewUser;
           const userRole = response.data.user.role;
-      toast({
-        title: 'success',
-        description: response.message || 'Login successful',
-        variant: 'default',
-       });
+          toast({
+            title: 'success',
+            description: response.message || 'Login successful',
+            variant: 'default'
+          });
 
           // toast.success(response.message || 'Login successful');
 
@@ -160,18 +161,18 @@ export function UserTypeSelection() {
         console.error('Authentication error:', error);
         const errorMessage =
           (error as any)?.response?.data?.message || 'Authentication failed';
-          toast({
-            title: 'Error ',
-            description: `${errorMessage}`,
-            variant: 'destructive'
-          });
-    
+        toast({
+          title: 'Error ',
+          description: `${errorMessage}`,
+          variant: 'destructive'
+        });
+
         // toast.error(errorMessage);
       } finally {
         setIsProcessing(false);
         setCurrentStep('idle');
       }
-    }else {
+    } else {
       await requestSignature();
     }
   };
@@ -270,16 +271,15 @@ export function UserTypeSelection() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <CardTitle
-          className={`text-2xl font-bold animate-pulse ${
-            selectedType === 'employer' ? 'text-blue-700' : 'text-blue-700'
-          }`}
-        >
-          Leofolio
-        </CardTitle>
-        <CardDescription>
+    <Card className="w-full max-w-md mx-auto shadow-lg border-0  bg-white">
+      <CardHeader className="text-center space-y-4 pb-8">
+        <div className="relative">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            Leofolio
+          </CardTitle>
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-blue-600 rounded-full"></div>
+        </div>
+        <CardDescription className="text-base text-slate-600">
           Privacy-preserving credential management and hiring platform
         </CardDescription>
       </CardHeader>
@@ -290,17 +290,30 @@ export function UserTypeSelection() {
           onValueChange={(value) =>
             setSelectedType(value as 'freelancer' | 'employer')
           }
+          className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="freelancer">Freelancer</TabsTrigger>
-            <TabsTrigger value="employer">Employer</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 p-1 bg-blue-50/50 rounded-xl">
+            <TabsTrigger
+              value="freelancer"
+              className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-700 rounded-lg transition-all duration-200"
+            >
+              Freelancer
+            </TabsTrigger>
+            <TabsTrigger
+              value="employer"
+              className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-700 rounded-lg transition-all duration-200"
+            >
+              Employer
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="freelancer" className="mt-4 space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-              <User className="h-10 w-10 text-blue-600 p-2 bg-blue-100 rounded-full" />
+          <TabsContent value="freelancer" className="mt-6 space-y-6">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-blue-100 hover:shadow-md transition-all duration-200">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <User className="h-8 w-8 text-blue-600" />
+              </div>
               <div>
-                <h3 className="font-medium text-blue-700">
+                <h3 className="font-semibold text-lg text-blue-700">
                   Freelancer Account
                 </h3>
                 <p className="text-sm text-slate-600">
@@ -308,61 +321,77 @@ export function UserTypeSelection() {
                 </p>
               </div>
             </div>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Store credentials with privacy
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Store credentials with privacy
+                </span>
               </li>
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Generate zero-knowledge proofs
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Generate zero-knowledge proofs
+                </span>
               </li>
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Receive private payments
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Receive private payments
+                </span>
               </li>
             </ul>
           </TabsContent>
 
-          <TabsContent value="employer" className="mt-4 space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-              <Briefcase className="h-10 w-10 text-blue-600 p-2 bg-blue-100 rounded-full" />
+          <TabsContent value="employer" className="mt-6 space-y-6">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-blue-100 hover:shadow-md transition-all duration-200">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Briefcase className="h-8 w-8 text-blue-600" />
+              </div>
               <div>
-                <h3 className="font-medium text-blue-700">Employer Account</h3>
+                <h3 className="font-semibold text-lg text-blue-700">
+                  Employer Account
+                </h3>
                 <p className="text-sm text-slate-600">
                   Discover and hire verified freelancers
                 </p>
               </div>
             </div>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Verify freelancer credentials privately
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Verify freelancer credentials privately
+                </span>
               </li>
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Make secure payments
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Make secure payments
+                </span>
               </li>
-              <li className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600" />
-                Manage projects and contractors
+              <li className="flex items-center gap-3 p-2 rounded-lg bg-blue-50/50 group  transition-colors duration-200">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <span className="text-slate-700 transition-colors duration-200">
+                  Manage projects and contractors
+                </span>
               </li>
             </ul>
           </TabsContent>
         </Tabs>
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="pt-6">
         <Button
           onClick={handleAuthentication}
           disabled={isProcessing}
-          className={`w-full ${
+          className={`w-full py-6 text-base font-medium rounded-xl transition-all duration-200 ${
             selectedType === 'freelancer'
-              ? 'bg-blue-600 hover:bg-blue-700'
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+              ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+              : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+          } shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed`}
         >
-          {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isProcessing && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
           {getButtonText()}
         </Button>
       </CardFooter>

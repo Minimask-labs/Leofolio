@@ -16,28 +16,17 @@ export function EmployeeDashboard({
   setConnected,
 }: EmployeeDashboardProps) {
   return (
-    <div className="">
+    <div className=" w-full">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex justify-center md:justify-start">
-          {/* <EscrowWallet /> */}
-        </div>
-        {/* <Tabs defaultValue="directory" className="mt-8"> */}
-        <ProjectManagement />
-
-        {/* <Tabs defaultValue="directory" className="mt-8">
-
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="directory">Find Freelancers</TabsTrigger>
-             <TabsTrigger value="projects">Projects</TabsTrigger>
-          </TabsList>
-          <TabsContent value="directory" className="mt-6">
-            <FreelancerDirectory />
-          </TabsContent>
-          <TabsContent value="projects" className="mt-6">
+      <div className="container mx-auto w-full px-4 py-8">
+        <div className="w-full grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div className="w-full col-span-4">
             <ProjectManagement />
-          </TabsContent>
-        </Tabs> */}
+          </div>
+          <div className="w-full col-span-2">
+            <EscrowWallet />
+          </div>
+        </div>
       </div>
     </div>
   );

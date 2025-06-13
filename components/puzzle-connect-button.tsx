@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { useConnect, useAccount, useDisconnect, Network } from '@puzzlehq/sdk';
 import {
   DropdownMenu,
@@ -16,6 +16,22 @@ import { logout } from '@/service/auth';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
+// Constants
+const DAPP_INFO = {
+  name: 'AleoMail',
+  description: 'AleoMail',
+  iconUrl: '/aleomail_logo.png'
+} as const;
+
+const EXPLORER_BASE_URL = 'https://explorer.aleo.org/address';
+
+// Types
+interface ToastConfig {
+  title: string;
+  description: string;
+  variant: 'default' | 'destructive';
+}
+
 export function PuzzleConnectButton() {
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -23,13 +39,25 @@ export function PuzzleConnectButton() {
   const router = useRouter();
   const { toast } = useToast();
 
- 
+  const showToast = ({ title, description, variant }: ToastConfig) => {
+    toast({
+      title,
+      description,
+      variant
+    });
+  };
+
   const handleLogout = () => {
     try {
       logout();
       router.push('/auth');
     } catch (error) {
       console.error('Error during logout:', error);
+      showToast({
+        title: 'Error',
+        description: 'Failed to logout. Please try again.',
+        variant: 'destructive'
+      });
     }
   };
 
@@ -39,11 +67,7 @@ export function PuzzleConnectButton() {
     error: connectError,
     loading: connectLoading
   } = useConnect({
-    dAppInfo: {
-      name: 'AleoMail',
-      description: 'AleoMail',
-      iconUrl: '/aleomail_logo.png'
-    },
+    dAppInfo: DAPP_INFO,
     permissions: {
       programIds: {
         [Network.AleoMainnet]: [
@@ -77,55 +101,56 @@ export function PuzzleConnectButton() {
     error: disconnectError,
     loading: disconnectLoading
   } = useDisconnect();
-useEffect(() => {
-  if (account === undefined) {
-    handleLogout();
-  }
-}, [account]);
+
+  // Handle account changes
+  useEffect(() => {
+    if (account === undefined) {
+      handleLogout();
+    }
+  }, [account]);
+
+  // Update connection status
   useEffect(() => {
     setIsConnected(!!account);
   }, [account]);
 
+  // Handle connection errors
   useEffect(() => {
     if (connectError) {
-      toast({
-        title: 'Error ',
-        description: `Error connecting: ${connectError}`,
+      showToast({
+        title: 'Connection Error',
+        description: `Failed to connect: ${connectError}`,
         variant: 'destructive'
       });
-
-      // toast.error(`Error connecting: ${connectError}`);
     }
+  }, [connectError]);
+
+  // Handle disconnection errors
+  useEffect(() => {
     if (disconnectError) {
-      toast({
-        title: 'Error ',
-        description: `Error disconnecting: ${disconnectError}`,
+      showToast({
+        title: 'Disconnection Error',
+        description: `Failed to disconnect: ${disconnectError}`,
         variant: 'destructive'
       });
-
-      // toast.error(`Error disconnecting: ${disconnectError}`);
     }
-  }, [connectError, disconnectError]);
+  }, [disconnectError]);
 
   const handleConnect = async () => {
     setLoading(true);
     try {
       await connect();
-      toast({
-        title: 'success',
-        description: `Wallet connected successfully!`,
-        variant: 'default',
-       });
-
-      // toast.success('Wallet connected successfully!');
+      showToast({
+        title: 'Success',
+        description: 'Wallet connected successfully!',
+        variant: 'default'
+      });
     } catch (e) {
-      toast({
-        title: 'Error ',
-        description: `Error connecting: ${(e as Error).message}`,
+      showToast({
+        title: 'Connection Error',
+        description: `Failed to connect: ${(e as Error).message}`,
         variant: 'destructive'
       });
-
-      // toast.error(`Error connecting: ${(e as Error).message}`);
     } finally {
       setLoading(false);
     }
@@ -135,41 +160,43 @@ useEffect(() => {
     setLoading(true);
     try {
       await disconnect();
-      toast({
-        title: 'success',
-        description: `Wallet disconnected successfully!`,
-        variant: 'default',
-       });
-
-      // toast.success('Wallet disconnected successfully!');
+      showToast({
+        title: 'Success',
+        description: 'Wallet disconnected successfully!',
+        variant: 'default'
+      });
       handleLogout();
     } catch (e) {
-      toast({
-        title: 'Error ',
-        description: `Error disconnecting: ${(e as Error).message}`,
+      showToast({
+        title: 'Disconnection Error',
+        description: `Failed to disconnect: ${(e as Error).message}`,
         variant: 'destructive'
       });
-
-      // toast.error(`Error disconnecting: ${(e as Error).message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setAddressCopied(true);
-    // toast.success('Address copied to clipboard!');
-    toast({
-      title: ' ',
-      description: `Address copied to clipboard!`,
-      variant: 'default',
-     });
-
-    setTimeout(() => setAddressCopied(false), 2000);
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setAddressCopied(true);
+      showToast({
+        title: 'Success',
+        description: 'Address copied to clipboard!',
+        variant: 'default'
+      });
+      setTimeout(() => setAddressCopied(false), 2000);
+    } catch (error) {
+      showToast({
+        title: 'Error',
+        description: 'Failed to copy address to clipboard',
+        variant: 'destructive'
+      });
+    }
   };
 
-  const truncateAddress = (address: string) => {
+  const truncateAddress = (address: string): string => {
     if (!address) return '';
     return `${address.substring(0, 6)}...${address.substring(
       address.length - 4
@@ -177,8 +204,11 @@ useEffect(() => {
   };
 
   const viewOnExplorer = (address: string) => {
-    // Replace with the actual Aleo explorer URL
-    window.open(`https://explorer.aleo.org/address/${address}`, '_blank');
+    window.open(
+      `${EXPLORER_BASE_URL}/${address}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
   };
 
   if (!isConnected) {
@@ -187,14 +217,15 @@ useEffect(() => {
         onClick={handleConnect}
         disabled={loading || connectLoading}
         className="!bg-slate-100 relative !text-slate-700 hover:!bg-slate-700 w-full hover:!text-slate-100 !border-slate-200"
+        aria-label="Connect Wallet"
       >
         {loading || connectLoading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Connecting...
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+            <span>Connecting...</span>
           </>
         ) : (
-          <>Connect Wallet</>
+          <span>Connect Wallet</span>
         )}
       </Button>
     );
@@ -203,47 +234,55 @@ useEffect(() => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          {truncateAddress(account?.address || '')}
-          <ChevronDown className="h-4 w-4" />
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 !bg-slate-100 !text-slate-700 hover:!bg-blue-500 hover:!text-slate-100 !border-slate-200"
+          aria-label="Wallet options"
+        >
+          <span className="text-slate-700">
+            {truncateAddress(account?.address || '')}
+          </span>
+          <ChevronDown className="h-4 w-4" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
+        <div className="px-2 py-1.5 text-sm font-medium text-slate-700">
           Connected Account
         </div>
-        {/* <DropdownMenuSeparator /> */}
-        {/* <div className="px-2 py-1.5 text-xs break-all">{account?.address}</div> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => copyToClipboard(account?.address || '')}
+          className="cursor-pointer"
         >
-          <Copy className="mr-2 h-4 w-4" />
-          {addressCopied ? 'Copied!' : 'Copy Address'}
+          <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
+          <span>{addressCopied ? 'Copied!' : 'Copy Address'}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-
         <DropdownMenuItem
           onClick={() => viewOnExplorer(account?.address || '')}
+          className="cursor-pointer"
         >
-          <ExternalLink className="mr-2 h-4 w-4" />
-          View on Explorer
+          <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
+          <span>View on Explorer</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleDisconnect}
           disabled={loading || disconnectLoading}
-          className="text-destructive focus:text-destructive"
+          className="text-destructive focus:text-destructive cursor-pointer"
         >
           {loading || disconnectLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Disconnecting...
+              <Loader2
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+              <span>Disconnecting...</span>
             </>
           ) : (
             <>
-              <LogOut className="mr-2 h-4 w-4" />
-              Disconnect
+              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+              <span>Disconnect</span>
             </>
           )}
         </DropdownMenuItem>

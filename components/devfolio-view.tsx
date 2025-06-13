@@ -292,8 +292,8 @@ export function DevfolioView() {
       });
     } catch (error) {
       // Error handling is already in the validateEmailOtp and verifyEmail functions
-    }finally {
-    fetchUser();
+    } finally {
+      fetchUser();
     }
   };
 
@@ -312,153 +312,200 @@ export function DevfolioView() {
   }, [user]);
   if (isEditing) {
     return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Edit Your Devfolio</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setIsEditing(false)}>
+      <div className="space-y-8 p-8 bg-gradient-to-br from-white via-gray-50 to-gray-100 min-h-screen">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
+              Edit Your Devfolio
+            </h2>
+            <p className="text-gray-700 mt-1">
+              Customize your professional profile
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setIsEditing(false)}
+              className="hover:bg-gray-100 transition-all duration-300 border-2 text-gray-800"
+            >
               Cancel
             </Button>
             <Button
               disabled={isUploading}
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-200 px-6"
               onClick={saveChanges}
             >
               {isUploading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <span>Save changes</span>
-              )}
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              <span>Save changes</span>
             </Button>
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-            <CardDescription>
+        <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
+            <CardTitle className="text-2xl font-semibold text-gray-900">
+              Basic Information
+            </CardTitle>
+            <CardDescription className="text-gray-700 text-base">
               Update your personal and professional details
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                name="fullName"
-                value={editedProfile?.fullName}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="flex gap-2">
+          <CardContent className="space-y-6 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="fullName"
+                  className="text-sm font-medium text-gray-900"
+                >
+                  Full Name
+                </Label>
                 <Input
-                  id="email"
-                  name="email"
-                  value={editedProfile?.email}
+                  id="fullName"
+                  name="fullName"
+                  value={editedProfile?.fullName}
                   onChange={handleChange}
-                  disabled={user?.email}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900"
                 />
-                {user?.isEmailVerified === false &&  user?.email && (
-                  <Button
-                    type="button"
-                    onClick={handleEmailChange}
-                    disabled={isUploading}
-                  >
-                    Verify
-                  </Button>
-                )}
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-900"
+                >
+                  Email
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="email"
+                    name="email"
+                    value={editedProfile?.email}
+                    onChange={handleChange}
+                    disabled={user?.email}
+                    className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900"
+                  />
+                  {user?.isEmailVerified === false && user?.email && (
+                    <Button
+                      type="button"
+                      onClick={handleEmailChange}
+                      disabled={isUploading}
+                      className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 h-11"
+                    >
+                      Verify
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="username"
+                  className="text-sm font-medium text-gray-900"
+                >
+                  Username
+                </Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-200 bg-gray-50 text-gray-700 text-sm h-11">
+                    @
+                  </span>
+                  <Input
+                    id="username"
+                    name="username"
+                    className="rounded-l-none border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900"
+                    value={editedProfile?.username}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="professionalTitle"
+                  className="text-sm font-medium text-gray-900"
+                >
+                  Professional Title
+                </Label>
+                <Input
+                  id="professionalTitle"
+                  name="professionalTitle"
+                  value={editedProfile?.professionalTitle}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900"
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
-                  @
-                </span>
-                <Input
-                  id="username"
-                  name="username"
-                  className="rounded-l-none"
-                  value={editedProfile?.username}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                name="email"
-                value={editedProfile?.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="professionalTitle">Professional Title</Label>
-              <Input
-                id="professionalTitle"
-                name="professionalTitle"
-                value={editedProfile?.professionalTitle}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
+              <Label
+                htmlFor="bio"
+                className="text-sm font-medium text-gray-900"
+              >
+                Bio
+              </Label>
               <Textarea
                 id="bio"
                 name="bio"
                 rows={4}
                 value={editedProfile?.bio}
                 onChange={handleChange}
+                className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 resize-none min-h-[120px] bg-white text-gray-900"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <Label
+                htmlFor="location"
+                className="text-sm font-medium text-gray-900"
+              >
+                Location
+              </Label>
               <Input
                 id="location"
                 name="location"
                 value={editedProfile?.location}
                 onChange={handleChange}
+                className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900"
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Skills & Expertise</CardTitle>
-            <CardDescription>Showcase your technical skills</CardDescription>
+        <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
+            <CardTitle className="text-2xl font-semibold text-gray-900">
+              Skills & Expertise
+            </CardTitle>
+            <CardDescription className="text-gray-700 text-base">
+              Showcase your technical skills and expertise
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Your Skills</Label>
-              <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[100px]">
+          <CardContent className="space-y-6 p-8">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-gray-900">
+                Your Skills
+              </Label>
+              <div className="flex flex-wrap gap-2 p-4 border border-gray-200 rounded-lg min-h-[120px] bg-gray-50 transition-all duration-300 hover:border-blue-200">
                 {editedProfile?.skills?.map((skill: string) => (
                   <Badge
                     key={skill}
-                    className="bg-slate-100 text-slate-800  h-fit hover:bg-slate-200 pl-2 pr-1 py-1"
+                    className="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-800 hover:from-blue-200 hover:to-blue-100 h-fit pl-3 pr-2 py-1.5 transition-all duration-300 text-sm font-medium"
                   >
                     {skill}
                     <button
                       title="remove skills"
                       type="button"
                       onClick={() => removeSkill(skill)}
-                      className="ml-1 rounded-full hover:bg-slate-300 p-1"
+                      className="ml-1.5 rounded-full hover:bg-blue-200 p-1 transition-colors"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-3.5 w-3.5 text-blue-700" />
                     </button>
                   </Badge>
                 ))}
                 {editedProfile?.skills?.length === 0 && (
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-gray-600 text-sm">
                     Add your technical skills below
                   </p>
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <div className="flex-grow">
                 <Input
                   placeholder="Add a skill (e.g. JavaScript, React, AWS)"
@@ -470,96 +517,114 @@ export function DevfolioView() {
                       addSkill();
                     }
                   }}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
                 />
               </div>
               <Button
                 type="button"
                 onClick={addSkill}
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 h-11 w-11 p-0"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-5 w-5" />
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Social Profiles</CardTitle>
-            <CardDescription>Connect your online presence</CardDescription>
+        <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
+            <CardTitle className="text-2xl font-semibold text-gray-900">
+              Social Profiles
+            </CardTitle>
+            <CardDescription className="text-gray-700 text-base">
+              Connect your online presence and professional networks
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="github" className="flex items-center gap-2">
-                <Github className="h-4 w-4" /> GitHub Profile
-              </Label>
-              <Input
-                id="github"
-                name="github"
-                placeholder="https://github.com/username"
-                value={editedProfile?.socials?.github}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="linkedin" className="flex items-center gap-2">
-                <Linkedin className="h-4 w-4" /> LinkedIn Profile
-              </Label>
-              <Input
-                id="linkedin"
-                name="linkedin"
-                placeholder="https://linkedin.com/in/username"
-                value={editedProfile?.socials?.linkedin}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="twitter" className="flex items-center gap-2">
-                <Twitter className="h-4 w-4" /> Twitter Profile
-              </Label>
-              <Input
-                id="twitter"
-                name="twitter"
-                placeholder="https://twitter.com/username"
-                value={editedProfile?.socials?.twitter}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="instagram" className="flex items-center gap-2">
-                <Instagram className="h-4 w-4" /> Instagram Profile
-              </Label>
-              <Input
-                id="instagram"
-                name="instagram"
-                placeholder="https://instagram.com/username"
-                value={editedProfile?.socials?.instagram}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="website" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" /> Personal Website
-              </Label>
-              <Input
-                id="website"
-                name="website"
-                placeholder="https://yourwebsite.com"
-                value={editedProfile?.socials?.website}
-                onChange={handleChange}
-              />
+          <CardContent className="space-y-6 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="github"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-900"
+                >
+                  <Github className="h-4 w-4" /> GitHub Profile
+                </Label>
+                <Input
+                  id="github"
+                  name="github"
+                  placeholder="https://github.com/username"
+                  value={editedProfile?.socials?.github}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="linkedin"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-900"
+                >
+                  <Linkedin className="h-4 w-4" /> LinkedIn Profile
+                </Label>
+                <Input
+                  id="linkedin"
+                  name="linkedin"
+                  placeholder="https://linkedin.com/in/username"
+                  value={editedProfile?.socials?.linkedin}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="twitter"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-900"
+                >
+                  <Twitter className="h-4 w-4" /> Twitter Profile
+                </Label>
+                <Input
+                  id="twitter"
+                  name="twitter"
+                  placeholder="https://twitter.com/username"
+                  value={editedProfile?.socials?.twitter}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="instagram"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-900"
+                >
+                  <Instagram className="h-4 w-4" /> Instagram Profile
+                </Label>
+                <Input
+                  id="instagram"
+                  name="instagram"
+                  placeholder="https://instagram.com/username"
+                  value={editedProfile?.socials?.instagram}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label
+                  htmlFor="website"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-900"
+                >
+                  <Globe className="h-4 w-4" /> Personal Website
+                </Label>
+                <Input
+                  id="website"
+                  name="website"
+                  placeholder="https://yourwebsite.com"
+                  value={editedProfile?.socials?.website}
+                  onChange={handleChange}
+                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300 h-11 bg-white text-gray-900 placeholder-gray-500"
+                />
+              </div>
             </div>
           </CardContent>
-          {/* <CardFooter>
-            <Button
-              className="w-full bg-blue-600 text-white hover:bg-blue-700"
-              onClick={saveChanges}
-            >
-              Save All Changes
-            </Button>
-          </CardFooter> */}
         </Card>
-        {/* Email Verification Modal */}
         <EmailVerificationModal
           isOpen={isEmailVerificationModalOpen}
           onClose={() => setIsEmailVerificationModalOpen(false)}
@@ -572,14 +637,19 @@ export function DevfolioView() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Your Devfolio</h2>
+    <div className="space-y-8  min-h-screen">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
+            Your Aleo Profile
+          </h2>
+          <p className="text-gray-700 mt-1">Your professional portfolio</p>
+        </div>
         <Button
-          className="bg-blue-600 text-white hover:bg-blue-700"
+          className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-200 px-6"
           onClick={() => setIsEditing(true)}
         >
-          Edit Devfolio
+          Edit Profile
         </Button>
       </div>
       <DevfolioPreview profile={user} />

@@ -98,13 +98,11 @@ export function Dashboard() {
   >(null);
   const { account, error, loading } = useAccount();
   // Validate blockchain data
-  const hashProjectId = projectId
-    ? mongoIdToAleoU64(String(projectId))
-    : null;
-    const [hashProjectIdInput, setHashProjectIdInput] = useState(hashProjectId);
-    const [assignedFreelancer, setassignedFreelancer] = useState(
-      project_details?.assignedFreelancer?.walletAddress
-    );
+  const hashProjectId = projectId ? mongoIdToAleoU64(String(projectId)) : null;
+  const [hashProjectIdInput, setHashProjectIdInput] = useState(hashProjectId);
+  const [assignedFreelancer, setassignedFreelancer] = useState(
+    project_details?.assignedFreelancer?.walletAddress
+  );
   // const assignedFreelancer = project_details?.assignedFreelancer?.walletAddress;
   const price = project_details?.price;
 
@@ -116,9 +114,7 @@ export function Dashboard() {
         assignedFreelancer,
         price
       });
-      setassignedFreelancer(
-        project_details?.assignedFreelancer?.walletAddress        
-      );
+      setassignedFreelancer(project_details?.assignedFreelancer?.walletAddress);
       setHashProjectIdInput(hashProjectId);
       console.log('Hash Project ID:', hashProjectId);
       console.log('Assigned Freelancer:', assignedFreelancer);
@@ -134,18 +130,22 @@ export function Dashboard() {
     programId: 'escrow_contract11.aleo',
     functionId: 'complete_job',
     fee: 1.23,
-    inputs: [hashProjectIdInput? hashProjectIdInput : '0u64']
+    inputs: [hashProjectIdInput ? hashProjectIdInput : '0u64']
   });
 
   const {
     createEvent: handleOnchainEmployerAproveProject,
     loading: approvingOnchain
   } = useRequestCreateEvent({
-          type: EventType.Execute,
+    type: EventType.Execute,
     programId: 'escrow_contract11.aleo',
     functionId: 'release_payment',
     fee: 1.23,
-    inputs: [hashProjectIdInput ? hashProjectIdInput : '0u64',assignedFreelancer ? assignedFreelancer : '0u64',price ? price + 'u64' : '0u64']
+    inputs: [
+      hashProjectIdInput ? hashProjectIdInput : '0u64',
+      assignedFreelancer ? assignedFreelancer : '0u64',
+      price ? price + 'u64' : '0u64'
+    ]
   });
   // Function to update milestone status
   const approveMilestone = async (milestoneId: string) => {
@@ -176,45 +176,44 @@ export function Dashboard() {
     setIsApprovingProject(true);
     try {
       if (project_details?.status !== 'completed') {
-      const response = await handleApproveProject(String(projectId));
-      console.log(response, 'response');
+        const response = await handleApproveProject(String(projectId));
+        console.log(response, 'response');
 
-      // Only trigger blockchain operation if API call was successful
-      if (
-        response !== undefined &&
-        typeof response === 'object' &&
-        'data' in response
-      ) {
-        const { data, success } = response as {
-          data: { _id: string };
-          success: boolean;
-        };
+        // Only trigger blockchain operation if API call was successful
+        if (
+          response !== undefined &&
+          typeof response === 'object' &&
+          'data' in response
+        ) {
+          const { data, success } = response as {
+            data: { _id: string };
+            success: boolean;
+          };
 
-        if (success && data && data._id) {
-          // Make sure we have all required data before calling blockchain function
-          if (assignedFreelancer && price) {
-            await handleOnchainEmployerAproveProject();
-            toast({
-              title: 'Project Approved',
-              description: `The project has been approved successfully and payment released on blockchain.`
-            });
-            handleViewProjectDetail(String(projectId));
-            
-          } else {
-            toast({
-              title: 'Project Approved',
-              description: `The project has been approved successfully, but blockchain operation failed due to missing data.`,
-              variant: 'destructive'
-            });
+          if (success && data && data._id) {
+            // Make sure we have all required data before calling blockchain function
+            if (assignedFreelancer && price) {
+              await handleOnchainEmployerAproveProject();
+              toast({
+                title: 'Project Approved',
+                description: `The project has been approved successfully and payment released on blockchain.`
+              });
+              handleViewProjectDetail(String(projectId));
+            } else {
+              toast({
+                title: 'Project Approved',
+                description: `The project has been approved successfully, but blockchain operation failed due to missing data.`,
+                variant: 'destructive'
+              });
+            }
           }
+        } else {
+          toast({
+            title: 'Project Approved',
+            description: `The project has been approved successfully.`
+          });
         }
-      } else {
-        toast({
-          title: 'Project Approved',
-          description: `The project has been approved successfully.`
-        });
-      }
-      return response;
+        return response;
       } else {
         // Make sure we have all required data before calling blockchain function
         if (assignedFreelancer && price) {
@@ -232,7 +231,6 @@ export function Dashboard() {
           });
         }
       }
-
     } catch (error) {
       console.error('Error approving project:', error);
       toast({
@@ -248,47 +246,45 @@ export function Dashboard() {
     setIsCompletingProject(true);
     try {
       if (project_details?.status !== 'completed') {
+        const response = await handleCompleteProject(String(projectId));
+        console.log(response, 'response');
 
-      const response = await handleCompleteProject(String(projectId));
-      console.log(response, 'response');
+        // Only trigger blockchain operation if API call was successful
+        if (
+          response !== undefined &&
+          typeof response === 'object' &&
+          'data' in response
+        ) {
+          const { data, success } = response as {
+            data: { _id: string };
+            success: boolean;
+          };
 
-      // Only trigger blockchain operation if API call was successful
-      if (
-        response !== undefined &&
-        typeof response === 'object' &&
-        'data' in response
-      ) {
-        const { data, success } = response as {
-          data: { _id: string };
-          success: boolean;
-        };
-
-        if (success && data && data._id) {
-          // Make sure we have valid project hash before calling blockchain function
-          if (hashProjectId) {
-            await handleOnchainFreelancerCompletProject();
-            toast({
-              title: 'Project Completed',
-              description: `The project has been completed successfully and recorded on blockchain.`
-            });
-            handleViewProjectDetail(String(projectId));
-             
-          } else {
-            toast({
-              title: 'Project Completed',
-              description: `The project has been completed successfully, but blockchain operation failed due to invalid project ID.`,
-              variant: 'destructive'
-            });
+          if (success && data && data._id) {
+            // Make sure we have valid project hash before calling blockchain function
+            if (hashProjectId) {
+              await handleOnchainFreelancerCompletProject();
+              toast({
+                title: 'Project Completed',
+                description: `The project has been completed successfully and recorded on blockchain.`
+              });
+              handleViewProjectDetail(String(projectId));
+            } else {
+              toast({
+                title: 'Project Completed',
+                description: `The project has been completed successfully, but blockchain operation failed due to invalid project ID.`,
+                variant: 'destructive'
+              });
+            }
           }
+        } else {
+          toast({
+            title: 'Project Completed',
+            description: `The project has been completed successfully.`
+          });
         }
+        return response;
       } else {
-        toast({
-          title: 'Project Completed',
-          description: `The project has been completed successfully.`
-        });
-      }
-      return response;
-    }else {
         if (hashProjectId) {
           await handleOnchainFreelancerCompletProject();
           toast({
@@ -296,7 +292,6 @@ export function Dashboard() {
             description: `The project has been completed successfully and recorded on blockchain.`
           });
           handleViewProjectDetail(String(projectId));
-           
         } else {
           toast({
             title: 'Project Completed',
@@ -329,7 +324,7 @@ export function Dashboard() {
         description: `The milestone has been completed successfully.`
       });
       handleViewProjectDetail(String(projectId));
-return response;
+      return response;
     } catch {
       toast({
         title: 'Error',
@@ -416,15 +411,15 @@ return response;
     }
     console.log('project_details:', project_details);
   }, [fetchProjects]);
-useEffect(() => {
-  if (project_details?.status === 'completed') {
-    if (userType === 'freelancer') {
-      handleOnchainFreelancerCompletProject();
-    } else if (userType === 'employer') {
-      handleOnchainEmployerAproveProject();
+  useEffect(() => {
+    if (project_details?.status === 'completed') {
+      if (userType === 'freelancer') {
+        handleOnchainFreelancerCompletProject();
+      } else if (userType === 'employer') {
+        handleOnchainEmployerAproveProject();
+      }
     }
-  }
-}, [userType]);
+  }, [userType]);
   return (
     <div className="space-y-6">
       <div className="mb-2">
@@ -433,10 +428,10 @@ useEffect(() => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
             {project_details?.name || project_details?.title}
           </h1>
-          <p className="text-slate-600">
+          <p className="text-gray-600 font-medium">
             {project_details?.client || project_details?.company}
           </p>
         </div>
@@ -448,6 +443,7 @@ useEffect(() => {
                 variant="outline"
                 onClick={approveProject}
                 disabled={isApprovingProject || approvingOnchain}
+                className="bg-white hover:bg-blue-50 border-blue-200 text-blue-600 transition-all duration-200"
               >
                 {isApprovingProject || approvingOnchain ? (
                   <>
@@ -468,6 +464,7 @@ useEffect(() => {
                 variant="outline"
                 onClick={completeProject}
                 disabled={isCompletingProject || completingOnchain}
+                className="bg-white hover:bg-blue-50 border-blue-200 text-blue-600 transition-all duration-200"
               >
                 {isCompletingProject || completingOnchain ? (
                   <>
@@ -504,7 +501,7 @@ useEffect(() => {
                   completion is available.
                 </p>
               </div>
-              <Button className="bg-amber-600 hover:bg-amber-700">
+              <Button className="bg-amber-600 hover:bg-amber-700 text-white">
                 View Certificate
               </Button>
             </div>
@@ -517,92 +514,121 @@ useEffect(() => {
         <TabsList
           className={`${
             userType !== 'freelancer' ? 'grid-cols-4' : 'grid-cols-3'
-          } grid  w-full`}
+          } grid w-full bg-white border border-blue-100 rounded-xl p-1`}
         >
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="milestones">Milestones</TabsTrigger>
+          <TabsTrigger
+            value="overview"
+            className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 rounded-lg transition-all duration-200"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger
+            value="milestones"
+            className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 rounded-lg transition-all duration-200"
+          >
+            Milestones
+          </TabsTrigger>
           {userType !== 'freelancer' ? (
-            <TabsTrigger value="team">Team</TabsTrigger>
+            <TabsTrigger
+              value="team"
+              className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 rounded-lg transition-all duration-200"
+            >
+              Team
+            </TabsTrigger>
           ) : (
             <></>
           )}
-          {/* <TabsTrigger value="chat">Chat</TabsTrigger> */}
-          <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsTrigger
+            value="files"
+            className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 rounded-lg transition-all duration-200"
+          >
+            Files
+          </TabsTrigger>
         </TabsList>
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardHeader>
-                <CardTitle>Project Overview</CardTitle>
-                <CardDescription>Project timeline and progress</CardDescription>
+                <CardTitle className="text-gray-900 text-xl">
+                  Project Overview
+                </CardTitle>
+                <CardDescription className="text-gray-500">
+                  Project timeline and progress
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium text-gray-700">
                       Overall Progress
                     </span>
-                    <span className="text-sm">
+                    <span className="text-sm text-blue-600 font-medium">
                       {project_details?.progress}%
                     </span>
                   </div>
-                  <Progress value={project_details?.progress} className="h-2" />
+                  <Progress
+                    value={project_details?.progress}
+                    className="h-2 bg-blue-50"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-slate-500">Start Date</p>
-                    <p className="font-medium">
+                  <div className="bg-blue-50/50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-500">Start Date</p>
+                    <p className="font-medium text-gray-900">
                       {new Date(
                         project_details?.createdAt
                       ).toLocaleDateString()}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-500">Deadline</p>
-                    <p className="font-medium">
+                  <div className="bg-blue-50/50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-500">Deadline</p>
+                    <p className="font-medium text-gray-900">
                       {new Date(project_details?.deadline).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500 mb-1">Description</p>
-                  <p className="text-sm">{project_details?.description}</p>
+                  <p className="text-sm text-gray-500 mb-1">Description</p>
+                  <p className="text-sm text-gray-700 bg-blue-50/30 p-3 rounded-lg">
+                    {project_details?.description}
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardHeader>
-                <CardTitle>Milestone Progress</CardTitle>
-                <CardDescription>Summary of project milestones</CardDescription>
+                <CardTitle className="text-gray-900 text-xl">
+                  Milestone Progress
+                </CardTitle>
+                <CardDescription className="text-gray-500">
+                  Summary of project milestones
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex justify-between text-sm mb-2">
-                  <div>
-                    <p className="font-medium text-2xl">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
+                    <p className="font-medium text-2xl text-blue-600">
                       {stats.completedMilestones}
                     </p>
-                    <p className="text-slate-500">Completed</p>
+                    <p className="text-gray-500">Completed</p>
                   </div>
-                  <div>
-                    <p className="font-medium text-2xl">
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
+                    <p className="font-medium text-2xl text-blue-600">
                       {stats.inProgressMilestones}
                     </p>
-                    <p className="text-slate-500">In Progress</p>
+                    <p className="text-gray-500">In Progress</p>
                   </div>
-                  <div>
-                    <p className="font-medium text-2xl">
-                      {/* {stats.totalMilestones -
-                        stats.completedMilestones -
-                        stats.inProgressMilestones} */}
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
+                    <p className="font-medium text-2xl text-blue-600">
                       {Number(stats.totalMilestones || 0) -
                         Number(stats.completedMilestones || 0) -
                         Number(stats.inProgressMilestones || 0)}
                     </p>
-                    <p className="text-slate-500">Pending</p>
+                    <p className="text-gray-500">Pending</p>
                   </div>
                 </div>
 
@@ -612,17 +638,19 @@ useEffect(() => {
                     ?.map((milestone: any, index: number) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center rounded-md bg-slate-50/20 p-2"
+                        className="flex justify-between items-center rounded-lg bg-blue-50/30 p-3 hover:bg-blue-50/50 transition-all duration-200"
                       >
                         <div className="flex items-center gap-2">
                           {milestone.status === 'completed' ? (
-                            <CheckCircle className="h-4 w-4 text-blue-500" />
+                            <CheckCircle className="h-4 w-4 text-green-500" />
                           ) : milestone.status === 'in-progress' ? (
                             <Clock className="h-4 w-4 text-blue-500" />
                           ) : (
-                            <AlertCircle className="h-4 w-4 text-slate-400" />
+                            <AlertCircle className="h-4 w-4 text-gray-400" />
                           )}
-                          <span className="text-sm">{milestone.title}</span>
+                          <span className="text-sm text-gray-700">
+                            {milestone.title}
+                          </span>
                         </div>
                         {getStatusBadge(milestone.status)}
                       </div>
@@ -631,7 +659,7 @@ useEffect(() => {
 
                 <Button
                   variant="outline"
-                  className="w-full mt-2 text-sm"
+                  className="w-full mt-2 text-sm bg-white hover:bg-blue-50 border-blue-200 text-blue-600 transition-all duration-200"
                   onClick={() => updateUrlTab('milestones')}
                 >
                   View All Milestones <ArrowRight className="ml-1 h-4 w-4" />
@@ -641,99 +669,23 @@ useEffect(() => {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {/* <Card>
+            <Card className="bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Team</CardTitle>
+                <CardTitle className="text-base text-gray-900">
+                  Project Timeline
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  {project_details?.freelancers
-                    ?.slice(0, 3)
-                    .map((freelancer: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>
-                            {freelancer.name
-                              .split(' ')
-                              .map((n: string) => n[0])
-                              .join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">
-                            {freelancer.name}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {freelancer.role}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-
-                  {project_details?.freelancers?.length > 3 && (
-                    <p className="text-xs text-slate-500 mt-2">
-                      + {project_details?.freelancers?.length - 3} more
-                    </p>
-                  )}
-
-                  {userType === 'employer' && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full mt-2 text-xs"
-                      onClick={() => updateUrlTab('team')}
-                    >
-                      Manage Team
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card> */}
-
-            {/* <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Recent Updates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-[150px] overflow-y-auto">
-                  {project_details?.updates?.slice(0, 3).map((update: any) => (
-                    <div key={update._id} className="text-sm">
-                      <div className="flex justify-between items-center">
-                        <p className="font-medium">{update.author}</p>
-                        <p className="text-xs text-slate-500">
-                          {new Date(update.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <p className="text-xs text-slate-600 truncate">
-                        {update.content.substring(0, 60)}...
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-4 text-xs"
-                  onClick={() => updateUrlTab('chat')}
-                >
-                  View All Updates
-                </Button>
-              </CardContent>
-            </Card> */}
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Project Timeline</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <CheckCircle className="h-3 w-3 text-blue-600" />
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <CheckCircle className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">Project Started</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm font-medium text-gray-900">
+                        Project Started
+                      </p>
+                      <p className="text-xs text-gray-500">
                         {new Date(
                           project_details?.createdAt
                         ).toLocaleDateString()}
@@ -741,13 +693,15 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Clock className="h-3 w-3 text-blue-600" />
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Clock className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">Current Phase</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm font-medium text-gray-900">
+                        Current Phase
+                      </p>
+                      <p className="text-xs text-gray-500">
                         {project_details?.milestones?.find(
                           (m: any) => m.status === 'in-progress'
                         )?.title || 'Planning'}
@@ -755,13 +709,15 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center">
-                      <Calendar className="h-3 w-3 text-amber-600" />
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Calendar className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">Deadline</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm font-medium text-gray-900">
+                        Deadline
+                      </p>
+                      <p className="text-xs text-gray-500">
                         {new Date(
                           project_details?.deadline
                         ).toLocaleDateString()}
@@ -770,13 +726,15 @@ useEffect(() => {
                   </div>
 
                   {project_details?.status === 'completed' && (
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                        <CheckCircle className="h-3 w-3 text-blue-600" />
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
                       </div>
                       <div>
-                        <p className="text-xs font-medium">Completed</p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-sm font-medium text-gray-900">
+                          Completed
+                        </p>
+                        <p className="text-xs text-gray-500">
                           {new Date(
                             project_details?.deadline
                           ).toLocaleDateString()}
@@ -790,55 +748,59 @@ useEffect(() => {
           </div>
 
           {project_details?.status === 'completed' && (
-            <Card>
+            <Card className="bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardHeader>
-                <CardTitle>Project Completion Report</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-gray-900 text-xl">
+                  Project Completion Report
+                </CardTitle>
+                <CardDescription className="text-gray-500">
                   Project performance summary and final stats
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-slate-50 p-4 rounded-lg text-center">
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-blue-600">
                       {project_details?.progress}%
                     </p>
-                    <p className="text-sm text-slate-500">Completion Rate</p>
+                    <p className="text-sm text-gray-500">Completion Rate</p>
                   </div>
-                  <div className="bg-slate-50 p-4 rounded-lg text-center">
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-blue-600">
                       {stats?.totalDays}
                     </p>
-                    <p className="text-sm text-slate-500">Days to Complete</p>
+                    <p className="text-sm text-gray-500">Days to Complete</p>
                   </div>
-                  <div className="bg-slate-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-purple-600">1 </p>
-                    <p className="text-sm text-slate-500">Team Members</p>
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold text-blue-600">1</p>
+                    <p className="text-sm text-gray-500">Team Members</p>
                   </div>
-                  <div className="bg-slate-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-amber-600">
+                  <div className="bg-blue-50/50 p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold text-blue-600">
                       {project_details?.milestones?.length}
                     </p>
-                    <p className="text-sm text-slate-500">Milestones</p>
+                    <p className="text-sm text-gray-500">Milestones</p>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-medium mb-2">Project Summary</h3>
-                  <p className="text-sm text-slate-300">
+                  <h3 className="text-lg font-medium mb-2 text-gray-900">
+                    Project Summary
+                  </h3>
+                  <p className="text-sm text-gray-700 bg-blue-50/30 p-4 rounded-lg">
                     {project_details?.description}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1  gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <h3 className="text-base font-medium mb-2">
+                    <h3 className="text-base font-medium mb-2 text-gray-900">
                       Client Feedback
                     </h3>
-                    <div className="border rounded-md text-slate-500 p-4 bg-slate-50">
+                    <div className="border border-blue-100 rounded-lg text-gray-500 p-4 bg-blue-50/30">
                       <div className="flex items-center gap-2 mb-2">
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback>
+                          <AvatarFallback className="bg-blue-100 text-blue-600">
                             {project_details?.clientContact
                               ?.split(' ')
                               .map((n: string) => n[0])
@@ -846,55 +808,27 @@ useEffect(() => {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium">
+                          <p className="text-sm font-medium text-gray-900">
                             {project_details?.clientContact || 'Client'}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-gray-500">
                             {new Date(
                               project_details?.completionDate
                             ).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
-                      <p className="text-sm italic">
+                      <p className="text-sm italic text-gray-600">
                         "The team delivered exceptional work on this project.
                         They were responsive, professional, and met all our
                         requirements. I would definitely work with them again."
                       </p>
                     </div>
                   </div>
-
-                  {/* <div>
-                    <h3 className="text-base font-medium mb-2">
-                      Key Achievements
-                    </h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>
-                          Delivered project on schedule and within budget
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>
-                          Implemented all requested features with high quality
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>Maintained excellent Chat throughout</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5" />
-                        <span>Provided comprehensive documentation</span>
-                      </li>
-                    </ul>
-                  </div> */}
                 </div>
 
                 <div className="flex justify-center mt-4">
-                  <Button className="gap-2">
+                  <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200">
                     <FileBarChart className="h-4 w-4" />
                     Download Full Report
                   </Button>
@@ -907,26 +841,38 @@ useEffect(() => {
         {/* Milestones Tab */}
         <TabsContent value="milestones" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium">Project Milestones</h2>
+            <h2 className="text-xl font-medium text-gray-900">
+              Project Milestones
+            </h2>
             {userType === 'employer' &&
               project_details?.status === 'completed' && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="gap-2">
+                    <Button
+                      size="sm"
+                      className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200"
+                    >
                       <Plus className="h-4 w-4" />
                       Add Milestone
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-white border border-blue-100 rounded-xl">
                     <DialogHeader>
-                      <DialogTitle>Add New Milestone</DialogTitle>
-                      <DialogDescription>
+                      <DialogTitle className="text-gray-900 text-xl">
+                        Add New Milestone
+                      </DialogTitle>
+                      <DialogDescription className="text-gray-500">
                         Add a new milestone to track project progress
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="space-y-2">
-                        <Label htmlFor="milestone-title">Milestone Title</Label>
+                        <Label
+                          htmlFor="milestone-title"
+                          className="text-gray-700"
+                        >
+                          Milestone Title
+                        </Label>
                         <Input
                           id="milestone-title"
                           placeholder="e.g. Design Completion"
@@ -937,10 +883,16 @@ useEffect(() => {
                               title: e.target.value
                             })
                           }
+                          className="bg-white border-blue-200 focus:border-blue-400 focus:ring-blue-400"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="milestone-date">Due Date</Label>
+                        <Label
+                          htmlFor="milestone-date"
+                          className="text-gray-700"
+                        >
+                          Due Date
+                        </Label>
                         <Input
                           id="milestone-date"
                           type="date"
@@ -951,17 +903,23 @@ useEffect(() => {
                               dueDate: e.target.value
                             })
                           }
+                          className="bg-white border-blue-200 focus:border-blue-400 focus:ring-blue-400"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="milestone-status">Status</Label>
+                        <Label
+                          htmlFor="milestone-status"
+                          className="text-gray-700"
+                        >
+                          Status
+                        </Label>
                         <Select
                           defaultValue={newMilestone.status}
                           onValueChange={(value: any) =>
                             setNewMilestone({ ...newMilestone, status: value })
                           }
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-white border-blue-200 focus:border-blue-400 focus:ring-blue-400">
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
                           <SelectContent>
@@ -986,10 +944,10 @@ useEffect(() => {
                             status: 'not-started'
                           })
                         }
+                        className="bg-white hover:bg-blue-50 border-blue-200 text-blue-600 transition-all duration-200"
                       >
                         Cancel
                       </Button>
-                      {/* <Button onClick={addMilestone}>Add Milestone</Button> */}
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -999,18 +957,21 @@ useEffect(() => {
           <div className="space-y-4">
             {project_details?.milestones?.map(
               (milestone: any, index: number) => (
-                <Card key={index}>
+                <Card
+                  key={index}
+                  className="bg-white border border-blue-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                >
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-2">
                         {milestone.status === 'completed' ? (
-                          <CheckCircle className="h-5 w-5 text-blue-500" />
+                          <CheckCircle className="h-5 w-5 text-green-500" />
                         ) : milestone.status === 'in-progress' ? (
                           <Clock className="h-5 w-5 text-blue-500" />
                         ) : (
-                          <AlertCircle className="h-5 w-5 text-slate-400" />
+                          <AlertCircle className="h-5 w-5 text-gray-400" />
                         )}
-                        <CardTitle className="text-base">
+                        <CardTitle className="text-base text-gray-900">
                           {milestone.title}
                         </CardTitle>
                       </div>
@@ -1018,14 +979,13 @@ useEffect(() => {
                     </div>
                   </CardHeader>
                   <CardContent className="pb-2">
-                    <div className="flex items-center text-sm text-slate-500 mb-2">
+                    <div className="flex items-center text-sm text-gray-500 mb-2">
                       <Calendar className="h-4 w-4 mr-1" />
                       <span>
                         Due: {new Date(milestone.deadline).toLocaleDateString()}
                       </span>
                     </div>
                   </CardContent>
-                  {/* // project_details?.status !== 'completed' && ( */}
 
                   <CardFooter>
                     {userType === 'employer' ? (
@@ -1037,9 +997,10 @@ useEffect(() => {
                           isApprovingMilestone === milestone?._id ||
                           milestone?.status === 'completed'
                         }
+                        className="bg-white hover:bg-blue-50 border-blue-200 text-blue-600 transition-all duration-200"
                       >
                         {milestone.status === 'completed' ? (
-                          <span className="text-slate-500">
+                          <span className="text-gray-500">
                             Milestone Completed
                           </span>
                         ) : (
@@ -1059,7 +1020,7 @@ useEffect(() => {
                       <>
                         {' '}
                         {milestone.status === 'completed' ? (
-                          <span className="text-slate-500">
+                          <span className="text-gray-500">
                             Milestone Completed
                           </span>
                         ) : (
@@ -1073,7 +1034,7 @@ useEffect(() => {
                               milestone.status === 'completed'
                             }
                           >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-[180px] bg-white border-blue-200 focus:border-blue-400 focus:ring-blue-400">
                               {isCompletingMilestone === milestone?._id ? (
                                 <div className="flex items-center">
                                   <span className="mr-2">Updating...</span>
@@ -1102,223 +1063,45 @@ useEffect(() => {
           </div>
         </TabsContent>
 
-        {/* Team Tab */}
-        <TabsContent value="team" className="space-y-6 mt-6">
-          <ProjectTeam projectDetails={project_details} />
-          {/* <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium">Project Team</h2>
-            {userType === 'employer' && project_details?.status !== 'completed' && (
-              <Button
-                size="sm"
-                className="gap-2"
-                onClick={() => setIsAssigningFreelancer(true)}
-              >
-                <Plus className="h-4 w-4" />
-                Assign Freelancer
-              </Button>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {project_details?.freelancers?.map((freelancer: any, idx: number) => (
-              <Card key={idx}>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarFallback className="text-lg">
-                        {freelancer.name
-                          .split(' ')
-                          .map((n: string) => n[0])
-                          .join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{freelancer.name}</p>
-                      <p className="text-sm text-slate-500">
-                        {freelancer.role}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Joined Project</span>
-                      <span>2 weeks ago</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">
-                        Completed Milestones
-                      </span>
-                      <span>3</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Current Tasks</span>
-                      <span>2</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex justify-end">
-                    <Button variant="outline" size="sm">
-                      View Profile
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {isAssigningFreelancer && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Assign Freelancer</CardTitle>
-                <CardDescription>
-                  Select a freelancer to add to the project team
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {availableFreelancers
-                    ?.filter(
-                      (f) =>
-                        !project_details?.freelancers?.some(
-                          (pf: any) => pf.name === f.name
-                        )
-                    )
-                    ?.map((freelancer) => (
-                      <div
-                        key={freelancer._id}
-                        className="flex items-center justify-between p-3 border rounded-md hover:bg-slate-50 cursor-pointer"
-                        onClick={() => addFreelancer(freelancer._id)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10">
-                            <AvatarFallback>
-                              {freelancer.name
-                                .split(' ')
-                                .map((n) => n[0])
-                                .join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{freelancer.name}</p>
-                            <p className="text-sm text-slate-500">
-                              {freelancer.role}
-                            </p>
-                          </div>
-                        </div>
-                        <Button size="sm" variant="ghost">
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAssigningFreelancer(false)}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={() => setIsAssigningFreelancer(false)}>
-                  Done
-                </Button>
-              </CardFooter>
-            </Card>
-          )} */}
-        </TabsContent>
-
-        {/* Chat Tab */}
-        <TabsContent value="chat" className="space-y-6 mt-6">
-          <h2 className="text-lg font-medium"> Project Chat</h2>
-
-          {/* <ProjectUpdates project={project} /> */}
-          <ProjectChat />
-        </TabsContent>
-
         {/* Files Tab */}
         <TabsContent value="files" className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium">Project Files</h2>
-            <Button size="sm" className="gap-2">
+            <h2 className="text-xl font-medium text-gray-900">Project Files</h2>
+            <Button
+              size="sm"
+              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200"
+            >
               <Plus className="h-4 w-4" />
               Upload File
             </Button>
           </div>
 
           <div className="space-y-4">
-            <div className="border rounded-md overflow-hidden">
-              <div className="bg-slate-50/10 px-4 py-2 border-b">
-                <h3 className="font-medium">Project Documents</h3>
+            <div className="border border-blue-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="bg-blue-50/50 px-4 py-2 border-b border-blue-100">
+                <h3 className="font-medium text-gray-900">Project Documents</h3>
               </div>
-              <div className="divide-y">
+              <div className="divide-y divide-blue-100">
                 {project_details?.medias?.map((file: any, idx: number) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
+                    className="flex items-center justify-between p-3 hover:bg-blue-50/30 transition-all duration-200"
                   >
                     <div className="flex items-center gap-3">
-                      {/* <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
-                        {file.type}
-                      </div> */}
                       <div>
-                        <p className="font-medium">{file.name}</p>
-                        <p className="text-xs text-slate-500">
-                          {/* {file.size} • Uploaded on{' '} */}
-                          {/* {new Date(file.date).toLocaleDateString()} */}
-                        </p>
+                        <p className="font-medium text-gray-900">{file.name}</p>
+                        <p className="text-xs text-gray-500"></p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-blue-50 text-blue-600"
+                    >
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <div className="border rounded-md overflow-hidden">
-              <div className="bg-slate-50/10 px-4 py-2 border-b">
-                <h3 className="font-medium">Deliverables</h3>
-              </div>
-              <div className="divide-y">
-                {/* {[
-                  {
-                    name: 'Final Presentation.pptx',
-                    type: 'pptx',
-                    size: '5.7 MB',
-                    date: '2023-09-20'
-                  },
-                  {
-                    name: 'Source Code.zip',
-                    type: 'zip',
-                    size: '28.3 MB',
-                    date: '2023-09-25'
-                  }
-                ].map((file, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-3 hover:bg-slate-50 hover:text-gray-700"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center text-blue-700">
-                        {file.type}
-                      </div>
-                      <div>
-                        <p className="font-medium">{file.name}</p>
-                        <p className="text-xs text-slate-500">
-                          {file.size} • Uploaded on{' '}
-                          {new Date(file.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))} */}
               </div>
             </div>
           </div>

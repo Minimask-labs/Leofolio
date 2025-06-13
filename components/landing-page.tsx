@@ -7,12 +7,11 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Shield, Star, Code, Lock, Globe, ArrowRight } from 'lucide-react';
 import { useRouter, redirect } from 'next/navigation';
 
-
-export function LandingPage( ) {
-    const router = useRouter();
+export function LandingPage() {
+  const router = useRouter();
   const handleGetStarted = () => {
     router.push('/auth');
-  };  
+  };
   // Mock data for featured freelancers
   const featuredFreelancers = [
     {
@@ -67,35 +66,44 @@ export function LandingPage( ) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
       {/* Navigation */}
-      <header className="border-b sticky top-0 bg-blue-800 z-30 ">
+      <header className="border-b border-blue-100 sticky top-0 bg-white/80 backdrop-blur-sm z-30">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-[#121212]" />
-            <h1 className="text-2xl font-bold">Leofolio</h1>
+            <Shield className="h-8 w-8 text-blue-500" />
+            <h1 className="text-2xl font-bold text-gray-900">Leofolio</h1>
           </div>
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-slate-100 hover:text-black">
+              <a
+                href="#features"
+                className="text-gray-600 hover:text-blue-500 transition-colors"
+              >
                 Features
               </a>
               <a
                 href="#freelancers"
-                className="text-slate-100 hover:text-black"
+                className="text-gray-600 hover:text-blue-500 transition-colors"
               >
                 Freelancers
               </a>
-              <a href="#projects" className="text-slate-100 hover:text-black">
+              <a
+                href="#projects"
+                className="text-gray-600 hover:text-blue-500 transition-colors"
+              >
                 Projects
               </a>
-              <a href="#about" className="text-slate-100 hover:text-black">
+              <a
+                href="#about"
+                className="text-gray-600 hover:text-blue-500 transition-colors"
+              >
                 About
               </a>
             </nav>
             <Button
               onClick={handleGetStarted}
-              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
+              className="bg-blue-500 hover:bg-blue-600 text-white transition-colors"
             >
               Get Started
             </Button>
@@ -104,13 +112,12 @@ export function LandingPage( ) {
       </header>
 
       {/* Hero Section */}
-      <section className="dark:bg-gradient-to-b dark:from-blue-800 to-white py-20">
+      <section className="py-24 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Privacy-Preserving{' '}
-            <span className="text-[#121212]">Freelancer Platform</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600">
+            Privacy-Preserving Freelancer Platform
           </h1>
-          <p className="text-xl text-slate-100 max-w-3xl mx-auto mb-10">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
             Connect with verified freelancers and clients while maintaining
             privacy through zero-knowledge proofs on Aleo.
           </p>
@@ -118,7 +125,7 @@ export function LandingPage( ) {
             <Button
               onClick={handleGetStarted}
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-500 hover:bg-blue-600 text-white transition-colors"
             >
               Join as Freelancer
             </Button>
@@ -126,50 +133,53 @@ export function LandingPage( ) {
               onClick={handleGetStarted}
               size="lg"
               variant="outline"
-              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500 transition-colors"
             >
               Hire Talent
             </Button>
           </div>
         </div>
       </section>
+
       {/* Features Section */}
-      <section id="features" className="py-20 ">
+      <section id="features" className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
             Why Choose Leofolio?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="h-8 w-8 text-blue-600" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow bg-blue-50/50">
+              <div className="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Lock className="h-10 w-10 text-blue-500" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Privacy-First</h3>
-              <p className="text-slate-600">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+                Privacy-First
+              </h3>
+              <p className="text-gray-600">
                 Your credentials and work history remain private while still
                 being verifiable through zero-knowledge proofs.
               </p>
             </div>
-            <div className="text-center p-6">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Code className="h-8 w-8 text-blue-600" />
+            <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow bg-blue-50/50">
+              <div className="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Code className="h-10 w-10 text-blue-500" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-900">
                 Developer Portfolios
               </h3>
-              <p className="text-slate-600">
+              <p className="text-gray-600">
                 Showcase your skills and achievements with our customizable
                 developer portfolios.
               </p>
             </div>
-            <div className="text-center p-6">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Globe className="h-8 w-8 text-blue-600" />
+            <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow bg-blue-50/50">
+              <div className="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Globe className="h-10 w-10 text-blue-500" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-900">
                 Global Opportunities
               </h3>
-              <p className="text-slate-600">
+              <p className="text-gray-600">
                 Connect with clients and freelancers worldwide with secure,
                 private payments.
               </p>
@@ -179,50 +189,59 @@ export function LandingPage( ) {
       </section>
 
       {/* Featured Freelancers */}
-      <section id="freelancers" className="py-20 ">
+      <section id="freelancers" className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
             Top Freelancers
           </h2>
-          <p className="text-center text-slate-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
             Our platform features top talent with verified credentials and
             proven track records.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredFreelancers.map((freelancer) => (
-              <Card key={freelancer.id} className="overflow-hidden">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center text-center mb-4">
-                    <Avatar className="h-24 w-24 mb-4">
-                      <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">
+              <Card
+                key={freelancer.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow bg-white border-blue-100"
+              >
+                <CardContent className="p-8">
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <Avatar className="h-28 w-28 mb-6">
+                      <AvatarFallback className="text-3xl bg-blue-100 text-blue-500">
                         {freelancer.name
                           .split(' ')
                           .map((n) => n[0])
                           .join('')}
                       </AvatarFallback>
                     </Avatar>
-                    <h3 className="text-xl font-semibold">{freelancer.name}</h3>
-                    <p className="text-slate-600">{freelancer.title}</p>
-                    <div className="flex items-center mt-2">
-                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                      <span className="ml-1 font-medium">
+                    <h3 className="text-2xl font-semibold text-gray-900">
+                      {freelancer.name}
+                    </h3>
+                    <p className="text-gray-600 mt-1">{freelancer.title}</p>
+                    <div className="flex items-center mt-3">
+                      <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                      <span className="ml-2 font-medium text-gray-900">
                         {freelancer.rating}
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  <div className="flex flex-wrap justify-center gap-2 mt-6">
                     {freelancer.skills.map((skill) => (
-                      <Badge key={skill} variant="secondary">
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="bg-blue-50 text-blue-500"
+                      >
                         {skill}
                       </Badge>
                     ))}
                   </div>
-                  <div className="mt-6 flex justify-center">
+                  <div className="mt-8 flex justify-center">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
+                      className="border-blue-500 text-blue-500 hover:bg-blue-500 transition-colors"
                     >
                       View Profile
                     </Button>
@@ -232,11 +251,11 @@ export function LandingPage( ) {
             ))}
           </div>
 
-          <div className="text-center mt-10">
+          <div className="text-center mt-12">
             <Button
               onClick={handleGetStarted}
               variant="outline"
-              className="border-blue-600 text-blue-700 hover:text-[#121212] bg-[#121212] hover:bg-blue-100"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500 transition-colors"
             >
               Explore All Freelancers <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -245,42 +264,48 @@ export function LandingPage( ) {
       </section>
 
       {/* Featured Projects */}
-      <section id="projects" className="py-20 ">
+      <section id="projects" className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
             Featured Projects
           </h2>
-          <p className="text-center text-slate-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
             Discover exciting projects that are looking for talented
             freelancers.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredProjects.map((project) => (
-              <Card key={project.id} className="overflow-hidden">
-                <CardContent className="p-6">
-                  <div className="mb-4">
-                    <h3 className="text-xl font-semibold mb-2">
+              <Card
+                key={project.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow bg-white border-blue-100"
+              >
+                <CardContent className="p-8">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-semibold mb-3 text-gray-900">
                       {project.title}
                     </h3>
-                    <p className="text-slate-600 text-sm mb-2">
+                    <p className="text-blue-500 text-sm font-medium mb-3">
                       {project.company}
                     </p>
-                    <p className="text-slate-700">{project.description}</p>
+                    <p className="text-gray-600">{project.description}</p>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-4">
+                  <div className="flex flex-wrap gap-2 mt-6">
                     {project.skills.map((skill) => (
                       <Badge
                         key={skill}
                         variant="outline"
-                        className="bg-blue-50 text-blue-700 border-blue-200"
+                        className="bg-blue-50 text-blue-500 border-blue-200"
                       >
                         {skill}
                       </Badge>
                     ))}
                   </div>
-                  <div className="mt-6 flex justify-end">
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <div className="mt-8 flex justify-end">
+                    <Button
+                      size="sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white transition-colors"
+                    >
                       Apply Now
                     </Button>
                   </div>
@@ -289,11 +314,11 @@ export function LandingPage( ) {
             ))}
           </div>
 
-          <div className="text-center mt-10">
+          <div className="text-center mt-12">
             <Button
               onClick={handleGetStarted}
               variant="outline"
-              className="border-blue-600 text-blue-700 hover:bg-blue-50"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500 transition-colors"
             >
               View All Projects <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -302,24 +327,29 @@ export function LandingPage( ) {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20   text-white">
+      <section
+        id="about"
+        className="py-20 bg-gradient-to-b from-blue-500 to-blue-600"
+      >
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">About Leofolio</h2>
-            <p className="text-slate-300 mb-8">
+            <h2 className="text-4xl font-bold mb-8 text-white">
+              About Leofolio
+            </h2>
+            <p className="text-blue-50 mb-8 text-lg">
               Leofolio is built on Aleo's privacy-preserving blockchain
               technology, enabling freelancers and clients to connect, verify
               credentials, and transact without compromising sensitive
               information.
             </p>
-            <p className="text-slate-300 mb-8">
+            <p className="text-blue-50 mb-12 text-lg">
               Our mission is to create a trustless freelancing ecosystem where
               privacy and security are paramount, while still enabling
               verifiable credentials and reputation building.
             </p>
             <Button
               onClick={handleGetStarted}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-white text-blue-500 hover:bg-blue-50 transition-colors"
             >
               Join the Community
             </Button>
@@ -328,75 +358,108 @@ export function LandingPage( ) {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#121212] text-slate-300 py-12">
+      <footer className="bg-gray-50 text-gray-600 py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between">
-            <div className="mb-8 md:mb-0">
-              <div className="flex items-center gap-2 mb-4">
-                <Shield className="h-6 w-6 text-blue-400" />
-                <h3 className="text-xl font-bold text-white">Leofolio</h3>
+            <div className="mb-12 md:mb-0">
+              <div className="flex items-center gap-2 mb-6">
+                <Shield className="h-8 w-8 text-blue-500" />
+                <h3 className="text-2xl font-bold text-gray-900">Leofolio</h3>
               </div>
-              <p className="max-w-xs text-slate-400">
+              <p className="max-w-xs text-gray-500">
                 Privacy-preserving freelancer platform built on Aleo blockchain
                 technology.
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
               <div>
-                <h4 className="text-white font-medium mb-4">Platform</h4>
-                <ul className="space-y-2">
+                <h4 className="text-gray-900 font-medium mb-6 text-lg">
+                  Platform
+                </h4>
+                <ul className="space-y-4">
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       How it Works
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Pricing
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       FAQ
                     </a>
                   </li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-white font-medium mb-4">Resources</h4>
-                <ul className="space-y-2">
+                <h4 className="text-gray-900 font-medium mb-6 text-lg">
+                  Resources
+                </h4>
+                <ul className="space-y-4">
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Documentation
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Blog
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Tutorials
                     </a>
                   </li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-white font-medium mb-4">Connect</h4>
-                <ul className="space-y-2">
+                <h4 className="text-gray-900 font-medium mb-6 text-lg">
+                  Connect
+                </h4>
+                <ul className="space-y-4">
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Twitter
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       Discord
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-400">
+                    <a
+                      href="#"
+                      className="hover:text-blue-500 transition-colors"
+                    >
                       GitHub
                     </a>
                   </li>
@@ -404,7 +467,7 @@ export function LandingPage( ) {
               </div>
             </div>
           </div>
-          <div className="border-t border-slate-700 mt-12 pt-8 text-center text-slate-400">
+          <div className="border-t border-gray-200 mt-16 pt-8 text-center text-gray-500">
             <p>
               &copy; {new Date().getFullYear()} Leofolio. All rights reserved.
             </p>

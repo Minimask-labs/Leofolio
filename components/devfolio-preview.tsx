@@ -8,6 +8,7 @@ import { WorkHistory } from './work-history';
 import { useState, useEffect } from 'react';
 import GitHubCalendar from 'react-github-calendar';
 import { useProjectStore } from '@/Store/projects';
+import { motion } from 'framer-motion';
 
 import {
   Github,
@@ -47,18 +48,18 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
-    const {
-      handleViewProjectInvitationsList,
-      projects_invites,
-      handleProjectInviteResponse,
-      fetchProjects,
-      projects,
-      fetchFreelancerProjects,
-      fetchFreelancerCompletedProjects,
-      freelancer_completed_projects,
-      freelancer_projects
-    } = useProjectStore();
-  
+  const {
+    handleViewProjectInvitationsList,
+    projects_invites,
+    handleProjectInviteResponse,
+    fetchProjects,
+    projects,
+    fetchFreelancerProjects,
+    fetchFreelancerCompletedProjects,
+    freelancer_completed_projects,
+    freelancer_projects
+  } = useProjectStore();
+
   // if (profile?.socials?.github !== '') {
   //   const url = new URL(profile?.socials?.github);
   //   const pathname = url.pathname; // ""
@@ -89,116 +90,129 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
 
   useEffect(() => {
     fetchData();
-   }, []);
+  }, []);
 
   return (
-    <div className=" border rounded-lg w-full shadow-sm overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="border border-blue-100 rounded-lg w-full shadow-lg overflow-hidden bg-gradient-to-b from-white to-blue-50"
+    >
       {/* Header Section */}
-      <div className="border-b lg:p-8 p-4">
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          <Avatar className="h-32 w-32 rounded-full">
-            <AvatarFallback className="text-3xl bg-blue-100 text-blue-800">
-              {profile?.fullName
-                ? profile.fullName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                : 'U'}
-            </AvatarFallback>
-            <AvatarImage
-              src={profile?.profileImage}
-              className="w-full h-full object-cover"
-            />{' '}
-          </Avatar>
+      <div className="border-b border-blue-100  p-6">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Avatar className="h-20 w-20 rounded-full ring-4 ring-blue-100">
+              <AvatarFallback className="text-4xl bg-blue-100 text-blue-600">
+                {profile?.fullName
+                  ? profile.fullName
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                  : 'U'}
+              </AvatarFallback>
+              <AvatarImage
+                src={profile?.profileImage}
+                className="w-full h-full object-cover"
+              />
+            </Avatar>
+          </motion.div>
 
           <div className="flex-1">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 ">
               <div>
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-2xl font-bold text-gray-900">
                   {profile?.fullName || 'Your Name'}
                 </h1>
-                <p className="text-slate-500">
+                <p className="text-blue-600 text-lg">
                   @{profile?.username || 'username'}
                 </p>
               </div>
-              {/* <Button className="bg-blue-600 hover:bg-blue-700 self-start">
-                Edit Profile
-              </Button> */}
             </div>
 
-            <p className="text-lg mb-4">
+            <p className="text-sm text-gray-700 ">
               {profile?.professionalTitle || 'Your Professional Title'}
             </p>
 
-            <p className="text-[#E0E0E0] mb-4">{profile?.bio || ''}</p>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {profile?.bio || ''}
+            </p>
 
             <div className="flex flex-wrap gap-4">
               {profile?.socials?.github && (
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
                   href={profile?.socials?.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  <Github className="h-6 w-6" />
-                </a>
+                  <Github className="h-4 w-4" />
+                </motion.a>
               )}
               {profile?.socials?.linkedin && (
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
                   title="blank_tag"
                   href={profile?.socials?.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  <Linkedin className="h-6 w-6" />
-                </a>
+                  <Linkedin className="h-4 w-4" />
+                </motion.a>
               )}
               {profile?.socials?.twitter && (
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
                   href={profile?.socials?.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  <Twitter className="h-6 w-6" />
-                </a>
+                  <Twitter className="h-4 w-4" />
+                </motion.a>
               )}
               {profile?.socials?.instagram && (
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
                   href={profile?.socials?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  <Instagram className="h-6 w-6" />
-                </a>
+                  <Instagram className="h-4 w-4" />
+                </motion.a>
               )}
               {profile?.socials?.website && (
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1 }}
                   href={profile?.socials?.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E0E0E0] hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  <Globe className="h-6 w-6" />
-                </a>
+                  <Globe className="h-4 w-4" />
+                </motion.a>
               )}
             </div>
           </div>
         </div>
 
         {/* Skills Section */}
-        <div className="mt-6">
+        <div className="mt-8">
           <div className="flex flex-wrap gap-2">
             {profile?.skills?.length > 0 ? (
               profile?.skills?.map((skill) => (
-                <Badge
-                  key={skill}
-                  className="bg-slate-100 text-slate-800 hover:bg-slate-200"
-                >
-                  {skill}
-                </Badge>
+                <motion.div key={skill} whileHover={{ scale: 1.05 }}>
+                  <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-2 py-1 text-[12px]">
+                    {skill}
+                  </Badge>
+                </motion.div>
               ))
             ) : (
               <></>
@@ -208,9 +222,9 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
 
         {/* Location */}
         {profile?.location && (
-          <div className="mt-4 flex items-center capitalize text-[#E0E0E0]">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>{profile?.location}</span>
+          <div className="mt-4 flex items-center text-gray-600">
+            <MapPin className="h-4 w-4 mr-2" />
+            <span className="text-[12px]">{profile?.location}</span>
           </div>
         )}
       </div>
@@ -218,95 +232,136 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="space-y-4"
+        className="space-y-6"
       >
-        <TabsList className="w-full grid grid-cols-1">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          {/* <TabsTrigger value="credentials">Credentials</TabsTrigger>
-          <TabsTrigger value="work-history">Work History</TabsTrigger> */}
+        <TabsList className="w-full grid grid-cols-1 bg-blue-50/50 p-1">
+          <TabsTrigger
+            value="overview"
+            className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
+          >
+            Overview
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value="overview" className="space-y-6">
           {/* Stats Section */}
-          <div className="lg:p-8 p-2">
-            <h2 className="text-xl font-semibold mb-4 text-[#E0E0E0]">
+          <div className="p-4">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
               Leofolio Stats
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-amber-50">
-                <CardContent className="lg:p-4 p-2 flex items-center gap-3">
-                  <div className="bg-amber-100 p-2 rounded-md">
-                    <FileText className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl text-[#121212] font-bold">
-                      {freelancer_projects?.meta?.total || 0}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <motion.div whileHover={{ y: -5 }}>
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                  <CardContent className="p-2 flex items-center gap-4">
+                    <div className="bg-blue-200 p-3 rounded-lg">
+                      <FileText className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-3xl text-gray-900 font-bold">
+                        {freelancer_projects?.meta?.total || 0}
+                      </p>
+                      <p className="text-sm text-blue-600">Projects</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -5 }}>
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                  <CardContent className="p-2 flex items-center gap-4">
+                    <div className="bg-blue-200 p-3 rounded-lg">
+                      <Trophy className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-3xl text-gray-900 font-bold">0</p>
+                      <p className="text-sm text-blue-600">Prizes</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -5 }}>
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                  <CardContent className="p-2 flex items-center gap-4">
+                    <div className="bg-blue-200 p-3 rounded-lg">
+                      <Award className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-3xl text-gray-900 font-bold">0</p>
+                      <p className="text-sm text-blue-600">Hackathons</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -5 }}>
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                  <CardContent className="p-2 flex items-center gap-4">
+                    <div className="bg-blue-200 p-3 rounded-lg">
+                      <Award className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-3xl text-gray-900 font-bold">0</p>
+                      <p className="text-sm text-blue-600">Certifications</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Activity Sections */}
+          <div className="p-4 border-t border-blue-100">
+            <h2 className="text-lg font-semibold mb-6 text-gray-900">
+              Activity Overview
+            </h2>
+            <div className="grid md:grid-rows-2 gap-6">
+              {/* GitHub Activity */}
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                <h3 className="text-lg font-medium text-gray-800">
+                  GitHub Activity
+                </h3>
+                <div className="w-full flex justify-center">
+                  {username ? (
+                    <div className="transform hover:scale-105 transition-transform">
+                      <GitHubCalendar
+                        username={username}
+                        colorScheme="light"
+                        fontSize={12}
+                        blockSize={10}
+                        blockMargin={4}
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">
+                      No GitHub activity to display
                     </p>
-                    <p className="text-sm text-slate-600">Projects</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-blue-50">
-                <CardContent className="lg:p-4 p-2 flex items-center gap-3">
-                  <div className="bg-blue-100 p-2 rounded-md">
-                    <Trophy className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl text-black font-bold">0</p>
-                    <p className="text-sm text-slate-600">Prizes</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-blue-50">
-                <CardContent className="lg:p-4 p-2 flex items-center gap-3">
-                  <div className="bg-blue-100 p-2 rounded-md">
-                    <Award className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl text-black font-bold">0</p>
-                    <p className="text-sm text-slate-600">Hackathons</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-purple-50">
-                <CardContent className="lg:p-4 p-2 flex items-center gap-3">
-                  <div className="bg-purple-100 p-2 rounded-md">
-                    <Award className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl text-black font-bold">0</p>
-                    <p className="text-sm text-slate-600">Certifications</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-          {/* Aleo chain Activity */}
-
-          <div className="p-8 border-t">
-            <h2 className="text-xl font-semibold mb-4 text-[#E0E0E0]">
-              Aleo chain Activity
-            </h2>
-            <div className="bg-[#121212] p-6 rounded-lg">
-              <div className="flex flex-col md:flex-row justify-between mb-6"></div>
-              <div className="w-full flex justify-center">
-                {username ? <GitHubCalendar username={username} /> : ''}
+                  )}
+                </div>
               </div>
-              {/* Contribution graph placeholder */}
-            </div>
-          </div>
-          {/* GitHub Activity */}
-          <div className="p-8 border-t">
-            <h2 className="text-xl font-semibold mb-4 text-[#E0E0E0]">
-              GitHub Activity
-            </h2>
-            <div className="bg-[#121212] p-6 rounded-lg">
-              <div className="flex flex-col md:flex-row justify-between mb-6"></div>
-              <div className="w-full flex justify-center">
-                {username ? <GitHubCalendar username={username} /> : ''}
+
+              {/* Aleo Chain Activity */}
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                <h3 className="text-lg font-medium text-gray-800">
+                  Aleo Chain Activity
+                </h3>
+                <div className="w-full flex justify-center">
+                  {username ? (
+                    <div className="transform hover:scale-105 transition-transform">
+                      <GitHubCalendar
+                        username={username}
+                        colorScheme="light"
+                        fontSize={12}
+                        blockSize={10}
+                        blockMargin={4}
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">
+                      No Aleo chain activity to display
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -320,6 +375,6 @@ export function DevfolioPreview({ profile }: DevfolioPreviewProps) {
           <WorkHistory className="lg:p-8 p-2" />
         </TabsContent>
       </Tabs>
-    </div>
+    </motion.div>
   );
 }

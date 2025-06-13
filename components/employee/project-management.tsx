@@ -1,48 +1,70 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Calendar, Plus, Users, ChevronDown, ChevronUp, Clock, CheckCircle, AlertCircle } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ProjectUpdates } from "@/components/project-updates"
-import { ProjectDashboard } from "@/components/project-dashboard"
-import { ProjectReport } from "@/components/project-report"
-import { useRouter } from "next/navigation"
-import { useUserProfileStore } from "@/Store/userProfile"
-import { useProjectStore } from "@/Store/projects"
-const ESCROW_PROGRAM_ID = "escrow_contract_v2.aleo"
-import { mongoIdToAleoU64 } from "@/libs/util"
-import { EventType, useRequestCreateEvent } from "@puzzlehq/sdk"
-import { useAccount } from "@puzzlehq/sdk"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  Calendar,
+  Plus,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ProjectUpdates } from '@/components/project-updates';
+import { ProjectDashboard } from '@/components/project-dashboard';
+import { ProjectReport } from '@/components/project-report';
+import { useRouter } from 'next/navigation';
+import { useUserProfileStore } from '@/Store/userProfile';
+import { useProjectStore } from '@/Store/projects';
+const ESCROW_PROGRAM_ID = 'escrow_contract_v2.aleo';
+import { mongoIdToAleoU64 } from '@/libs/util';
+import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import { useAccount } from '@puzzlehq/sdk';
 
 export function ProjectManagement() {
-  const router = useRouter()
-  const [isCreatingProject, setIsCreatingProject] = useState(false)
-  const [expandedProject, setExpandedProject] = useState<number | null>(null)
-  const [selectedProject, setSelectedProject] = useState<any>(null)
-  const [showDashboard, setShowDashboard] = useState(false)
-  const [showReport, setShowReport] = useState(false)
-  const { handleUploadMedia, media } = useUserProfileStore()
-  const [previewImage, setPreviewImage] = useState("")
-  const [previewMode, setPreviewMode] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const router = useRouter();
+  const [isCreatingProject, setIsCreatingProject] = useState(false);
+  const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const { handleUploadMedia, media } = useUserProfileStore();
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewMode, setPreviewMode] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   // Replace the simple isUploading state with a more detailed loading state
-  const [isUploading, setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false);
   const [loadingState, setLoadingState] = useState({
     isLoading: false,
-    stage: "idle", // 'idle', 'validating', 'creating-backend', 'creating-blockchain', 'completed', 'failed'
-    message: "",
-    isBlockchainProcessing: false,
-  })
+    stage: 'idle', // 'idle', 'validating', 'creating-backend', 'creating-blockchain', 'completed', 'failed'
+    message: '',
+    isBlockchainProcessing: false
+  });
   const {
     handleCreateProject,
     fetchProjects,
@@ -51,338 +73,365 @@ export function ProjectManagement() {
     projects
   } = useProjectStore();
   const [projectPayload, setProjectPayload] = useState({
-    name: "Website Redesign",
-    description: "A project to redesign the company website for better UX and performance.",
-    deadline: "2025-06-30T23:59:59.000Z",
+    name: 'Website Redesign',
+    description:
+      'A project to redesign the company website for better UX and performance.',
+    deadline: '2025-06-30T23:59:59.000Z',
     medias: [
       {
-        name: "Homepage Mockup",
-        url: "https://example.com/media/homepage-mockup.png",
+        name: 'Homepage Mockup',
+        url: 'https://example.com/media/homepage-mockup.png'
       },
       {
-        name: "Logo",
-        url: "https://example.com/media/logo.svg",
-      },
+        name: 'Logo',
+        url: 'https://example.com/media/logo.svg'
+      }
     ],
-    status: "planning",
+    status: 'planning',
     milestones: [
       {
-        title: "Wireframe Approval",
-        description: "Get wireframes approved by stakeholders.",
-        deadline: "2025-05-10T12:00:00.000Z",
-        status: "planning",
-      },
+        title: 'Wireframe Approval',
+        description: 'Get wireframes approved by stakeholders.',
+        deadline: '2025-05-10T12:00:00.000Z',
+        status: 'planning'
+      }
     ],
-    price: 500000, // aleo token
-  })
+    price: 500000 // aleo token
+  });
 
-  const { account, error: accountError, loading: accountLoading } = useAccount()
+  const {
+    account,
+    error: accountError,
+    loading: accountLoading
+  } = useAccount();
 
   // We'll use these directly in the createProject function
   const { createEvent } = useRequestCreateEvent({
     type: EventType.Execute,
-    programId: "escrow_contract11.aleo",
-    functionId: "create_job",
+    programId: 'escrow_contract11.aleo',
+    functionId: 'create_job',
     fee: 1.23,
-    inputs: ["", "0u64", ""], // These will be updated before calling createEvent
-  })
+    inputs: ['', '0u64', ''] // These will be updated before calling createEvent
+  });
 
   const uploadedImage = async (image: any) => {
-    setIsUploading(true)
-    const formData = new FormData()
+    setIsUploading(true);
+    const formData = new FormData();
     if (image) {
-      formData.append("media", image)
+      formData.append('media', image);
     }
 
     try {
-      const response = await handleUploadMedia(formData)
+      const response = await handleUploadMedia(formData);
       if (media) {
         toast({
-          title: "Image uploaded successfully",
-          description: "Your profile image has been updated.",
-          variant: "default",
-        })
-        setPreviewImage(media[0])
+          title: 'Image uploaded successfully',
+          description: 'Your profile image has been updated.',
+          variant: 'default'
+        });
+        setPreviewImage(media[0]);
       }
     } catch (error) {
-      console.error("Error uploading image:", error)
+      console.error('Error uploading image:', error);
       toast({
-        title: "Upload failed",
-        description: "There was a problem uploading your image. Please try again.",
-        variant: "destructive",
-      })
+        title: 'Upload failed',
+        description:
+          'There was a problem uploading your image. Please try again.',
+        variant: 'destructive'
+      });
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   // Merged function that handles both project creation and blockchain job creation
   const createProject = async () => {
     // Reset previous errors
-    setErrors({})
+    setErrors({});
 
     // Update loading state for validation
     setLoadingState({
       isLoading: true,
-      stage: "validating",
-      message: "Validating project information...",
-      isBlockchainProcessing: false,
-    })
+      stage: 'validating',
+      message: 'Validating project information...',
+      isBlockchainProcessing: false
+    });
 
     // Validate required fields
-    const newErrors: Record<string, string> = {}
+    const newErrors: Record<string, string> = {};
 
     if (!projectPayload.name.trim()) {
-      newErrors.name = "Project name is required"
+      newErrors.name = 'Project name is required';
     }
 
     if (!projectPayload.description.trim()) {
-      newErrors.description = "Project description is required"
+      newErrors.description = 'Project description is required';
     }
 
     if (!projectPayload.deadline) {
-      newErrors.deadline = "Deadline is required"
+      newErrors.deadline = 'Deadline is required';
     }
 
     if (!projectPayload.price || projectPayload.price <= 0) {
-      newErrors.price = "Valid price is required"
+      newErrors.price = 'Valid price is required';
     }
 
     if (projectPayload.milestones.length === 0) {
-      newErrors.milestones = "At least one milestone is required"
+      newErrors.milestones = 'At least one milestone is required';
     } else {
       // Validate each milestone
       projectPayload.milestones.forEach((milestone, index) => {
         if (!milestone.title.trim()) {
-          newErrors[`milestone-${index}-title`] = "Milestone title is required"
+          newErrors[`milestone-${index}-title`] = 'Milestone title is required';
         }
         if (!milestone.deadline) {
-          newErrors[`milestone-${index}-deadline`] = "Milestone deadline is required"
+          newErrors[`milestone-${index}-deadline`] =
+            'Milestone deadline is required';
         }
-      })
+      });
     }
 
     // If there are validation errors, show them and stop
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
+      setErrors(newErrors);
       toast({
-        title: "Validation Error",
-        description: "Please fix the errors in the form",
-        variant: "destructive",
-      })
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+        variant: 'destructive'
+      });
 
       // Reset loading state
       setLoadingState({
         isLoading: false,
-        stage: "idle",
-        message: "",
-        isBlockchainProcessing: false,
-      })
+        stage: 'idle',
+        message: '',
+        isBlockchainProcessing: false
+      });
 
-      return
+      return;
     }
 
     // Check wallet connection before proceeding
     if (!account?.address) {
       toast({
-        title: "Wallet Error",
-        description: "Please connect your wallet to create a blockchain project",
-        variant: "destructive",
-      })
+        title: 'Wallet Error',
+        description:
+          'Please connect your wallet to create a blockchain project',
+        variant: 'destructive'
+      });
 
       setLoadingState({
         isLoading: false,
-        stage: "idle",
-        message: "",
-        isBlockchainProcessing: false,
-      })
+        stage: 'idle',
+        message: '',
+        isBlockchainProcessing: false
+      });
 
-      return
+      return;
     }
 
     // Update loading state for backend creation
     setLoadingState({
       isLoading: true,
-      stage: "creating-backend",
-      message: "Creating project in database...",
-      isBlockchainProcessing: false,
-    })
+      stage: 'creating-backend',
+      message: 'Creating project in database...',
+      isBlockchainProcessing: false
+    });
 
     try {
       // Step 1: Create the project in the backend
-      const response = await handleCreateProject(projectPayload)
+      const response = await handleCreateProject(projectPayload);
 
-      if (response !== undefined && typeof response === "object" && "data" in response) {
+      if (
+        response !== undefined &&
+        typeof response === 'object' &&
+        'data' in response
+      ) {
         const { data, success } = response as {
-          data: { _id: string }
-          success: boolean
-        }
+          data: { _id: string };
+          success: boolean;
+        };
 
         if (success && data && data._id) {
           // Project created successfully in backend
-          console.log("Project created successfully with ID:", data._id)
+          console.log('Project created successfully with ID:', data._id);
 
           // Step 2: Create the blockchain job with the new project ID
           try {
             // Update loading state for blockchain creation
             setLoadingState({
               isLoading: true,
-              stage: "creating-blockchain",
-              message: "Creating blockchain record...",
-              isBlockchainProcessing: true,
-            })
+              stage: 'creating-blockchain',
+              message: 'Creating blockchain record...',
+              isBlockchainProcessing: true
+            });
 
             // Hash the jobId properly using mongoIdToAleoU64
-            const hashedJobId = mongoIdToAleoU64(data._id)
-            const paymentAmount = projectPayload.price.toString() + "u64"
+            const hashedJobId = mongoIdToAleoU64(data._id);
+            const paymentAmount = projectPayload.price.toString() + 'u64';
 
             // Log the values for debugging
-            console.log("Creating blockchain job with:", {
+            console.log('Creating blockchain job with:', {
               originalJobId: data._id,
               hashedJobId,
               paymentAmount,
-              walletAddress: account.address,
-            })
+              walletAddress: account.address
+            });
 
             // Execute the blockchain transaction
             await createEvent({
               type: EventType.Execute,
-              programId: "escrow_contract11.aleo",
-              functionId: "create_job",
+              programId: 'escrow_contract11.aleo',
+              functionId: 'create_job',
               fee: 1.23,
-              inputs: [hashedJobId, paymentAmount, account.address],
-            })
+              inputs: [hashedJobId, paymentAmount, account.address]
+            });
 
             // Blockchain job created successfully
             toast({
-              title: "Project Created",
-              description: "Your project has been created successfully and recorded on blockchain.",
-            })
+              title: 'Project Created',
+              description:
+                'Your project has been created successfully and recorded on blockchain.'
+            });
 
             // Update loading state to completed
             setLoadingState({
               isLoading: true,
-              stage: "completed",
-              message: "Project created successfully and recorded on blockchain!",
-              isBlockchainProcessing: false,
-            })
+              stage: 'completed',
+              message:
+                'Project created successfully and recorded on blockchain!',
+              isBlockchainProcessing: false
+            });
 
             // Fetch updated projects list
-            fetchProjects()
+            fetchProjects();
 
             // Close the form after a short delay to show the success message
             setTimeout(() => {
-              setIsCreatingProject(false)
+              setIsCreatingProject(false);
               setLoadingState({
                 isLoading: false,
-                stage: "idle",
-                message: "",
-                isBlockchainProcessing: false,
-              })
-            }, 2000)
+                stage: 'idle',
+                message: '',
+                isBlockchainProcessing: false
+              });
+            }, 2000);
           } catch (blockchainError) {
             // Blockchain job creation failed
-            console.error("Blockchain job creation failed:", blockchainError)
+            console.error('Blockchain job creation failed:', blockchainError);
 
             toast({
-              title: "Partial Success",
-              description: "Project was created but blockchain recording failed. You can try again later.",
-              variant: "destructive",
-            })
+              title: 'Partial Success',
+              description:
+                'Project was created but blockchain recording failed. You can try again later.',
+              variant: 'destructive'
+            });
 
             // Update loading state to failed
             setLoadingState({
               isLoading: true,
-              stage: "failed",
-              message: "Project was created but blockchain recording failed.",
-              isBlockchainProcessing: false,
-            })
+              stage: 'failed',
+              message: 'Project was created but blockchain recording failed.',
+              isBlockchainProcessing: false
+            });
 
             // Fetch updated projects list anyway
-            fetchProjects()
+            fetchProjects();
 
             // Close the form after a short delay
             setTimeout(() => {
-              setIsCreatingProject(false)
+              setIsCreatingProject(false);
               setLoadingState({
                 isLoading: false,
-                stage: "idle",
-                message: "",
-                isBlockchainProcessing: false,
-              })
-            }, 3000)
+                stage: 'idle',
+                message: '',
+                isBlockchainProcessing: false
+              });
+            }, 3000);
           }
         } else {
           // Backend project creation failed
-          throw new Error("Failed to create project in backend")
+          throw new Error('Failed to create project in backend');
         }
       } else {
         // Invalid response from backend
-        throw new Error("Invalid response from backend")
+        throw new Error('Invalid response from backend');
       }
     } catch (error: any) {
       // Handle any errors from the backend project creation
-      console.error("Error creating project:", error)
+      console.error('Error creating project:', error);
 
       toast({
-        title: "Error",
-        description: "Failed to create project. Please try again.",
-        variant: "destructive",
-      })
+        title: 'Error',
+        description: 'Failed to create project. Please try again.',
+        variant: 'destructive'
+      });
 
       // Reset loading state
       setLoadingState({
         isLoading: false,
-        stage: "idle",
-        message: "",
-        isBlockchainProcessing: false,
-      })
+        stage: 'idle',
+        message: '',
+        isBlockchainProcessing: false
+      });
     }
-  }
+  };
 
   const toggleProjectExpansion = (projectId: number) => {
     if (expandedProject === projectId) {
-      setExpandedProject(null)
+      setExpandedProject(null);
     } else {
-      setExpandedProject(projectId)
+      setExpandedProject(projectId);
     }
-  }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
+      case 'completed':
         return (
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 border-blue-200"
+          >
             Completed
           </Badge>
-        )
-      case "in-progress":
+        );
+      case 'in_progress':
         return (
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 border-blue-200"
+          >
             In Progress
           </Badge>
-        )
-      case "planning":
+        );
+      case 'planning':
         return (
-          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+          <Badge
+            variant="outline"
+            className="bg-amber-50 text-amber-700 border-amber-200"
+          >
             Planning
           </Badge>
-        )
-      case "not-started":
+        );
+      case 'not_started':
         return (
-          <Badge variant="outline" className="bg-slate-100 text-slate-800 border-slate-200">
+          <Badge
+            variant="outline"
+            className="bg-slate-100 text-slate-800 border-slate-200"
+          >
             Not Started
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
   useEffect(() => {
-    fetchProjects()
-    fetchCompletedProjects({ status: "completed" })
+    fetchProjects();
+    fetchCompletedProjects({ status: 'completed' });
     console.log('completed_projects:', completed_projects);
-  }, [])
+  }, []);
 
   // If showing the project dashboard
   if (showDashboard && selectedProject) {
@@ -393,8 +442,8 @@ export function ProjectManagement() {
             variant="outline"
             size="sm"
             onClick={() => {
-              setShowDashboard(false)
-              setSelectedProject(null)
+              setShowDashboard(false);
+              setSelectedProject(null);
             }}
           >
             Back to Projects
@@ -403,20 +452,20 @@ export function ProjectManagement() {
 
         <ProjectDashboard project={selectedProject} userType="employee" />
       </div>
-    )
+    );
   }
 
   // If showing the project report
   if (showReport && selectedProject) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 w-full">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              setShowReport(false)
-              setSelectedProject(null)
+              setShowReport(false);
+              setSelectedProject(null);
             }}
           >
             Back to Projects
@@ -425,7 +474,7 @@ export function ProjectManagement() {
 
         <ProjectReport project={selectedProject} userType="employee" />
       </div>
-    )
+    );
   }
 
   // Add this right after the return statement
@@ -433,11 +482,11 @@ export function ProjectManagement() {
     <>
       {/* Loading Overlay */}
       {loadingState.isLoading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <div className="fixed inset-0 bg-blue-500/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full border border-slate-200">
             <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mb-4"></div>
-              <h3 className="text-lg font-medium mb-2">
+              <div className="w-16 h-16 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin mb-6"></div>
+              <h3 className="text-xl font-semibold mb-3 text-slate-900">
                 {loadingState.stage === 'validating' &&
                   'Validating Project Information'}
                 {loadingState.stage === 'creating-backend' &&
@@ -447,14 +496,14 @@ export function ProjectManagement() {
                 {loadingState.stage === 'completed' && 'Project Created!'}
                 {loadingState.stage === 'failed' && 'Operation Failed'}
               </h3>
-              <p className="text-slate-600 mb-4">{loadingState.message}</p>
+              <p className="text-slate-600 mb-6">{loadingState.message}</p>
 
               {loadingState.stage === 'creating-blockchain' && (
-                <div className="w-full mb-4">
-                  <div className="h-2 bg-blue-100 rounded-full overflow-hidden">
+                <div className="w-full mb-6">
+                  <div className="h-2 bg-blue-50 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-600 animate-pulse"></div>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-sm text-slate-500 mt-2">
                     Blockchain operations may take a few minutes. Please don't
                     close this window.
                   </p>
@@ -467,7 +516,7 @@ export function ProjectManagement() {
                   onClick={() =>
                     setLoadingState((prev) => ({ ...prev, isLoading: false }))
                   }
-                  className="mt-2"
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   {loadingState.stage === 'completed' ? 'Continue' : 'Close'}
                 </Button>
@@ -477,17 +526,19 @@ export function ProjectManagement() {
         </div>
       )}
 
-      <div className="space-y-6">
-        <div className="flex lg:flex-row flex-col justify-between items-center">
+      <div className="space-y-8 w-full">
+        <div className="flex lg:flex-row flex-col justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <div>
-            <h2 className="text-xl font-semibold mb-2">Manage Projects</h2>
+            <h2 className="text-2xl font-bold mb-2 text-slate-900">
+              Manage Projects
+            </h2>
             <p className="text-slate-600">
               Organize and track projects with your hired freelancers.
             </p>
           </div>
           <Button
             onClick={() => setIsCreatingProject(true)}
-            className="bg-blue-600 text-white hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
           >
             <Plus className="mr-2 h-4 w-4" />
             New Project
@@ -495,17 +546,21 @@ export function ProjectManagement() {
         </div>
 
         {isCreatingProject ? (
-          <Card>
+          <Card className="border-slate-200 bg-white shadow-lg">
             {/* create project */}
-            <CardHeader>
-              <CardTitle>Create New Project</CardTitle>
-              <CardDescription>
+            <CardHeader className="bg-slate-50 border-b border-slate-200">
+              <CardTitle className="text-xl text-slate-900">
+                Create New Project
+              </CardTitle>
+              <CardDescription className="text-slate-600">
                 Set up a new project and assign freelancers
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6 p-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Project Name</Label>
+                <Label htmlFor="name" className="text-slate-700">
+                  Project Name
+                </Label>
                 <Input
                   id="name"
                   placeholder="e.g. Website Redesign"
@@ -516,15 +571,19 @@ export function ProjectManagement() {
                       name: e.target.value
                     })
                   }
-                  className={errors.name ? 'border-red-500' : ''}
+                  className={`${
+                    errors.name ? 'border-red-500' : 'border-slate-200'
+                  } focus:ring-2 focus:ring-blue-500`}
                   disabled={loadingState.isLoading}
                 />
                 {errors.name && (
-                  <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Project Description</Label>
+                <Label className="text-slate-700" htmlFor="description">
+                  Project Description
+                </Label>
                 <Textarea
                   id="description"
                   value={projectPayload.description}
@@ -547,7 +606,9 @@ export function ProjectManagement() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
+                  <Label className="text-slate-700" htmlFor="startDate">
+                    Start Date
+                  </Label>
                   <Input
                     id="startDate"
                     type="date"
@@ -555,7 +616,9 @@ export function ProjectManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="deadline">Deadline</Label>
+                  <Label className="text-slate-700" htmlFor="deadline">
+                    Deadline
+                  </Label>
                   <Input
                     id="deadline"
                     type="date"
@@ -578,7 +641,9 @@ export function ProjectManagement() {
               </div>
               {/* [planning, in_progress, completed, on_hold, cancelled] */}
               <div className="space-y-2">
-                <Label htmlFor="status">Project Status</Label>
+                <Label className="text-slate-700" htmlFor="status">
+                  Project Status
+                </Label>
                 <Select
                   defaultValue="planning"
                   onValueChange={(value) =>
@@ -587,7 +652,7 @@ export function ProjectManagement() {
                   value={projectPayload.status}
                   disabled={loadingState.isLoading}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-slate-700">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -600,7 +665,9 @@ export function ProjectManagement() {
                 </Select>
               </div>{' '}
               <div className="space-y-2">
-                <Label htmlFor="price">Project Price (Aleo tokens)</Label>
+                <Label className="text-slate-700" htmlFor="price">
+                  Project Price (Aleo tokens)
+                </Label>
                 <div className="relative">
                   <Input
                     id="price"
@@ -622,20 +689,20 @@ export function ProjectManagement() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Project Milestones</Label>
+                <Label className="text-slate-700">Project Milestones</Label>
                 {errors.milestones && (
                   <p className="text-xs text-red-500 mt-1">
                     {errors.milestones}
                   </p>
                 )}
-                <div className="space-y-4 border rounded-md p-4">
+                <div className="space-y-4 border border-slate-200 rounded-md p-4">
                   {projectPayload.milestones.map((milestone, index) => (
                     <div
                       key={index}
-                      className="space-y-2 pb-4 border-b last:border-b-0 last:pb-0"
+                      className="space-y-2 pb-4 border-b border-slate-200 last:border-b-0 last:pb-0"
                     >
                       <div className="flex justify-between">
-                        <h4 className="text-sm font-medium">
+                        <h4 className="text-sm text-slate-700 font-medium">
                           Milestone {index + 1}
                         </h4>
                         <Button
@@ -654,7 +721,9 @@ export function ProjectManagement() {
                           }}
                           disabled={loadingState.isLoading}
                         >
-                          <span className="sr-only">Remove</span>
+                          <span className="sr-only text-slate-700">
+                            Remove
+                          </span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -786,7 +855,10 @@ export function ProjectManagement() {
                               }}
                               disabled={loadingState.isLoading}
                             >
-                              <SelectTrigger id={`milestone-status-${index}`}>
+                              <SelectTrigger
+                                id={`milestone-status-${index}`}
+                                className="text-slate-700"
+                              >
                                 <SelectValue placeholder="Select status" />
                               </SelectTrigger>
                               <SelectContent>
@@ -815,7 +887,7 @@ export function ProjectManagement() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full mt-2"
+                      className="w-full mt-2 !bg-slate-100 !text-slate-700 hover:!bg-blue-500 hover:!text-slate-100 !border-slate-200"
                       onClick={() => {
                         const newMilestone = {
                           title: '',
@@ -840,13 +912,13 @@ export function ProjectManagement() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Project Media</Label>
-                <div className="border rounded-md p-4">
+                <Label className="text-slate-700">Project Media</Label>
+                <div className="border border-slate-200 rounded-md p-4">
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     {projectPayload.medias.map((media, index) => (
                       <div
                         key={index}
-                        className="relative border rounded-md p-2"
+                        className="relative border border-slate-200 rounded-md p-2"
                       >
                         <div className="flex items-center gap-2">
                           <div className="w-12 h-12 bg-slate-100 rounded flex items-center justify-center">
@@ -875,7 +947,7 @@ export function ProjectManagement() {
                             </svg>
                           </div>
                           <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium truncate">
+                            <p className="text-sm text-slate-700 font-medium truncate">
                               {media.name}
                             </p>
                             <p className="text-xs text-slate-500 truncate">
@@ -994,17 +1066,18 @@ export function ProjectManagement() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between p-6 bg-slate-50 border-t border-slate-200">
               <Button
                 variant="outline"
                 onClick={() => setIsCreatingProject(false)}
                 disabled={loadingState.isLoading}
+                className="border-slate-200 hover:bg-slate-100 !bg-slate-100 !text-slate-700 hover:!bg-blue-500 hover:!text-slate-100 !border-slate-200"
               >
                 Cancel
               </Button>
               <Button
                 onClick={createProject}
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
                 disabled={loadingState.isLoading}
               >
                 {loadingState.isLoading ? (
@@ -1025,41 +1098,62 @@ export function ProjectManagement() {
             </CardFooter>
           </Card>
         ) : (
-          <Tabs defaultValue="active">
-            <TabsList>
-              <TabsTrigger value="active">Active Projects</TabsTrigger>
-              <TabsTrigger value="completed">Completed Projects</TabsTrigger>
+          <Tabs defaultValue="active" className="w-full">
+            <TabsList className="bg-slate-100 p-1 rounded-lg">
+              <TabsTrigger
+                value="active"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-500 rounded-md"
+              >
+                Active Projects
+              </TabsTrigger>
+              <TabsTrigger
+                value="completed"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-500 rounded-md"
+              >
+                Completed Projects
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="active" className="mt-4">
-              <div className="grid grid-cols-1 gap-4">
+            <TabsContent value="active" className="mt-6">
+              <div className="grid grid-cols-1 gap-6">
                 {Array.isArray(projects?.data) &&
                   projects.data.map((project: any) => (
                     <Card
                       key={project._id}
-                      className={
-                        expandedProject === project._id ? 'border-blue-300' : ''
-                      }
+                      className={`transition-all duration-200 hover:shadow-md bg-white ${
+                        expandedProject === project._id
+                          ? 'border-blue-300 shadow-lg'
+                          : 'border-slate-200'
+                      }`}
                     >
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
-                          <CardTitle>{project.name}</CardTitle>
+                          <CardTitle className="text-lg text-slate-900">
+                            {project.name}
+                          </CardTitle>
                           {getStatusBadge(project.status)}
                         </div>
-                        <CardDescription>{project.description}</CardDescription>
+                        <CardDescription className="text-slate-600">
+                          {project.description}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent className="pb-2">
                         <div className="mb-4">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium text-slate-700">
                               Progress
                             </span>
-                            <span className="text-sm">{project.progress}%</span>
+                            <span className="text-sm text-slate-600">
+                              {project.progress}%
+                            </span>
                           </div>
-                          <Progress value={project.progress} className="h-2" />
+                          <Progress
+                            value={project.progress}
+                            className="h-2 bg-slate-100"
+                          />
                         </div>
 
-                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                        <div className="flex items-center gap-2 mb-4 text-sm text-slate-600">
                           <Calendar className="h-4 w-4" />
                           <span>
                             Deadline:{' '}
@@ -1067,70 +1161,34 @@ export function ProjectManagement() {
                           </span>
                         </div>
 
-                        {/* <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Users className="h-4 w-4 text-slate-500" />
-                            <span className="text-sm font-medium">
-                              Assigned Freelancers
-                            </span>
-                          </div>
-                          <div className="space-y-2">
-                            {project?.freelancers?.map(
-                              (freelancer: any, index: number) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2"
-                                >
-                                  <Avatar className="h-6 w-6">
-                                    <AvatarFallback className="text-xs">
-                                      {freelancer.name
-                                        .split(' ')
-                                        .map((n: any) => n[0])
-                                        .join('')}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {freelancer.name}
-                                    </p>
-                                    <p className="text-xs text-slate-500">
-                                      {freelancer.role}
-                                    </p>
-                                  </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div> */}
-
                         {expandedProject === project._id && (
                           <div className="mt-6 space-y-4">
                             <div>
-                              <h4 className="text-sm font-medium mb-2">
+                              <h4 className="text-sm font-medium mb-3 text-slate-900">
                                 Milestones
                               </h4>
-                              <div className="space-y-2">
+                              <div className="space-y-3">
                                 {project?.milestones?.map(
                                   (milestone: any, index: number) => (
                                     <div
                                       key={index}
-                                      className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
+                                      className="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200"
                                     >
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-3">
                                         {milestone.status === 'completed' ? (
-                                          <CheckCircle className="h-4 w-4 text-blue-500" />
+                                          <CheckCircle className="h-5 w-5 text-green-500" />
                                         ) : milestone.status ===
                                           'in_progress' ? (
-                                          <Clock className="h-4 w-4 text-blue-500" />
+                                          <Clock className="h-5 w-5 text-blue-500" />
                                         ) : (
-                                          <AlertCircle className="h-4 w-4 text-slate-400" />
+                                          <AlertCircle className="h-5 w-5 text-slate-400" />
                                         )}
-                                        <span className="text-sm">
+                                        <span className="text-sm text-slate-900">
                                           {milestone.title}
                                         </span>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-xs text-blue-300">
+                                      <div className="flex items-center gap-3">
+                                        <span className="text-xs text-slate-500">
                                           Due:{' '}
                                           {new Date(
                                             milestone.deadline
@@ -1145,30 +1203,30 @@ export function ProjectManagement() {
                                 )}
                               </div>
                             </div>
-                           </div>
+                          </div>
                         )}
                       </CardContent>
-                      <CardFooter className="flex gap-2">
+                      <CardFooter className="flex gap-3 p-4 bg-slate-50 border-t border-slate-200">
                         <Button
                           variant="outline"
-                          className="flex-1"
+                          className="flex-1 border-slate-200 hover:bg-slate-100 hover:text-slate-700 text-slate-500"
                           onClick={() => toggleProjectExpansion(project._id)}
                         >
                           {expandedProject === project._id ? (
                             <>
-                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
+                              <ChevronUp className="h-4 w-4 mr-2" /> Hide
                               Details
                             </>
                           ) : (
                             <>
-                              <ChevronDown className="h-4 w-4 mr-1" /> Show
+                              <ChevronDown className="h-4 w-4 mr-2" /> Show
                               Details
                             </>
                           )}
                         </Button>
 
                         <Button
-                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
                           onClick={() =>
                             router.replace(`project-dashboard/${project._id}`)
                           }
@@ -1181,34 +1239,30 @@ export function ProjectManagement() {
               </div>
             </TabsContent>
 
-            <TabsContent value="completed" className="mt-4">
-              <div className="grid grid-cols-1 gap-4">
+            <TabsContent value="completed" className="mt-6">
+              <div className="grid grid-cols-1 gap-6">
                 {Array.isArray(projects?.data) &&
                   projects.data.map((project: any) => (
                     <Card
                       key={project?._id}
-                      className={
-                        expandedProject === project?._id
-                          ? 'border-blue-300'
-                          : ''
-                      }
+                      className="border-slate-200 hover:shadow-md transition-all bg-white duration-200"
                     >
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
-                          <CardTitle>{project?.name}</CardTitle>
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
+                          <CardTitle className="text-lg text-slate-900">
+                            {project?.name}
+                          </CardTitle>
+                          <div
+                            >
                             {getStatusBadge(project?.status)}
-                          </Badge>
+                          </div>
                         </div>
-                        <CardDescription>
+                        <CardDescription className="text-slate-600">
                           {project?.description}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pb-2">
-                        <div className="flex items-center gap-1 mb-3 text-sm text-slate-500">
+                        <div className="flex items-center gap-2 mb-4 text-sm text-slate-600">
                           <Calendar className="h-4 w-4" />
                           <span>
                             Completed on:{' '}
@@ -1219,69 +1273,10 @@ export function ProjectManagement() {
                               : 'N/A'}
                           </span>
                         </div>
-
-                        {/* <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Users className="h-4 w-4 text-slate-500" />
-                            <span className="text-sm font-medium">
-                              Freelancers
-                            </span>
-                          </div>
-                          <div className="space-y-2">
-                            {project?.freelancers?.map(
-                              (freelancer: any, index: number) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2"
-                                >
-                                  <Avatar className="h-6 w-6">
-                                    <AvatarFallback className="text-xs">
-                                      {freelancer?.name
-                                        .split(' ')
-                                        .map((n: any) => n[0])
-                                        .join('')}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {freelancer?.name}
-                                    </p>
-                                    <p className="text-xs text-slate-500">
-                                      {freelancer?.role}
-                                    </p>
-                                  </div>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div> */}
-
-                        {/* {expandedProject === project?._id && (
-                          <div className="mt-6 space-y-4">
-                            <ProjectUpdates project={project} />
-                          </div>
-                        )} */}
                       </CardContent>
-                      <CardFooter className="flex gap-2">
-                        {/* <Button
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => toggleProjectExpansion(project?._id)}
-                        >
-                          {expandedProject === project?._id ? (
-                            <>
-                              <ChevronUp className="h-4 w-4 mr-1" /> Hide
-                              Details
-                            </>
-                          ) : (
-                            <>
-                              <ChevronDown className="h-4 w-4 mr-1" /> Show
-                              Details
-                            </>
-                          )}
-                        </Button> */}
+                      <CardFooter className="flex gap-3 p-4 bg-slate-50 border-t border-slate-200">
                         <Button
-                          className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
                           onClick={() => {
                             setSelectedProject(project);
                             setShowReport(true);

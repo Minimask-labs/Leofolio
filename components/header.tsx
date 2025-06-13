@@ -44,8 +44,8 @@ export function Header({}: HeaderProps) {
   // }, [publicKey, connected]);
 
   return (
-    <header className="flex justify-between items-center sticky py-4 px-4 bg-black top-0 z-30">
-      <div className="flex items-center justify-between gap-2 bg-black container w-full mx-auto">
+    <header className="flex justify-between items-center sticky border-b border-blue-200 py-4 px-4 bg-white/80 backdrop-blur-sm top-0 z-30">
+      <div className="flex items-center justify-between gap-2  container w-full mx-auto">
         <div className="flex items-center gap-2">
           {/* <Shield
             className={`h-8 w-8 ${
