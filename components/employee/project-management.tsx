@@ -43,7 +43,9 @@ import { useProjectStore } from '@/Store/projects';
 import {
   mongoIdToAleoU64,
   MainnetProgramId,
-  TestnetProgramId
+  TestnetProgramId,
+  TestnetEscrowAddress,
+  MainnetEscrowAddress
 } from '@/libs/util';
 import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
@@ -78,7 +80,7 @@ export function ProjectManagement() {
     name: 'Website Redesign',
     description:
       'A project to redesign the company website for better UX and performance.',
-    deadline: '2025-06-30T23:59:59.000Z',
+    deadline: '2025-08-30T23:59:59.000Z',
     medias: [
       {
         name: 'Homepage Mockup',
@@ -94,7 +96,7 @@ export function ProjectManagement() {
       {
         title: 'Wireframe Approval',
         description: 'Get wireframes approved by stakeholders.',
-        deadline: '2025-05-10T12:00:00.000Z',
+        deadline: '2025-08-10T12:00:00.000Z',
         status: 'planning'
       }
     ],
@@ -283,7 +285,9 @@ export function ProjectManagement() {
               paymentAmount,
               walletAddress: account.address
             });
-
+      const EscrowAddress = account.network === 'AleoTestnet'?
+              TestnetEscrowAddress :
+              MainnetEscrowAddress;
             // Execute the blockchain transaction
             await createEvent({
               type: EventType.Execute,
@@ -292,8 +296,8 @@ export function ProjectManagement() {
                   ? TestnetProgramId
                   : MainnetProgramId,
               functionId: 'create_job',
-              fee: 1.23,
-              inputs: [hashedJobId, paymentAmount, account.address]
+              fee: 1.4,
+              inputs: [hashedJobId, paymentAmount, EscrowAddress]
             });
 
             // Blockchain job created successfully
@@ -613,8 +617,8 @@ export function ProjectManagement() {
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+              <div className="grid gap-4">
+                {/* <div className="space-y-2">
                   <Label className="text-slate-700" htmlFor="startDate">
                     Start Date
                   </Label>
@@ -623,15 +627,21 @@ export function ProjectManagement() {
                     type="date"
                     disabled={loadingState.isLoading}
                   />
-                </div>
-                <div className="space-y-2">
+                </div> */}
+                <div className="space-y-2 ">
                   <Label className="text-slate-700" htmlFor="deadline">
                     Deadline
                   </Label>
                   <Input
                     id="deadline"
                     type="date"
-                    value={projectPayload.deadline}
+                     value={
+                      projectPayload.deadline
+                        ? new Date(projectPayload.deadline)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
                     onChange={(e) =>
                       setProjectPayload({
                         ...projectPayload,
