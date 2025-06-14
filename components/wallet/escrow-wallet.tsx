@@ -279,7 +279,7 @@ export function EscrowWallet() {
             <div className="flex items-center gap-2 p-3 !py-2 h-fit border rounded bg-gray-50/80 text-sm font-mono break-all group hover:bg-gray-100/80 transition-colors">
               <span id="accountAddress" className="flex-1 text-gray-600">
                 {account.address.substring(0, 26)}...
-                {account.address.substring(account.address.length - 5)}
+                {account.address.substring(account.address.length - 4)}
               </span>
               <Button
                 variant="ghost"

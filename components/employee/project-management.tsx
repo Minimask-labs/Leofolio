@@ -35,13 +35,17 @@ import {
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
- import { ProjectDashboard } from '@/components/project-dashboard';
+import { ProjectDashboard } from '@/components/project-dashboard';
 import { ProjectReport } from '@/components/project-report';
 import { useRouter } from 'next/navigation';
 import { useUserProfileStore } from '@/Store/userProfile';
 import { useProjectStore } from '@/Store/projects';
-import { mongoIdToAleoU64,MainnetProgramId,TestnetProgramId } from '@/libs/util';
- import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import {
+  mongoIdToAleoU64,
+  MainnetProgramId,
+  TestnetProgramId
+} from '@/libs/util';
+import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
 
 export function ProjectManagement() {
@@ -94,7 +98,7 @@ export function ProjectManagement() {
         status: 'planning'
       }
     ],
-    price: 500000 // aleo token
+    price: 2 // aleo token
   });
 
   const {
@@ -106,10 +110,8 @@ export function ProjectManagement() {
   // We'll use these directly in the createProject function
   const { createEvent } = useRequestCreateEvent({
     type: EventType.Execute,
-        programId:
-          account?.network === 'AleoTestnet'
-            ? TestnetProgramId
-            : MainnetProgramId,
+    programId:
+      account?.network === 'AleoTestnet' ? TestnetProgramId : MainnetProgramId,
     functionId: 'create_job',
     fee: 1.23,
     inputs: ['', '0u64', ''] // These will be updated before calling createEvent
@@ -268,8 +270,11 @@ export function ProjectManagement() {
             });
 
             // Hash the jobId properly using mongoIdToAleoU64
+            // 1000000 microAleos = 1 Aleo token
             const hashedJobId = mongoIdToAleoU64(data._id);
-            const paymentAmount = projectPayload.price.toString() + 'u64';
+            const baseAmount = Number(projectPayload.price) * 1000000;
+            const paymentAmount =
+              (baseAmount + baseAmount * 0.02).toString() + 'u64';
 
             // Log the values for debugging
             console.log('Creating blockchain job with:', {
@@ -670,7 +675,7 @@ export function ProjectManagement() {
               </div>{' '}
               <div className="space-y-2">
                 <Label className="text-slate-700" htmlFor="price">
-                  Project Price (Aleo tokens)
+                  Project Price (Aleo tokens) + 2% fee
                 </Label>
                 <div className="relative">
                   <Input
@@ -725,9 +730,7 @@ export function ProjectManagement() {
                           }}
                           disabled={loadingState.isLoading}
                         >
-                          <span className="sr-only text-slate-700">
-                            Remove
-                          </span>
+                          <span className="sr-only text-slate-700">Remove</span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -1256,10 +1259,7 @@ export function ProjectManagement() {
                           <CardTitle className="text-lg text-slate-900">
                             {project?.name}
                           </CardTitle>
-                          <div
-                            >
-                            {getStatusBadge(project?.status)}
-                          </div>
+                          <div>{getStatusBadge(project?.status)}</div>
                         </div>
                         <CardDescription className="text-slate-600">
                           {project?.description}

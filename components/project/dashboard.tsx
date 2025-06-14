@@ -102,7 +102,10 @@ export function Dashboard() {
     project_details?.assignedFreelancer?.walletAddress
   );
   // const assignedFreelancer = project_details?.assignedFreelancer?.walletAddress;
-  const price = project_details?.price;
+  // const paymentAmount =
+
+  // 1000000 microAleos = 1 Aleo token
+  const price = project_details?.price * 1000000;
 
   // Log blockchain data for debugging
   useEffect(() => {
@@ -137,10 +140,8 @@ export function Dashboard() {
     loading: approvingOnchain
   } = useRequestCreateEvent({
     type: EventType.Execute,
-        programId:
-          account?.network === 'AleoTestnet'
-            ? TestnetProgramId
-            : MainnetProgramId,
+    programId:
+      account?.network === 'AleoTestnet' ? TestnetProgramId : MainnetProgramId,
     functionId: 'release_payment',
     fee: 1.23,
     inputs: [
