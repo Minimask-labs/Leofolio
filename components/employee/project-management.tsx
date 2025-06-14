@@ -35,15 +35,13 @@ import {
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProjectUpdates } from '@/components/project-updates';
-import { ProjectDashboard } from '@/components/project-dashboard';
+ import { ProjectDashboard } from '@/components/project-dashboard';
 import { ProjectReport } from '@/components/project-report';
 import { useRouter } from 'next/navigation';
 import { useUserProfileStore } from '@/Store/userProfile';
 import { useProjectStore } from '@/Store/projects';
-const ESCROW_PROGRAM_ID = 'escrow_contract_v2.aleo';
-import { mongoIdToAleoU64 } from '@/libs/util';
-import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+import { mongoIdToAleoU64,MainnetProgramId,TestnetProgramId } from '@/libs/util';
+ import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
 
 export function ProjectManagement() {
@@ -108,7 +106,10 @@ export function ProjectManagement() {
   // We'll use these directly in the createProject function
   const { createEvent } = useRequestCreateEvent({
     type: EventType.Execute,
-    programId: 'escrow_contract11.aleo',
+        programId:
+          account?.network === 'AleoTestnet'
+            ? TestnetProgramId
+            : MainnetProgramId,
     functionId: 'create_job',
     fee: 1.23,
     inputs: ['', '0u64', ''] // These will be updated before calling createEvent
@@ -281,7 +282,10 @@ export function ProjectManagement() {
             // Execute the blockchain transaction
             await createEvent({
               type: EventType.Execute,
-              programId: 'escrow_contract11.aleo',
+              programId:
+                account?.network === 'AleoTestnet'
+                  ? TestnetProgramId
+                  : MainnetProgramId,
               functionId: 'create_job',
               fee: 1.23,
               inputs: [hashedJobId, paymentAmount, account.address]

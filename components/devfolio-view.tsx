@@ -312,27 +312,27 @@ export function DevfolioView() {
   }, [user]);
   if (isEditing) {
     return (
-      <div className="space-y-8 p-8 bg-gradient-to-br from-white via-gray-50 to-gray-100 min-h-screen">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
+      <div className="space-y-8 bg-gradient-to-br from-white via-gray-50 to-gray-100 min-h-screen">
+        <div className="flex lg:flex-row flex-col gap-4 justify-between lg:items-center mb-8">
+          <div className='w-full'>
+            <h2 className="lg:text-2xl text-lg font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
               Edit Your Devfolio
             </h2>
-            <p className="text-gray-700 mt-1">
+            <p className="text-gray-700 lg:text-base text-xs lg:mt-1">
               Customize your professional profile
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex w-full lg:justify-end justify-normal gap-3">
             <Button
               variant="outline"
               onClick={() => setIsEditing(false)}
-              className="hover:bg-gray-100 transition-all duration-300 border-2 text-gray-800"
+              className="hover:bg-gray-100 transition-all lg:w-fit w-full duration-300 border-2 text-gray-800"
             >
               Cancel
             </Button>
             <Button
               disabled={isUploading}
-              className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-200 px-6"
+              className="bg-gradient-to-r from-blue-700 lg:w-fit w-full to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-200 px-6"
               onClick={saveChanges}
             >
               {isUploading ? (
@@ -344,15 +344,15 @@ export function DevfolioView() {
         </div>
 
         <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
-          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
-            <CardTitle className="text-2xl font-semibold text-gray-900">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-4 lg:p-6">
+            <CardTitle className="lg:text-2xl text-lg font-semibold text-gray-900">
               Basic Information
             </CardTitle>
-            <CardDescription className="text-gray-700 text-base">
+            <CardDescription className="text-gray-700 lg:text-base text-xs">
               Update your personal and professional details
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6 p-8">
+          <CardContent className="space-y-6 p-4 lg:p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label
@@ -468,15 +468,15 @@ export function DevfolioView() {
         </Card>
 
         <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
-          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
-            <CardTitle className="text-2xl font-semibold text-gray-900">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-4 lg:p-6">
+            <CardTitle className="lg:text-2xl text-lg font-semibold text-gray-900">
               Skills & Expertise
             </CardTitle>
-            <CardDescription className="text-gray-700 text-base">
+            <CardDescription className="text-gray-700 lg:text-base text-xs">
               Showcase your technical skills and expertise
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6 p-8">
+          <CardContent className="space-y-6 p-4 lg:p-8">
             <div className="space-y-3">
               <Label className="text-sm font-medium text-gray-900">
                 Your Skills
@@ -532,15 +532,15 @@ export function DevfolioView() {
         </Card>
 
         <Card className="border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
-          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-6">
-            <CardTitle className="text-2xl font-semibold text-gray-900">
+          <CardHeader className="bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 p-4 lg:p-6">
+            <CardTitle className="lg:text-2xl text-lg font-semibold text-gray-900">
               Social Profiles
             </CardTitle>
-            <CardDescription className="text-gray-700 text-base">
+            <CardDescription className="text-gray-700 lg:text-base text-xs">
               Connect your online presence and professional networks
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6 p-8">
+          <CardContent className="space-y-6 p-4 lg:p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label
@@ -640,10 +640,12 @@ export function DevfolioView() {
     <div className="space-y-8  min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
+          <h2 className="lg:text-2xl text-lg font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 bg-clip-text text-transparent">
             Your Aleo Profile
           </h2>
-          <p className="text-gray-700 mt-1">Your professional portfolio</p>
+          <p className="text-gray-700 lg:text-base text-xs lg:mt-1">
+            Your professional portfolio
+          </p>
         </div>
         <Button
           className="bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-200 px-6"

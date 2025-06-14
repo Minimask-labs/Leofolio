@@ -44,15 +44,13 @@ import {
   Gift
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
-import { ProjectTeam } from './projectTeam';
-import { BackButton } from '../back-button';
+ import { BackButton } from '../back-button';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useProjectStore } from '@/Store/projects';
-import ProjectChat from '../project-chat';
-import { useStore } from '@/Store/user';
-import { mongoIdToAleoU64 } from '@/libs/util';
-import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
+ import { useStore } from '@/Store/user';
+ import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
+import { mongoIdToAleoU64,MainnetProgramId,TestnetProgramId } from '@/libs/util';
 
 export function Dashboard() {
   const { userType, loadUserType, userData } = useStore();
@@ -127,7 +125,8 @@ export function Dashboard() {
     loading: completingOnchain
   } = useRequestCreateEvent({
     type: EventType.Execute,
-    programId: 'escrow_contract11.aleo',
+    programId:
+      account?.network === 'AleoTestnet' ? TestnetProgramId : MainnetProgramId,
     functionId: 'complete_job',
     fee: 1.23,
     inputs: [hashProjectIdInput ? hashProjectIdInput : '0u64']
@@ -138,7 +137,10 @@ export function Dashboard() {
     loading: approvingOnchain
   } = useRequestCreateEvent({
     type: EventType.Execute,
-    programId: 'escrow_contract11.aleo',
+        programId:
+          account?.network === 'AleoTestnet'
+            ? TestnetProgramId
+            : MainnetProgramId,
     functionId: 'release_payment',
     fee: 1.23,
     inputs: [

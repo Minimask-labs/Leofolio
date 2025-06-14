@@ -250,65 +250,25 @@ export function EscrowWallet() {
   return (
     <Card className="w-full shadow-lg bg-white backdrop-blur-sm border border-blue-100 rounded-2xl overflow-hidden">
       <CardHeader className="pb-4 border-b border-blue-100/50">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-50 rounded-lg">
               <WalletCards className="h-5 w-5 text-blue-600" />
             </div>
-            <div>
+            <div className="flex w-full gap-2 items-center justify-between">
               <CardTitle className="text-xl font-semibold text-gray-800">
-                Leofolio Wallet
+                Wallet
               </CardTitle>
-              <CardDescription className="text-gray-500 text-sm mt-0.5">
-                {ESCROW_PROGRAM_ID}
-              </CardDescription>
+              <span className="text-xs flex px-2 py-1 rounded-full bg-slate-100 text-slate-700">
+                {account?.network}
+              </span>
             </div>
           </div>
-          {account && (
-            <Badge
-              variant="outline"
-              className="bg-green-50 text-green-700 border-green-200 px-3 py-1"
-            >
-              Connected
-            </Badge>
-          )}
-          {!account && (
-            <Badge
-              variant="outline"
-              className="bg-red-50 text-red-700 border-red-200 px-3 py-1"
-            >
-              Disconnected
-            </Badge>
-          )}
         </div>
       </CardHeader>
 
-      <div className="flex border-b border-blue-100/50">
-        <button
-          onClick={() => setActiveTab('freelancer')}
-          className={`flex-1 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'freelancer'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Freelancer Wallet
-        </button>
-        <button
-          onClick={() => setActiveTab('employer')}
-          className={`flex-1 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'employer'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Employer Escrow
-        </button>
-      </div>
-
-      <CardContent className="space-y-6 p-6">
-        {/* Address Display */}
-        {account && (
+      <CardContent className="space-y-2 !pt-2 p-6">
+         {account && (
           <div className="space-y-2">
             <Label
               htmlFor="accountAddress"
@@ -316,25 +276,26 @@ export function EscrowWallet() {
             >
               Wallet Address
             </Label>
-            <div className="flex items-center gap-2 p-3 border rounded-xl bg-gray-50/80 text-sm font-mono break-all group hover:bg-gray-100/80 transition-colors">
+            <div className="flex items-center gap-2 p-3 !py-2 h-fit border rounded bg-gray-50/80 text-sm font-mono break-all group hover:bg-gray-100/80 transition-colors">
               <span id="accountAddress" className="flex-1 text-gray-600">
-                {account.address}
+                {account.address.substring(0, 26)}...
+                {account.address.substring(account.address.length - 5)}
               </span>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={copyAddress}
                 aria-label="Copy address"
-                className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200/50"
+                className="opacity-0 h-fit group-hover:opacity-100 transition-opacity hover:bg-gray-200/50"
               >
-                <Copy className="h-4 w-4 text-gray-500" />
+                <Copy className="h-2 w-2 text-gray-500" />
               </Button>
             </div>
           </div>
         )}
 
         {/* Balance Display */}
-        <div className="space-y-3">
+        <div className="space-y-0">
           <div className="flex items-center justify-between">
             <Label className="text-gray-700 text-sm font-medium">Balance</Label>
             <Button
@@ -352,15 +313,9 @@ export function EscrowWallet() {
               Refresh
             </Button>
           </div>
-          {isLoadingBalance && account && (
-            <Skeleton className="h-16 w-full rounded-xl bg-gray-100" />
-          )}
-          {!isLoadingBalance && account && (
-            <div className="p-4 border rounded-xl bg-gradient-to-br from-white to-blue-50/80 shadow-sm">
-              <div className="text-4xl font-bold text-gray-800">
-                {balance.toLocaleString()}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">microALE</div>
+          {account && (
+            <div className="text-4xl font-bold text-gray-800">
+              {balance.toLocaleString()}
             </div>
           )}
           {!account && (
@@ -369,93 +324,6 @@ export function EscrowWallet() {
             </div>
           )}
         </div>
-
-        {activeTab === 'freelancer' && account && (
-          <div className="space-y-4 pt-4 border-t border-blue-100/50">
-            <div className="space-y-3">
-              <Label
-                htmlFor="sendAmount"
-                className="text-gray-700 text-sm font-medium"
-              >
-                Send Funds
-              </Label>
-              <div className="space-y-2">
-                <Input
-                  id="sendAmount"
-                  type="number"
-                  placeholder="Amount to send"
-                  value={sendAmount}
-                  onChange={(e) => setSendAmount(e.target.value)}
-                  disabled={isSending}
-                  className="bg-white border-gray-200 focus:border-blue-500 rounded-xl h-11"
-                />
-                <Input
-                  type="text"
-                  placeholder="Recipient Address"
-                  value={recipientAddress}
-                  onChange={(e) => setRecipientAddress(e.target.value)}
-                  disabled={isSending}
-                  className="bg-white border-gray-200 focus:border-blue-500 rounded-xl h-11"
-                />
-                <Button
-                  onClick={handleSend}
-                  disabled={isSending || !sendAmount || !recipientAddress}
-                  className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11"
-                >
-                  {isSending ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <PlusCircle className="h-4 w-4" />
-                  )}
-                  Send
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'employer' && account && (
-          <div className="space-y-3 pt-4 border-t border-blue-100/50">
-            <Label
-              htmlFor="fundingAmount"
-              className="text-gray-700 text-sm font-medium"
-            >
-              Fund Escrow Account
-            </Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="fundingAmount"
-                type="number"
-                placeholder="Enter amount in microcredits"
-                value={fundingAmount}
-                onChange={(e) => setFundingAmount(e.target.value)}
-                disabled={isFunding || !account}
-                min="1"
-                className="bg-white border-gray-200 focus:border-blue-500 rounded-xl h-11"
-              />
-              <Button
-                onClick={handleFundAccount}
-                disabled={
-                  isFunding ||
-                  !fundingAmount ||
-                  !account ||
-                  parseInt(fundingAmount, 10) <= 0
-                }
-                className="gap-2 shrink-0 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-4"
-              >
-                {isFunding ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                ) : (
-                  <PlusCircle className="h-4 w-4" />
-                )}
-                Fund
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500">
-              Add funds to your escrow balance. Transaction fees apply.
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

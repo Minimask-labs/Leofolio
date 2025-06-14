@@ -11,8 +11,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
+ import {
   Calendar,
   Clock,
   FileText,
@@ -22,14 +21,7 @@ import {
   ChevronUp,
   Loader2
 } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { useRouter } from 'next/navigation';
+ import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/use-toast';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -39,7 +31,7 @@ import { ProjectDashboard } from './project-dashboard';
 import { ProjectReport } from './project-report';
 import { useProjectStore } from '@/Store/projects';
 import { InvitationCard } from '@/components/cards/projects-Invitation-card';
-import { mongoIdToAleoU64 } from '@/libs/util';
+import { mongoIdToAleoU64,MainnetProgramId,TestnetProgramId } from '@/libs/util';
 import { EventType, useRequestCreateEvent } from '@puzzlehq/sdk';
 import { useAccount } from '@puzzlehq/sdk';
 
@@ -74,15 +66,13 @@ export function MyProjects() {
   // State to store the current project ID for blockchain operation
   const [blockchainProjectId, setBlockchainProjectId] = useState('');
 
-  // Initialize the useRequestCreateEvent hook at the component level
-  const {
+   const {
     createEvent,
     eventId,
     loading: blockchainLoading,
     error: blockchainError,
     settlementStatus: blockchainStatus
   } = useRequestCreateEvent();
-
   // Monitor blockchain status changes
   useEffect(() => {
     if (blockchainStatus === 'Settled' && eventId) {
@@ -311,7 +301,6 @@ export function MyProjects() {
       </div>
     );
   }
-
   // Combined function to handle both backend and blockchain operations
   const handleAcceptOnchain = async (projectId: string) => {
     // Hash the project ID for blockchain
@@ -333,7 +322,10 @@ export function MyProjects() {
       // Execute the blockchain transaction with the correct parameters
       await createEvent({
         type: EventType.Execute,
-        programId: 'escrow_contract11.aleo',
+        programId:
+          account?.network === 'AleoTestnet'
+            ? TestnetProgramId
+            : MainnetProgramId,
         functionId: 'accept_job',
         fee: 1.23,
         inputs: [hashedProjectId]
@@ -428,7 +420,10 @@ export function MyProjects() {
             // Execute the blockchain transaction with the correct parameters
             await createEvent({
               type: EventType.Execute,
-              programId: 'escrow_contract11.aleo',
+              programId:
+                account?.network === 'AleoTestnet'
+                  ? TestnetProgramId
+                  : MainnetProgramId,
               functionId: 'accept_job',
               fee: 1.23,
               inputs: [hashedProjectId]
@@ -646,27 +641,37 @@ export function MyProjects() {
       <LoadingOverlay />
 
       <div>
-        <h2 className="text-xl font-semibold mb-2">My Projects</h2>
-        <p className="text-slate-600">
+        <h2 className="lg:text-2xl text-lg font-semibold text-gray-900">
+          My Projects
+        </h2>
+        <p className="text-gray-700 lg:text-base text-xs">
           Manage your active projects and view completed work.
         </p>
       </div>
 
       <Tabs defaultValue="active">
-        <TabsList>
-          <TabsTrigger value="active">Active Projects</TabsTrigger>
-          {/* <TabsTrigger value="completed">Completed Projects</TabsTrigger> */}
-          <TabsTrigger value="invites"> Projects Invites</TabsTrigger>
+        <TabsList className=" p-1 bg-white/50 backdrop-blur-sm rounded-xl shadow-sm border border-gray-100">
+          <TabsTrigger
+            value="active"
+            className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 transition-all duration-200"
+          >
+            Active Projects
+          </TabsTrigger>
+          <TabsTrigger
+            value="invites"
+            className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 transition-all duration-200"
+          >
+            {' '}
+            Projects Invites
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="active" className="mt-4 space-y-4">
           {Array.isArray(freelancer_projects?.data) &&
-            freelancer_projects.data.map((project: any) => (
+            freelancer_projects.data.map((project: any, index: number) => (
               <Card
-                key={project?._id}
-                className={
-                  expandedProject === project?._id ? 'border-blue-300' : ''
-                }
+                key={index}
+                className={expandedProject === index ? 'border-blue-300' : ''}
               >
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
@@ -711,14 +716,12 @@ export function MyProjects() {
                   </div> */}
 
                   {expandedProject === project?.id && (
-                    <div className="mt-4 space-y-4">
+                    <div className="mt-4 space-y-4 bg-gray-100 rounded p-2">
                       <div>
                         <h4 className="text-sm font-medium mb-2">
                           Project Description
                         </h4>
-                        <p className="text-sm text-white">
-                          {project?.description}
-                        </p>
+                        <p className="text-sm">{project?.description}</p>
                       </div>
 
                       <div>
@@ -734,7 +737,7 @@ export function MyProjects() {
                                     (milestone: any, index: number) => (
                                       <div
                                         key={index}
-                                        className="flex justify-between items-center p-2 bg-slate-50/20 rounded-md"
+                                        className="flex justify-between items-center p-2 bg-white rounded-md"
                                       >
                                         <div className="flex items-center gap-2">
                                           {milestone.status === 'completed' ? (
@@ -804,7 +807,7 @@ export function MyProjects() {
                     className="text-sm"
                     onClick={() => toggleProjectExpansion(project?.id)}
                   >
-                    {expandedProject === project?.id ? (
+                    {expandedProject === index ? (
                       <>
                         <ChevronUp className="h-4 w-4 mr-1" /> Hide Details
                       </>

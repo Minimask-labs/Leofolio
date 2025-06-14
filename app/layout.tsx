@@ -4,19 +4,19 @@ import React, { useMemo } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
-import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
-import {
-  DecryptPermission,
-  WalletAdapterNetwork,
-} from "@demox-labs/aleo-wallet-adapter-base";
-// import { Toaster } from 'react-hot-toast';
-import {
-  PuzzleWalletAdapter,
-  LeoWalletAdapter,
-  FoxWalletAdapter,
-  SoterWalletAdapter,
-} from "aleo-adapters";
+// import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
+// import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
+// import {
+//   DecryptPermission,
+//   WalletAdapterNetwork,
+// } from "@demox-labs/aleo-wallet-adapter-base";
+// // import { Toaster } from 'react-hot-toast';
+// import {
+//   PuzzleWalletAdapter,
+//   LeoWalletAdapter,
+//   FoxWalletAdapter,
+//   SoterWalletAdapter,
+// } from "aleo-adapters";
 import { Toaster } from "@/components/ui/toaster";
 import "@demox-labs/aleo-wallet-adapter-reactui/dist/styles.css";
 import { PuzzleWalletProvider } from '@puzzlehq/sdk';
@@ -99,36 +99,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const wallets = useMemo(
-    () => [
-      new LeoWalletAdapter({
-        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
-      }),
-      new PuzzleWalletAdapter({
-        programIdPermissions: {
-          [WalletAdapterNetwork.TestnetBeta]: [
-            'escrow_contract.aleo',
-            'escrow_contract_v1.aleo',
-            'escrow_contract_v2.aleo',
-            'escrow_contract_v3.aleo',
-            'zk_privacy_escrow.aleo',
-            'escrow_contract11.aleo',
-            'escrow_contract_beta.aleo'
-          ]
-        },
-        appName: 'Aleo app',
-        appDescription: 'A privacy-focused DeFi app',
-        appIconUrl: ''
-      }),
-      new FoxWalletAdapter({
-        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
-      }),
-      new SoterWalletAdapter({
-        appName: 'Leofolio - Privacy-preserving Freelancer Platform'
-      })
-    ],
-    []
-  );
+  // const wallets = useMemo(
+  //   () => [
+  //     new LeoWalletAdapter({
+  //       appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+  //     }),
+  //     new PuzzleWalletAdapter({
+  //       programIdPermissions: {
+  //         [WalletAdapterNetwork.TestnetBeta]: [
+  //           'escrow_contract.aleo',
+  //           'escrow_contract_v1.aleo',
+  //           'escrow_contract_v2.aleo',
+  //           'escrow_contract_v3.aleo',
+  //           'zk_privacy_escrow.aleo',
+  //           'escrow_contract11.aleo',
+  //           'escrow_contract_beta.aleo'
+  //         ]
+  //       },
+  //       appName: 'Aleo app',
+  //       appDescription: 'A privacy-focused DeFi app',
+  //       appIconUrl: ''
+  //     }),
+  //     new FoxWalletAdapter({
+  //       appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+  //     }),
+  //     new SoterWalletAdapter({
+  //       appName: 'Leofolio - Privacy-preserving Freelancer Platform'
+  //     })
+  //   ],
+  //   []
+  // );
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

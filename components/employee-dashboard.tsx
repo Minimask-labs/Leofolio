@@ -1,20 +1,10 @@
 "use client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FreelancerDirectory } from "./employee/freelancer-directory";
-import { InvoicePayment } from "./employee/invoice-payment";
 import { ProjectManagement } from "./employee/project-management";
 import { Header } from "./header";
 import { EscrowWallet } from "./wallet/escrow-wallet";
 
-interface EmployeeDashboardProps {
-  connected: boolean;
-  setConnected: (connected: boolean) => void;
-}
 
-export function EmployeeDashboard({
-  connected,
-  setConnected,
-}: EmployeeDashboardProps) {
+export function EmployeeDashboard() {
   return (
     <div className=" w-full">
       <Header />

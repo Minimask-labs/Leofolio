@@ -290,6 +290,16 @@ try {
     console.error('Unknown error occurred');
   }
 }
+const MainnetProgramId =
+  process.env.NEXT_PUBLIC_MAINNET_PROGRAM_ID || 'leofolio_escrow4.aleo';
+const TestnetProgramId =
+  process.env.NEXT_PUBLIC_TESTNET_PROGRAM_ID || 'leofolio_escrow_beta_v1.aleo';
 
 // Export the functions for use in other modules
-export { mongoIdToAleoU64, mongoIdToAleoU64Hash };
+export {
+  mongoIdToAleoU64,
+  mongoIdToAleoU64Hash,
+  MainnetProgramId,
+  TestnetProgramId
+};
+
