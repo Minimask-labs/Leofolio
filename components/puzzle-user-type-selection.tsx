@@ -56,29 +56,24 @@ export function UserTypeSelection() {
     },
     permissions: {
       programIds: {
-        [Network.AleoMainnet]: [
-          'dapp_1.aleo',
-          'dapp_2.aleo',
-          'dapp_2_imports.aleo'
-        ],
-        [Network.AleoTestnet]: [
-          'dapp_3.aleo',
-          'dapp_3_imports_1.aleo',
-          'dapp_3_imports_2.aleo',
-          'aleo_voice001.aleo',
-          'aleo_voice101.aleo',
-          'aleo_voice321.aleo',
-          'escrow_contract.aleo',
-          'escrow_contract_v1.aleo',
-          'escrow_contract_v2.aleo',
-          'escrow_contract_v3.aleo',
-          'zk_privacy_escrow.aleo',
-          'escrow_contract11.aleo',
-          'escrow_contract_beta.aleo'
-        ]
+        [Network.AleoMainnet]: ['leofolio_escrow_beta_v1.aleo'],
+        [Network.AleoTestnet]: ['leofolio_escrow4.aleo']
       }
     }
   });
+  // 'dapp_3.aleo',
+  // 'dapp_3_imports_1.aleo',
+  // 'dapp_3_imports_2.aleo',
+  // 'aleo_voice001.aleo',
+  // 'aleo_voice101.aleo',
+  // 'aleo_voice321.aleo',
+  // 'escrow_contract.aleo',
+  // 'escrow_contract_v1.aleo',
+  // 'escrow_contract_v2.aleo',
+  // 'escrow_contract_v3.aleo',
+  // 'zk_privacy_escrow.aleo',
+  // 'escrow_contract11.aleo',
+  // 'escrow_contract_beta.aleo',
 
   const { disconnect } = useDisconnect();
 
