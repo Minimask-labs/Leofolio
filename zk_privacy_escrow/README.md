@@ -1,100 +1,100 @@
-1. Creating a Job (Employer)
-Function: create_job(job_id, payment_amount, escrow_address)
+# Creating a Job (Employer)
+### Function: create_job(job_id, payment_amount, escrow_address)
 
 Web Interface:
 
-Employer fills out a form with:
+- Employer fills out a form with:
 
-Job ID (unique identifier) -> u64
+- Job ID (unique identifier) -> u64
 
-Payment amount (in Aleo credits) -> u64 [remember 1 aleo credit = 1000000u64 microcredit]
+- Payment amount (in Aleo credits) -> u64 [remember 1 aleo credit = 1000000u64 microcredit]
 
-Selects escrow account (could be auto-filled with their wallet) -> address
+- Selects escrow account (could be auto-filled with their wallet) -> program address
 
 What Happens:
 
-The contract validates the payment amount is positive
+- The contract validates the payment amount is positive
 
-Creates a job record with status "Open"
+- Creates a job record with status "Open"
 
-Transfers funds from employer to contract escrow
+- Transfers funds from employer to contract escrow
 
-Stores the job details on-chain
+- Stores the job details on-chain
 
 User Experience:
 
-Employer sees a confirmation screen
+- Employer sees a confirmation screen
 
-Their wallet prompts to approve the fund transfer
+- Their wallet prompts to approve the fund transfer
 
-After confirmation, job appears in "Open Jobs" list
+- After confirmation, job appears in "Open Jobs" list
 
-2. Accepting a Job (Freelancer)
-Function: accept_job(job_id)
+# Accepting a Job (Freelancer)
+### Function: accept_job(job_id)
 
 Web Interface:
 
-Freelancer browses open jobs
+- Freelancer browses open jobs
 
-Clicks "Accept" on a job listing
+- Clicks "Accept" on a job listing
 
-Confirms the action in their wallet
+- Confirms the action in their wallet
 
 What Happens:
 
-Contract verifies job is open
+- Contract verifies job is open
 
-Updates job record with freelancer's address
+- Updates job record with freelancer's address
 
-Changes status to "In Progress"
+- Changes status to "In Progress"
 
 User Experience:
 
-Job moves from "Open" to "My Jobs" section
+- Job moves from "Open" to "My Jobs" section
 
-Both parties can now communicate through the platform
+- Both parties can now communicate through the platform
 
-3. Completing a Job (Freelancer)
-Function: complete_job(job_id)
+# Completing a Job (Freelancer)
+### Function: complete_job(job_id)
 
 Web Interface:
 
-Freelancer clicks "Mark as Complete"
+- Freelancer clicks "Mark as Complete"
 
-Confirms the action
+- Confirms the action
 
-Optionally submits deliverables through the interface
+- Optionally submits deliverables through the interface
 
 What Happens:
 
-Contract verifies caller is the assigned freelancer
+- Contract verifies caller is the assigned freelancer
 
-Updates job status to "Completed"
+- Updates job status to "Completed"
 
 User Experience:
 
-Job moves to "Pending Payment" state
+- Job moves to "Pending Payment" state
 
-Employer receives notification to release funds
+- Employer receives notification to release funds
 
-4. Releasing Payment (Employer)
-Function: release_payment(job_id, freelancer, amount)
+# Releasing Payment (Employer)
+### Function: release_payment(job_id, freelancer, amount)
 
 Web Interface:
 
-Employer sees completed jobs
+- Employer sees completed jobs
 
-Clicks "Release Payment"
+- Clicks "Release Payment"
 
-Confirms amount and recipient (auto-filled)
+- Confirms amount and recipient (auto-filled)
 
-Approves transaction in wallet
+- Approves transaction in wallet
 
 What Happens:
 
-Funds are transferred from escrow to freelancer
+- Funds are transferred from escrow to freelancer
 
-Escrow balances are updated
+- Escrow balances are updated
 
 Job status changes to "Paid"
 
