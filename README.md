@@ -82,14 +82,7 @@ Leofolio/
 │   ├── page.tsx          # Home page
 │   └── ...               # Other pages
 ├── components/           # React components
-│   ├── credential-manager.tsx
-│   ├── work-history.tsx
-│   ├── payment-manager.tsx
-│   ├── proof-generator.tsx
-│   ├── project-dashboard.tsx
-│   ├── project-report.tsx
-│   ├── ui/               # UI components
-│   └── ...
+│   └── ...               # components
 ├── lib/                  # Utility functions
 ├── public/               # Static assets
 ├── styles/               # Global styles
