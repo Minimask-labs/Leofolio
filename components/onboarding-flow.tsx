@@ -37,11 +37,9 @@ import { useRouter, redirect } from 'next/navigation';
 import { EmailVerificationModal } from '@/components/auth/email-verification-modal';
 
 interface OnboardingFlowProps {
-  onComplete: () => void;
-  userType: 'freelancer' | 'employer';
 }
 
-export function OnboardingFlow({ onComplete, userType }: OnboardingFlowProps) {
+export function OnboardingFlow({}: OnboardingFlowProps) {
   const [step, setStep] = useState(1);
   const {
     handleUpdateUser,
